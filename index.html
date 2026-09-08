@@ -435,7 +435,7 @@
         nextBtn.addEventListener('click', () => {
           if (window.game) {
             const nextLvl = window.game.level < window.game.maxLevels ? window.game.level + 1 : 1;
-            window.game.startGame(nextLvl);
+            window.game.startGame(nextLvl, { resume: true });
           }
         });
       }

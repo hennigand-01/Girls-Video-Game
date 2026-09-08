@@ -70,9 +70,12 @@ class SoundEngine {
     setTimeout(() => this.playTone(783.99, 783.99, 0.2, 'sine', 0.25), 120); // G5
   }
 
-  // Barrel Bounce: soft wooden thump
+  // Barrel Bounce: soft wooden thump with anti-spam limiter
   playBarrelBounce() {
-    this.playTone(140, 45, 0.09, 'sine', 0.15);
+    const now = Date.now();
+    if (this._lastBarrelBounce && now - this._lastBarrelBounce < 180) return;
+    this._lastBarrelBounce = now;
+    this.playTone(130, 42, 0.08, 'sine', 0.10);
   }
 
   // Ladder Climb Step
@@ -269,9 +272,10 @@ class SoundEngine {
   // Background Music: Celtic Forest Harp & Wooden Flute (Unravel / Scandinavian Pastoral style)
   // Truly relaxing, organic, and peaceful for both kids and parents!
   // Background Music: Dan's Original Composition (GOOD1)
-  startMusic() {
+  // Supports resuming playback seamlessly between levels!
+  startMusic(options = {}) {
+    const resume = options.resume !== undefined ? options.resume : true;
     if (!this.musicEnabled) return;
-    this.stopMusic();
 
     // 1. Play Dan's custom track 'GOOD1' (loaded from assets/good1.wav)
     if (typeof Audio !== 'undefined') {
@@ -281,11 +285,18 @@ class SoundEngine {
           this.bgAudio.loop = true;
           this.bgAudio.volume = 0.45; // pleasant background volume
         }
-        const playPromise = this.bgAudio.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(err => {
-            console.log('Audio autoplay prevented or waiting for user interaction:', err);
-          });
+
+        if (!resume) {
+          this.bgAudio.currentTime = 0;
+        }
+
+        if (this.bgAudio.paused) {
+          const playPromise = this.bgAudio.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(err => {
+              console.log('Audio autoplay prevented or waiting for user interaction:', err);
+            });
+          }
         }
         return;
       } catch (e) {
@@ -294,6 +305,11 @@ class SoundEngine {
     }
 
     // 2. Synthesizer fallback if audio file cannot play in environment
+    if (!resume) {
+      this.musicStep = 0;
+    }
+    if (this.musicTimer) return;
+
     this.init();
     if (!this.ctx) return;
     const bpm = 64;
@@ -305,16 +321,29 @@ class SoundEngine {
       [98.00, 146.83, 196.00, 246.94, 293.66],
       [110.00, 164.81, 220.00, 293.66, 329.63]
     ];
-    let stepCount = 0;
     this.musicTimer = setInterval(() => {
       if (!this.musicEnabled) return;
-      const chord = harpChords[Math.floor(stepCount / 8) % harpChords.length];
-      const freq = chord[[0, 1, 2, 3, 4, 3, 2, 1][stepCount % 8]];
+      const chord = harpChords[Math.floor(this.musicStep / 8) % harpChords.length];
+      const freq = chord[[0, 1, 2, 3, 4, 3, 2, 1][this.musicStep % 8]];
       if (freq) this.playHarpPluck(freq, beatSec * 2.8, 0.035);
-      stepCount++;
+      this.musicStep++;
     }, stepMs);
   }
 
+  // Pause music without losing playback position (used between levels)
+  pauseMusic() {
+    if (this.bgAudio) {
+      try {
+        this.bgAudio.pause();
+      } catch (e) {}
+    }
+    if (this.musicTimer) {
+      clearInterval(this.musicTimer);
+      this.musicTimer = null;
+    }
+  }
+
+  // Full stop music and rewind to beginning (used on game over or explicit reset)
   stopMusic() {
     if (this.bgAudio) {
       try {
@@ -326,6 +355,7 @@ class SoundEngine {
       clearInterval(this.musicTimer);
       this.musicTimer = null;
     }
+    this.musicStep = 0;
   }
 
   toggleSound() {

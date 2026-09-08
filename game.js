@@ -206,11 +206,14 @@ class Game {
     }
   }
 
-  // Start or reset game
-  startGame(level = 1) {
+  // Start or reset game (continues song between levels!)
+  startGame(level = 1, options = {}) {
+    const isContinuingLevel = (level > 1) || (this.state === 'LEVEL_CLEAR');
+    const resume = options.resume !== undefined ? options.resume : isContinuingLevel;
+
     this.level = level;
     this.lives = 3;
-    this.score = (level === 1) ? 0 : this.score;
+    this.score = (level === 1 && !isContinuingLevel) ? 0 : this.score;
     this.loadLevel(this.level);
     this.state = 'PLAYING';
 
@@ -218,7 +221,8 @@ class Game {
     document.getElementById('game-over-screen').classList.add('hidden');
     document.getElementById('win-screen').classList.add('hidden');
 
-    window.soundEngine.startMusic();
+    // Continue the song from where it left off between levels!
+    window.soundEngine.startMusic({ resume });
   }
 
   loadLevel(lvl) {
@@ -267,8 +271,8 @@ class Game {
       // LEVEL 1: Dark Old-Growth Oregon Woods (Deer in the Woods & Ancient Cedar Nurse Logs)
       this.barrelSpawnInterval = 3.2;
 
-      // Tier 1: Bottom Ground (Left to Right, gentle slope up towards left)
-      this.platforms.push({ x1: 20, y1: 610, x2: 780, y2: 600, colorTheme: 'oregon_log' });
+      // Tier 1: Bottom Ground (extends off-screen to left so rolling barrels exit smoothly)
+      this.platforms.push({ x1: -60, y1: 612, x2: 780, y2: 600, colorTheme: 'oregon_log' });
 
       // Tier 2: Slopes Down from Left to Right
       this.platforms.push({ x1: 30, y1: 480, x2: 740, y2: 505, colorTheme: 'oregon_log' });
@@ -300,7 +304,7 @@ class Game {
       this.barrelSpawnInterval = 2.6;
 
       // 5 Tiers with steeper slopes
-      this.platforms.push({ x1: 20, y1: 610, x2: 780, y2: 595, colorTheme: 'river_trail' });
+      this.platforms.push({ x1: -60, y1: 612, x2: 780, y2: 595, colorTheme: 'river_trail' });
       this.platforms.push({ x1: 40, y1: 475, x2: 750, y2: 510, colorTheme: 'river_trail' });
       this.platforms.push({ x1: 50, y1: 400, x2: 760, y2: 360, colorTheme: 'river_trail' });
       this.platforms.push({ x1: 40, y1: 230, x2: 750, y2: 270, colorTheme: 'river_trail' });
@@ -324,7 +328,7 @@ class Game {
       // LEVEL 3: High Cascade Mountain Pass (Carved Rock-Shelf Mountain Trail Switchbacks!)
       this.barrelSpawnInterval = 2.1;
 
-      this.platforms.push({ x1: 20, y1: 610, x2: 780, y2: 600, colorTheme: 'mountain_path' });
+      this.platforms.push({ x1: -60, y1: 612, x2: 780, y2: 600, colorTheme: 'mountain_path' });
       this.platforms.push({ x1: 30, y1: 475, x2: 750, y2: 515, colorTheme: 'mountain_path' });
       this.platforms.push({ x1: 50, y1: 405, x2: 770, y2: 360, colorTheme: 'mountain_path' });
       this.platforms.push({ x1: 30, y1: 225, x2: 750, y2: 275, colorTheme: 'mountain_path' });
@@ -701,6 +705,10 @@ class Game {
           const slopeY = plat.y1 + t * (plat.y2 - plat.y1);
 
           if (b.vy >= 0 && b.y + b.radius >= slopeY - 4 && b.y + b.radius <= slopeY + 14) {
+            // Soft landing thump if dropping from upper ledge or ladder
+            if (!b.isGrounded && b.vy > 3.2) {
+              window.soundEngine.playBarrelBounce();
+            }
             b.y = slopeY - b.radius;
             b.vy = 0;
             b.isGrounded = true;
@@ -731,17 +739,6 @@ class Game {
         }
       }
       if (b.ladderCooldown > 0) b.ladderCooldown -= dt;
-
-      // Barrel wall bouncing (sides of canvas)
-      if (b.x < b.radius + 15) {
-        b.x = b.radius + 15;
-        b.vx = Math.abs(b.vx);
-        window.soundEngine.playBarrelBounce();
-      } else if (b.x > this.width - b.radius - 15) {
-        b.x = this.width - b.radius - 15;
-        b.vx = -Math.abs(b.vx);
-        window.soundEngine.playBarrelBounce();
-      }
 
       // Check jumping over barrel for combo points!
       const p = this.player;
@@ -810,8 +807,8 @@ class Game {
         }
       }
 
-      // Remove barrels that fell off the screen
-      if (b.y > this.height + 40) {
+      // Remove barrels that rolled or fell off the screen
+      if (b.y > this.height + 40 || b.x < -35 || b.x > this.width + 35) {
         this.barrels.splice(i, 1);
       }
     }
@@ -898,7 +895,7 @@ class Game {
 
   levelClear() {
     this.state = 'LEVEL_CLEAR';
-    window.soundEngine.stopMusic();
+    window.soundEngine.pauseMusic(); // Pause without resetting currentTime so next level continues song!
     window.soundEngine.playWin();
 
     // Bonus points
@@ -921,12 +918,12 @@ class Game {
       const nextArea = this.level === 1 ? 'Misty Cascade River Ridge' : 'High Cascade Mountain Pass';
       winMsg.innerText = `You rescued the ${this.goal.petType}! Ready to hike into the ${nextArea}?`;
       nextBtn.innerText = 'NEXT LEVEL ❯';
-      nextBtn.onclick = () => this.startGame(this.level + 1);
+      nextBtn.onclick = () => this.startGame(this.level + 1, { resume: true });
     } else {
       winTitle.innerText = '🎉 YOU BEAT THE GAME! 🎉';
       winMsg.innerText = `Congratulations! You conquered the High Cascade Mountain Pass and rescued everyone! You are the Oregon Mountain Hero!`;
       nextBtn.innerText = 'PLAY AGAIN ↺';
-      nextBtn.onclick = () => this.startGame(1);
+      nextBtn.onclick = () => this.startGame(1, { resume: true });
     }
 
     winScreen.classList.remove('hidden');
@@ -950,6 +947,7 @@ class Game {
 
   goToHomeScreen() {
     this.state = 'MENU';
+    window.soundEngine.pauseMusic();
     this.barrels = [];
     this.particles = [];
     if (this.player) {
