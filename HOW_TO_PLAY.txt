@@ -1,0 +1,17 @@
+========================================================================
+             ADVENTURE HILL RESCUE - HOW TO PLAY & SHARE
+========================================================================
+
+FOR YOUR FRIEND:
+1. Double-click 'Play_Game.bat' (or simply double-click 'index.html').
+2. That's it! The game will launch in your default web browser (Chrome,
+   Edge, Firefox, Safari).
+
+CONTROLS:
+- RUN: A / D  or  Left / Right Arrow keys
+- CLIMB LADDERS: W / S  or  Up / Down Arrow keys
+- JUMP: Spacebar (Daddy toots when he jumps over barrels! ??)
+- RETURN TO HOME: Click 'Home' button or press 'H' key
+- PAUSE: P key
+
+Enjoy the adventure!

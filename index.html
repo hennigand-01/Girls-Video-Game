@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Adventure Hill Rescue | Super Arcade Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-wrapper">
+    <!-- Top HUD / Arcade Header -->
+    <header class="game-header">
+      <div class="title-area">
+        <h1>🌟 Mountain Rescue!</h1>
+      </div>
+
+      <div class="hud-group">
+        <button class="hud-btn hud-btn-home" id="btn-home" title="Go to Home / Character Select Screen">🏡 Home</button>
+        <div class="hud-item" id="hud-level">LEVEL 1</div>
+        <div class="hud-item hud-hearts" id="hud-hearts">❤️❤️❤️</div>
+        <div class="hud-item">SCORE: <span id="hud-score">0</span></div>
+        <div class="hud-item">HI: <span id="hud-high-score">0</span></div>
+        <button class="hud-btn" id="btn-toggle-sound" title="Toggle Sound FX">🔊</button>
+        <button class="hud-btn" id="btn-toggle-music" title="Toggle Music">🎵</button>
+      </div>
+    </header>
+
+    <!-- Canvas Frame -->
+    <div id="canvas-container">
+      <canvas id="gameCanvas"></canvas>
+
+      <!-- START / CHARACTER SELECT MODAL (FANCY OREGON THEMED) -->
+      <div id="start-screen" class="modal-overlay">
+        <div class="modal-content fancy-oregon-modal">
+          <div class="modal-badge">🌲 OREGON WOODS & ALPINE LAKES 🌊</div>
+          <h2 class="modal-title">Adventure Hill Rescue!</h2>
+          <p class="modal-subtitle">Pick and customize your miniature hero to explore the wild Oregon forest!</p>
+
+          <!-- Character Cards -->
+          <div class="character-select-grid">
+            <div class="char-card selected" data-char="ilianna">
+              <div class="char-icon">👑</div>
+              <div class="char-name">Ilianna</div>
+              <div class="char-role">Princess Hero</div>
+            </div>
+            <div class="char-card" data-char="ava">
+              <div class="char-icon">🎀</div>
+              <div class="char-name">Ava</div>
+              <div class="char-role">Star Explorer</div>
+            </div>
+            <div class="char-card" data-char="mommy">
+              <div class="char-icon">💖</div>
+              <div class="char-name">Mommy</div>
+              <div class="char-role">Super Mom</div>
+            </div>
+            <div class="char-card" data-char="daddy">
+              <div class="char-icon">💨</div>
+              <div class="char-name">Daddy</div>
+              <div class="char-role">Toot Master!</div>
+            </div>
+          </div>
+
+          <!-- Customization Panel: Hairstyle, Outfit, Eyes & Colors -->
+          <div class="customizer-panel">
+            <!-- Outfit Color Selection: Red, Pink, Light Blue, Blue, Black, Gray -->
+            <div class="customizer-row">
+              <span class="customizer-label">🎨 Outfit Color:</span>
+              <div class="palette-group">
+                <div class="color-swatch" style="background: #e63946;" data-color="#e63946" title="Red"></div>
+                <div class="color-swatch active" style="background: #ff69b4;" data-color="#ff69b4" title="Pink"></div>
+                <div class="color-swatch" style="background: #38bdf8;" data-color="#38bdf8" title="Light Blue"></div>
+                <div class="color-swatch" style="background: #1d4ed8;" data-color="#1d4ed8" title="Blue"></div>
+                <div class="color-swatch" style="background: #18181b;" data-color="#18181b" title="Black"></div>
+                <div class="color-swatch" style="background: #71717a;" data-color="#71717a" title="Gray"></div>
+              </div>
+            </div>
+
+            <!-- Hairstyle Options -->
+            <div class="customizer-row">
+              <span class="customizer-label">💇 Hairstyle:</span>
+              <div class="option-pill-group" id="hair-style-group">
+                <button class="opt-pill active" data-style="classic">Classic</button>
+                <button class="opt-pill" data-style="long_curls">Long Curls</button>
+                <button class="opt-pill" data-style="braids">Twin Braids</button>
+                <button class="opt-pill" data-style="ponytail">High Ponytail</button>
+                <button class="opt-pill" data-style="short_bob">Short Bob</button>
+              </div>
+            </div>
+
+            <!-- Clothing / Outfit Style -->
+            <div class="customizer-row">
+              <span class="customizer-label">👗 Clothing:</span>
+              <div class="option-pill-group" id="clothing-style-group">
+                <button class="opt-pill active" data-clothing="adventurer">Adventurer</button>
+                <button class="opt-pill" data-clothing="royal_tunic">Royal Tunic</button>
+                <button class="opt-pill" data-clothing="explorer_vest">Explorer Vest</button>
+                <button class="opt-pill" data-clothing="forest_cloak">Forest Cloak</button>
+              </div>
+            </div>
+
+            <!-- Eye Type & Realism -->
+            <div class="customizer-row">
+              <span class="customizer-label">👁️ Eyes:</span>
+              <div class="option-pill-group" id="eye-type-group">
+                <button class="opt-pill active" data-eyes="sapphire">Deep Sapphire</button>
+                <button class="opt-pill" data-eyes="emerald">Forest Emerald</button>
+                <button class="opt-pill" data-eyes="amber">Warm Amber</button>
+                <button class="opt-pill" data-eyes="violet">Mystic Violet</button>
+                <button class="opt-pill" data-eyes="sparkle">Starlight Sparkle</button>
+              </div>
+            </div>
+          </div>
+
+          <button id="btn-start" class="btn-primary">START ADVENTURE! 🚀</button>
+
+          <div class="instructions-banner">
+            ✨ Jump over rolling barrels or grab the 🔨 <strong>HAMMER</strong> to SMASH them to pieces! ✨<br>
+            🌲 Climb realistic Oregon cedar twigs, rustic twine ladders & mountain trails to save the pet! (Daddy toots when he jumps! 💨)<br>
+            ⌨️ Press <kbd>H</kbd> or click <strong>🏡 Home</strong> anytime to return to this screen!
+          </div>
+        </div>
+      </div>
+
+      <!-- LEVEL WIN MODAL -->
+      <div id="win-screen" class="modal-overlay hidden">
+        <div class="modal-content">
+          <h2 class="modal-title" id="win-title">🎉 LEVEL COMPLETE! 🎉</h2>
+          <p class="modal-subtitle" id="win-msg">You rescued the pet! Ready for the next mountain peak?</p>
+          <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <button id="btn-next-level" class="btn-primary">NEXT LEVEL ❯</button>
+            <button id="btn-win-home" class="btn-secondary">🏡 HOME</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- GAME OVER MODAL -->
+      <div id="game-over-screen" class="modal-overlay hidden">
+        <div class="modal-content">
+          <h2 class="modal-title" style="background: linear-gradient(45deg, #ff4d4d, #ff9900); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">NICE TRY, ADVENTURER! 💖</h2>
+          <p class="modal-subtitle" id="final-score-text">Final Score: 0</p>
+          <p class="modal-subtitle">Don't give up! You can climb that mountain!</p>
+          <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <button id="btn-restart" class="btn-primary">TRY AGAIN ↺</button>
+            <button id="btn-over-home" class="btn-secondary">🏡 HOME</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Touch / On-Screen Controls for Tablets and Mobile -->
+    <div class="touch-controls-container">
+      <div class="dpad-group">
+        <button class="arcade-btn" id="btn-up" title="Climb Up">▲</button>
+        <button class="arcade-btn" id="btn-left" title="Move Left">◀</button>
+        <button class="arcade-btn" id="btn-down" title="Climb Down">▼</button>
+        <button class="arcade-btn" id="btn-right" title="Move Right">▶</button>
+      </div>
+
+      <div class="action-btn-group">
+        <button class="arcade-btn btn-jump-action" id="btn-jump" title="Jump over barrels">
+          <span>⬆️ JUMP</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Keyboard Instructions Footer -->
+    <div class="keyboard-hints">
+      Keyboard: <kbd>A</kbd>/<kbd>D</kbd> or <kbd>◀</kbd><kbd>▶</kbd> Run &bull;
+      <kbd>W</kbd>/<kbd>S</kbd> or <kbd>▲</kbd><kbd>▼</kbd> Climb Ladders &bull;
+      <kbd>SPACE</kbd> Jump Barrels &bull;
+      <kbd>P</kbd> Pause
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="audio.js"></script>
+  <script src="sprites.js"></script>
+  <script src="game.js"></script>
+
+  <script>
+    // UI Interaction Glue
+    function initUI() {
+      // Character selection
+      const charCards = document.querySelectorAll('.char-card');
+      charCards.forEach(card => {
+        card.addEventListener('click', () => {
+          charCards.forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          if (window.game) {
+            window.game.selectedChar = card.dataset.char;
+          }
+        });
+      });
+
+      // Outfit Color selection
+      const swatches = document.querySelectorAll('.color-swatch');
+      swatches.forEach(swatch => {
+        swatch.addEventListener('click', () => {
+          swatches.forEach(s => s.classList.remove('active'));
+          swatch.classList.add('active');
+          const col = swatch.dataset.color;
+          if (window.game) {
+            window.game.customColors.outfit = col;
+            if (window.game.customization) {
+              window.game.customization.outfit = col;
+            }
+            if (window.game.player && window.game.player.customization) {
+              window.game.player.customization.outfit = col;
+            }
+          }
+        });
+      });
+
+      // Hairstyle Pill Selection
+      const hairPills = document.querySelectorAll('#hair-style-group .opt-pill');
+      hairPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          hairPills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          const style = pill.dataset.style;
+          if (window.game) {
+            if (!window.game.customization) window.game.customization = {};
+            window.game.customization.hairStyle = style;
+            if (window.game.player && window.game.player.customization) {
+              window.game.player.customization.hairStyle = style;
+            }
+          }
+        });
+      });
+
+      // Clothing Pill Selection
+      const clothingPills = document.querySelectorAll('#clothing-style-group .opt-pill');
+      clothingPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          clothingPills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          const cloth = pill.dataset.clothing;
+          if (window.game) {
+            if (!window.game.customization) window.game.customization = {};
+            window.game.customization.clothingStyle = cloth;
+            if (window.game.player && window.game.player.customization) {
+              window.game.player.customization.clothingStyle = cloth;
+            }
+          }
+        });
+      });
+
+      // Eye Type Pill Selection
+      const eyePills = document.querySelectorAll('#eye-type-group .opt-pill');
+      eyePills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          eyePills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          const eyes = pill.dataset.eyes;
+          if (window.game) {
+            if (!window.game.customization) window.game.customization = {};
+            window.game.customization.eyeType = eyes;
+            if (window.game.player && window.game.player.customization) {
+              window.game.player.customization.eyeType = eyes;
+            }
+          }
+        });
+      });
+
+      // Home Buttons (HUD, Win Screen, Game Over Screen)
+      const homeBtns = [
+        document.getElementById('btn-home'),
+        document.getElementById('btn-win-home'),
+        document.getElementById('btn-over-home')
+      ];
+      homeBtns.forEach(btn => {
+        if (btn) {
+          btn.addEventListener('click', () => {
+            if (window.game && typeof window.game.goToHomeScreen === 'function') {
+              window.game.goToHomeScreen();
+            }
+          });
+        }
+      });
+
+      // Start Button
+      const startBtn = document.getElementById('btn-start');
+      if (startBtn) {
+        startBtn.addEventListener('click', () => {
+          if (window.soundEngine) {
+            window.soundEngine.init();
+          }
+          if (window.game) {
+            window.game.startGame(1);
+          } else if (window.Game) {
+            window.game = new window.Game();
+            window.game.startGame(1);
+          }
+        });
+      }
+
+      // Next Level Button
+      const nextBtn = document.getElementById('btn-next-level');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          if (window.game) {
+            const nextLvl = window.game.level < window.game.maxLevels ? window.game.level + 1 : 1;
+            window.game.startGame(nextLvl);
+          }
+        });
+      }
+
+      // Restart Button
+      const restartBtn = document.getElementById('btn-restart');
+      if (restartBtn) {
+        restartBtn.addEventListener('click', () => {
+          if (window.game) {
+            window.game.startGame(1);
+          }
+        });
+      }
+
+      // Audio Toggles
+      const sndBtn = document.getElementById('btn-toggle-sound');
+      if (sndBtn) {
+        sndBtn.addEventListener('click', () => {
+          if (window.soundEngine) {
+            const active = window.soundEngine.toggleSound();
+            sndBtn.innerText = active ? '🔊' : '🔇';
+          }
+        });
+      }
+
+      const musBtn = document.getElementById('btn-toggle-music');
+      if (musBtn) {
+        musBtn.addEventListener('click', () => {
+          if (window.soundEngine) {
+            const active = window.soundEngine.toggleMusic();
+            musBtn.innerText = active ? '🎵' : '💤';
+          }
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initUI);
+    } else {
+      initUI();
+    }
+  </script>
+</body>
+</html>
