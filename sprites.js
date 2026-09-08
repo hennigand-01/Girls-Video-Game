@@ -357,14 +357,24 @@ const Sprites = {
       }
 
     } else {
-      // ILIANNA, AVA, MOMMY: Detailed, tailored outfits with Hyper-Realistic Style Variations!
-      const outfitGrad = ctx.createLinearGradient(-w * 0.3, bodyY, w * 0.3, bodyY + h * 0.42);
+      // ILIANNA, AVA, MOMMY: Graceful, feminine tailored silhouette with tapered waist and flared tunic/skirt hem!
+      const outfitGrad = ctx.createLinearGradient(0, bodyY, 0, bodyY + h * 0.44);
       outfitGrad.addColorStop(0, outfitColor);
-      outfitGrad.addColorStop(1, '#66122d');
+      outfitGrad.addColorStop(1, '#4a0e20');
       ctx.fillStyle = outfitGrad;
       ctx.beginPath();
-      ctx.roundRect(-w * 0.32, bodyY, w * 0.64, h * 0.42, 7);
+      // Graceful feminine hourglass silhouette: shoulders (w*0.28), tapered waist (w*0.2), flared hem (w*0.33)
+      ctx.moveTo(-w * 0.28, bodyY + 1);
+      ctx.lineTo(w * 0.28, bodyY + 1);
+      ctx.quadraticCurveTo(w * 0.2, bodyY + h * 0.22, w * 0.33, bodyY + h * 0.43);
+      ctx.lineTo(-w * 0.33, bodyY + h * 0.43);
+      ctx.quadraticCurveTo(-w * 0.2, bodyY + h * 0.22, -w * 0.28, bodyY + 1);
+      ctx.closePath();
       ctx.fill();
+
+      // Slender waistline cinch belt
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
+      ctx.fillRect(-w * 0.22, bodyY + h * 0.21, w * 0.44, 2.8);
 
       // Hyper-Realistic Clothing Styles
       if (clothingStyle === 'royal_tunic') {
@@ -668,43 +678,96 @@ const Sprites = {
     // =========================================================================
     // LAYER 2: HEAD & VIBRANT EXPRESSIVE FACE (Drawn on top of back hair!)
     // =========================================================================
+    if (!isDaddy) {
+      // Graceful slender feminine neck
+      const neckGrad = ctx.createLinearGradient(0, headY + 7, 0, headY + 13);
+      neckGrad.addColorStop(0, '#f2bf9e');
+      neckGrad.addColorStop(1, '#c98a68');
+      ctx.fillStyle = neckGrad;
+      ctx.beginPath();
+      ctx.roundRect(-2.2, headY + 6.5, 4.4, 6.5, 2);
+      ctx.fill();
 
-    // Realistic skin gradient with warm subsurface illumination
-    const headGrad = ctx.createRadialGradient(2, headY - 4, 2, 0, headY, headR);
-    headGrad.addColorStop(0, '#fff5ea');
-    headGrad.addColorStop(0.35, skinColor);
-    headGrad.addColorStop(1, '#d4916a');
-    ctx.fillStyle = headGrad;
-    ctx.beginPath();
-    ctx.arc(0, headY, headR, 0, Math.PI * 2);
-    ctx.fill();
+      // Delicate feminine face: sculpted oval with gentle tapered chin
+      const faceGrad = ctx.createRadialGradient(1.5, headY - 3, 2, 0.5, headY, 11);
+      faceGrad.addColorStop(0, '#fffbf5');
+      faceGrad.addColorStop(0.35, skinColor);
+      faceGrad.addColorStop(1, '#d89b78');
+      ctx.fillStyle = faceGrad;
+      ctx.beginPath();
+      ctx.moveTo(-8.5, headY - 4);
+      ctx.bezierCurveTo(-8.8, headY - 11.5, 8.8, headY - 11.5, 8.5, headY - 4);
+      ctx.bezierCurveTo(8.2, headY + 4, 4.8, headY + 9.5, 0.5, headY + 9.8);
+      ctx.bezierCurveTo(-4.0, headY + 9.5, -8.2, headY + 4, -8.5, headY - 4);
+      ctx.closePath();
+      ctx.fill();
 
-    // Soft jawline ambient occlusion shadow
-    ctx.fillStyle = 'rgba(100, 40, 15, 0.14)';
-    ctx.beginPath();
-    ctx.arc(0, headY + headR - 1, headR * 0.65, 0, Math.PI);
-    ctx.fill();
+      // Soft jawline ambient occlusion shadow
+      ctx.fillStyle = 'rgba(120, 45, 20, 0.12)';
+      ctx.beginPath();
+      ctx.arc(0.5, headY + 8.2, 5.0, 0, Math.PI);
+      ctx.fill();
 
-    // Cute blushing cheeks with subsurface warmth
-    ctx.fillStyle = isDaddy ? 'rgba(255, 120, 100, 0.4)' : 'rgba(255, 95, 135, 0.52)';
-    ctx.beginPath();
-    ctx.arc(-5.5, headY + 3.5, isDaddy ? 3.5 : 3, 0, Math.PI * 2);
-    ctx.arc(5.5, headY + 3.5, isDaddy ? 3.5 : 3, 0, Math.PI * 2);
-    ctx.fill();
+      // Glowing peach-pink blushed cheeks
+      ctx.fillStyle = 'rgba(255, 110, 130, 0.42)';
+      ctx.beginPath();
+      ctx.ellipse(-3.6, headY + 3.2, 2.6, 1.6, -0.1, 0, Math.PI * 2);
+      ctx.ellipse(4.4, headY + 3.2, 2.6, 1.6, 0.1, 0, Math.PI * 2);
+      ctx.fill();
 
-    // Soft nose tip highlight
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
-    ctx.beginPath();
-    ctx.arc(6, headY + 1.2, 1, 0, Math.PI * 2);
-    ctx.fill();
+      // Soft feminine nose tip
+      ctx.fillStyle = 'rgba(255, 130, 140, 0.55)';
+      ctx.beginPath();
+      ctx.arc(0.5, headY + 1.4, 0.7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.beginPath();
+      ctx.arc(0.6, headY + 1.2, 0.35, 0, Math.PI * 2);
+      ctx.fill();
+
+    } else {
+      // DADDY: Realistic skin gradient with warm subsurface illumination
+      const headGrad = ctx.createRadialGradient(2, headY - 4, 2, 0, headY, headR);
+      headGrad.addColorStop(0, '#fff5ea');
+      headGrad.addColorStop(0.35, skinColor);
+      headGrad.addColorStop(1, '#d4916a');
+      ctx.fillStyle = headGrad;
+      ctx.beginPath();
+      ctx.arc(0, headY, headR, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Soft jawline ambient occlusion shadow
+      ctx.fillStyle = 'rgba(100, 40, 15, 0.14)';
+      ctx.beginPath();
+      ctx.arc(0, headY + headR - 1, headR * 0.65, 0, Math.PI);
+      ctx.fill();
+
+      // Cute blushing cheeks with subsurface warmth
+      ctx.fillStyle = 'rgba(255, 120, 100, 0.4)';
+      ctx.beginPath();
+      ctx.arc(-5.5, headY + 3.5, 3.5, 0, Math.PI * 2);
+      ctx.arc(5.5, headY + 3.5, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Soft nose tip highlight
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+      ctx.beginPath();
+      ctx.arc(6, headY + 1.2, 1, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
     // --- HYPER-REALISTIC VIBRANT EYES (LARGE, GLOWING JEWEL TONES THAT REALLY SHOW UP!) ---
     if (player.blinkTimer > 0) {
       ctx.lineWidth = 1.8;
       ctx.strokeStyle = '#222222';
       ctx.beginPath();
-      ctx.arc(3.0, headY - 1, 3.0, 0, Math.PI, false);
-      ctx.arc(8.2, headY - 1, 3.0, 0, Math.PI, false);
+      if (isDaddy) {
+        ctx.arc(2.0, headY - 1, 3.0, 0, Math.PI, false);
+        ctx.arc(7.5, headY - 1, 3.0, 0, Math.PI, false);
+      } else {
+        ctx.arc(-2.6, headY - 0.8, 2.6, 0, Math.PI, false);
+        ctx.arc(3.6, headY - 0.8, 2.6, 0, Math.PI, false);
+      }
       ctx.stroke();
     } else {
       let eyeTones;
@@ -748,142 +811,173 @@ const Sprites = {
         }
       }
 
-      const drawEye = (ex, ey) => {
+      const drawEye = (ex, ey, rScale = 1.0) => {
+        const scleraR = 3.2 * rScale;
+        const irisR = 2.4 * rScale;
+        const pupilR = 0.85 * rScale;
+
         // 1. Crisp white almond sclera
         ctx.fillStyle = '#ffffff';
         ctx.beginPath();
-        ctx.arc(ex, ey, 3.5, 0, Math.PI * 2);
+        ctx.arc(ex, ey, scleraR, 0, Math.PI * 2);
         ctx.fill();
 
         // 2. Bold, luminous colored iris (large and vivid so color jumps out!)
         ctx.fillStyle = eyeTones.core;
         ctx.beginPath();
-        ctx.arc(ex + 0.2, ey, 2.7, 0, Math.PI * 2);
+        ctx.arc(ex + 0.15, ey, irisR, 0, Math.PI * 2);
         ctx.fill();
 
         // Iris rich radial depth gradient
-        const irisGrad = ctx.createRadialGradient(ex + 0.2, ey, 0.3, ex + 0.2, ey, 2.7);
+        const irisGrad = ctx.createRadialGradient(ex + 0.15, ey, 0.3, ex + 0.15, ey, irisR);
         irisGrad.addColorStop(0, eyeTones.highlight);
         irisGrad.addColorStop(0.4, eyeTones.core);
         irisGrad.addColorStop(1, eyeTones.outer);
         ctx.fillStyle = irisGrad;
         ctx.beginPath();
-        ctx.arc(ex + 0.2, ey, 2.7, 0, Math.PI * 2);
+        ctx.arc(ex + 0.15, ey, irisR, 0, Math.PI * 2);
         ctx.fill();
 
         // Sharp dark limbal ring
         ctx.strokeStyle = eyeTones.rim;
-        ctx.lineWidth = 0.7;
+        ctx.lineWidth = 0.65;
         ctx.beginPath();
-        ctx.arc(ex + 0.2, ey, 2.7, 0, Math.PI * 2);
+        ctx.arc(ex + 0.15, ey, irisR, 0, Math.PI * 2);
         ctx.stroke();
 
         // 3. Crisp obsidian pupil (compact so colored iris dominates!)
         ctx.fillStyle = '#0a0a0c';
         ctx.beginPath();
-        ctx.arc(ex + 0.25, ey, 0.95, 0, Math.PI * 2);
+        ctx.arc(ex + 0.2, ey, pupilR, 0, Math.PI * 2);
         ctx.fill();
 
         // 4. Primary specular catchlight
         ctx.fillStyle = '#ffffff';
         ctx.beginPath();
-        ctx.arc(ex + 0.85, ey - 0.85, 0.85, 0, Math.PI * 2);
+        ctx.arc(ex + 0.75 * rScale, ey - 0.75 * rScale, 0.8 * rScale, 0, Math.PI * 2);
         ctx.fill();
 
         // 5. Secondary soft bounce catchlight
         ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
         ctx.beginPath();
-        ctx.arc(ex - 0.45, ey + 0.75, 0.4, 0, Math.PI * 2);
+        ctx.arc(ex - 0.4 * rScale, ey + 0.65 * rScale, 0.38 * rScale, 0, Math.PI * 2);
         ctx.fill();
 
         // Starlight Diamond Sparkle in iris
         if (!isDaddy && eyeType === 'sparkle') {
           ctx.fillStyle = '#ffffff';
-          Sprites.drawStar(ctx, ex + 0.85, ey - 0.85, 1.5, 0.5, 4);
+          Sprites.drawStar(ctx, ex + 0.75 * rScale, ey - 0.75 * rScale, 1.4 * rScale, 0.45 * rScale, 4);
         }
       };
 
-      drawEye(3.0, headY - 1);
-      drawEye(8.2, headY - 1);
+      if (isDaddy) {
+        drawEye(2.0, headY - 1, 1.05);
+        drawEye(7.5, headY - 1, 1.05);
+      } else {
+        drawEye(-2.6, headY - 0.8, 0.95);
+        drawEye(3.6, headY - 0.8, 0.95);
+      }
 
       // Eyeliner & fine curved eyelashes for ladies
       if (!isDaddy) {
         ctx.strokeStyle = '#18181b';
-        ctx.lineWidth = 1.3;
+        ctx.lineWidth = 1.2;
+        // Left eye upper lash with wing
         ctx.beginPath();
-        ctx.arc(3.0, headY - 1.2, 3.4, 1.1 * Math.PI, 1.85 * Math.PI);
-        ctx.arc(8.2, headY - 1.2, 3.4, 1.1 * Math.PI, 1.85 * Math.PI);
+        ctx.arc(-2.6, headY - 1.0, 3.1, 1.1 * Math.PI, 1.85 * Math.PI);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(-5.2, headY - 1.2);
+        ctx.quadraticCurveTo(-6.1, headY - 2.6, -6.6, headY - 3.6);
         ctx.stroke();
 
-        ctx.lineWidth = 1;
+        // Right eye upper lash with wing
         ctx.beginPath();
-        ctx.moveTo(2.5, headY - 3.2);
-        ctx.lineTo(1.4, headY - 5.0);
-        ctx.moveTo(8.5, headY - 3.2);
-        ctx.lineTo(9.8, headY - 5.0);
+        ctx.arc(3.6, headY - 1.0, 3.1, 1.1 * Math.PI, 1.85 * Math.PI);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(6.2, headY - 1.2);
+        ctx.quadraticCurveTo(7.1, headY - 2.6, 7.6, headY - 3.6);
         ctx.stroke();
       } else {
         // Daddy eye crinkles & warm laugh lines
         ctx.strokeStyle = 'rgba(90, 40, 15, 0.45)';
         ctx.lineWidth = 0.9;
         ctx.beginPath();
-        ctx.moveTo(1.2, headY - 1.2);
-        ctx.lineTo(-0.8, headY - 2.2);
-        ctx.moveTo(1.2, headY - 0.2);
-        ctx.lineTo(-0.8, headY + 0.6);
-        ctx.moveTo(10.2, headY - 1.2);
-        ctx.lineTo(12.2, headY - 2.2);
-        ctx.moveTo(10.2, headY - 0.2);
-        ctx.lineTo(12.2, headY + 0.6);
+        ctx.moveTo(0.2, headY - 1.2);
+        ctx.lineTo(-1.8, headY - 2.2);
+        ctx.moveTo(0.2, headY - 0.2);
+        ctx.lineTo(-1.8, headY + 0.6);
+        ctx.moveTo(9.5, headY - 1.2);
+        ctx.lineTo(11.5, headY - 2.2);
+        ctx.moveTo(9.5, headY - 0.2);
+        ctx.lineTo(11.5, headY + 0.6);
         ctx.stroke();
       }
 
-      // Eyebrows (positioned cleanly above eyes)
+      // Eyebrows (positioned cleanly above each eye)
       if (isDaddy) {
         ctx.strokeStyle = '#2d1f18';
         ctx.lineWidth = 2.4;
         ctx.beginPath();
-        ctx.moveTo(0.8, headY - 4.5);
-        ctx.quadraticCurveTo(3.2, headY - 6.0, 5.5, headY - 4.8);
-        ctx.moveTo(6.5, headY - 4.8);
-        ctx.quadraticCurveTo(8.8, headY - 6.0, 11.2, headY - 4.5);
+        ctx.moveTo(0.2, headY - 4.5);
+        ctx.quadraticCurveTo(2.4, headY - 6.0, 4.8, headY - 4.8);
+        ctx.moveTo(5.8, headY - 4.8);
+        ctx.quadraticCurveTo(8.0, headY - 6.0, 10.4, headY - 4.5);
         ctx.stroke();
       } else {
         const browColor = player.customization?.hair || (charType === 'mommy' ? '#2e1c12' : '#7f4f24');
         ctx.strokeStyle = browColor;
-        ctx.lineWidth = 1.2;
+        ctx.lineWidth = 1.15;
         ctx.beginPath();
-        ctx.moveTo(1.0, headY - 4.5);
-        ctx.quadraticCurveTo(3.0, headY - 5.8, 5.2, headY - 4.8);
-        ctx.moveTo(6.6, headY - 4.8);
-        ctx.quadraticCurveTo(8.6, headY - 5.8, 10.8, headY - 4.5);
+        // Left eyebrow over left eye
+        ctx.moveTo(-5.0, headY - 4.5);
+        ctx.quadraticCurveTo(-2.8, headY - 5.8, -0.6, headY - 4.7);
+        // Right eyebrow over right eye
+        ctx.moveTo(1.4, headY - 4.7);
+        ctx.quadraticCurveTo(3.6, headY - 5.8, 5.8, headY - 4.5);
         ctx.stroke();
       }
     }
 
-    // Cheerful, expressive smile
-    ctx.strokeStyle = '#8d3e23';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.arc(5.5, headY + 3.2, isDaddy ? 4.5 : 3.2, 0.1 * Math.PI, 0.9 * Math.PI);
-    ctx.stroke();
-
-    // ALWAYS FOR DADDY: Textured Dad Mustache
+    // Smile & Lips
     if (isDaddy) {
+      // Cheerful dad smile
+      ctx.strokeStyle = '#8d3e23';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(4.8, headY + 3.2, 4.5, 0.1 * Math.PI, 0.9 * Math.PI);
+      ctx.stroke();
+
+      // ALWAYS FOR DADDY: Textured Dad Mustache
       ctx.fillStyle = '#3a2b22';
       ctx.beginPath();
-      ctx.ellipse(3, headY + 2.2, 5.2, 2.5, 0.15, 0, Math.PI * 2);
-      ctx.ellipse(8, headY + 2.2, 5.2, 2.5, -0.15, 0, Math.PI * 2);
+      ctx.ellipse(2.5, headY + 2.2, 5.2, 2.5, 0.15, 0, Math.PI * 2);
+      ctx.ellipse(7.5, headY + 2.2, 5.2, 2.5, -0.15, 0, Math.PI * 2);
       ctx.fill();
 
       // Mustache bristle highlights
       ctx.strokeStyle = '#5a4336';
       ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(3, headY + 2.2);
-      ctx.lineTo(0, headY + 3.5);
-      ctx.moveTo(8, headY + 2.2);
-      ctx.lineTo(11, headY + 3.5);
+      ctx.moveTo(2.5, headY + 2.2);
+      ctx.lineTo(-0.5, headY + 3.5);
+      ctx.moveTo(7.5, headY + 2.2);
+      ctx.lineTo(10.5, headY + 3.5);
+      ctx.stroke();
+    } else {
+      // Sweet feminine smile with subtle rose lower lip cushion
+      ctx.fillStyle = 'rgba(230, 75, 110, 0.32)';
+      ctx.beginPath();
+      ctx.ellipse(0.5, headY + 4.9, 1.8, 0.9, 0, 0, Math.PI);
+      ctx.fill();
+
+      // Delicate smile line with upturned corners
+      ctx.strokeStyle = '#9c3848';
+      ctx.lineWidth = 1.1;
+      ctx.beginPath();
+      ctx.moveTo(-1.8, headY + 3.9);
+      ctx.quadraticCurveTo(0.5, headY + 5.1, 2.8, headY + 3.9);
       ctx.stroke();
     }
 

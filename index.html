@@ -7,7 +7,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Adventure Hill Rescue | Super Arcade Game</title>
-  <link rel="stylesheet" href="style.css?v=20260908_5">
+  <link rel="stylesheet" href="style.css?v=20260908_6">
 </head>
 <body>
   <div class="game-wrapper">
@@ -32,152 +32,170 @@
     <div id="canvas-container">
       <canvas id="gameCanvas"></canvas>
 
-      <!-- START / CHARACTER SELECT MODAL (FANCY OREGON THEMED) -->
-      <div id="start-screen" class="modal-overlay">
-        <div class="modal-content fancy-oregon-modal">
-          <div class="modal-badge">🌲 OREGON WOODS & ALPINE LAKES 🌊</div>
-          <h2 class="modal-title">Adventure Hill Rescue!</h2>
-          <p class="modal-subtitle">Pick and customize your miniature hero to explore the wild Oregon forest!</p>
+      <!-- START / CHARACTER SELECT SCREEN (UNRAVEL-INSPIRED OREGON FOREST SCENE) -->
+      <div id="start-screen" class="modal-overlay home-scene-screen">
+        <div class="home-scene-wrapper">
+          <!-- Atmospheric Header floating over the forest canopy -->
+          <div class="home-scene-header">
+            <div class="modal-badge">🌲 OREGON WOODS & ALPINE CREEK 🌊</div>
+            <h2 class="home-scene-title">Adventure Hill Rescue!</h2>
+            <p class="home-scene-subtitle">A tiny miniature expedition in the Pacific Northwest wilderness</p>
+          </div>
 
-          <!-- Character Cards -->
-          <div class="character-select-grid">
-            <div class="char-card selected" data-char="ilianna">
-              <div class="char-icon">👑</div>
-              <div class="char-name">Ilianna</div>
-              <div class="char-role">Princess Hero</div>
+          <!-- Main Scenic Interactive Area (3-Column Layout) -->
+          <div class="home-scene-body">
+            <!-- Left Glass Panel: Character Select & Colors -->
+            <div class="home-glass-panel home-panel-left">
+              <div class="panel-section-title">🏕️ Choose Hero</div>
+              <div class="character-select-grid">
+                <div class="char-card selected" data-char="ilianna">
+                  <div class="char-icon">👑</div>
+                  <div class="char-info">
+                    <div class="char-name">Ilianna</div>
+                    <div class="char-role">Princess Hero</div>
+                  </div>
+                </div>
+                <div class="char-card" data-char="ava">
+                  <div class="char-icon">🎀</div>
+                  <div class="char-info">
+                    <div class="char-name">Ava</div>
+                    <div class="char-role">Star Explorer</div>
+                  </div>
+                </div>
+                <div class="char-card" data-char="mommy">
+                  <div class="char-icon">💖</div>
+                  <div class="char-info">
+                    <div class="char-name">Mommy</div>
+                    <div class="char-role">Super Mom</div>
+                  </div>
+                </div>
+                <div class="char-card" data-char="daddy">
+                  <div class="char-icon">💨</div>
+                  <div class="char-info">
+                    <div class="char-name">Daddy</div>
+                    <div class="char-role">Toot Master!</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Outfit Color Selection -->
+              <div class="customizer-row home-color-row">
+                <span class="customizer-label">🎨 Color:</span>
+                <div class="palette-group">
+                  <div class="color-swatch" style="background: #e63946;" data-color="#e63946" title="Red"></div>
+                  <div class="color-swatch active" style="background: #ff69b4;" data-color="#ff69b4" title="Pink"></div>
+                  <div class="color-swatch" style="background: #38bdf8;" data-color="#38bdf8" title="Light Blue"></div>
+                  <div class="color-swatch" style="background: #1d4ed8;" data-color="#1d4ed8" title="Blue"></div>
+                  <div class="color-swatch" style="background: #18181b;" data-color="#18181b" title="Black"></div>
+                  <div class="color-swatch" style="background: #71717a;" data-color="#71717a" title="Gray"></div>
+                </div>
+              </div>
             </div>
-            <div class="char-card" data-char="ava">
-              <div class="char-icon">🎀</div>
-              <div class="char-name">Ava</div>
-              <div class="char-role">Star Explorer</div>
+
+            <!-- Center Stage: The Miniature Hero Perched on Oregon Creek Rock -->
+            <div class="home-mini-hero-podium">
+              <div class="hero-preview-stage" id="hero-preview-stage" title="Click tiny hero for a happy jump!">
+                <canvas id="hero-preview-canvas" width="220" height="220"></canvas>
+              </div>
+              <div class="hero-preview-details">
+                <div class="hero-preview-header">
+                  <span class="hero-name-badge" id="preview-char-name">Ilianna</span>
+                  <span class="hero-status-tag" id="preview-char-role">Brave Princess</span>
+                </div>
+                <div class="hero-style-summary" id="preview-style-summary">
+                  Classic Tiara &bull; Adventurer Tunic &bull; Deep Sapphire Eyes
+                </div>
+                <div class="hero-preview-hint">✨ Click tiny hero to celebrate! ✨</div>
+              </div>
             </div>
-            <div class="char-card" data-char="mommy">
-              <div class="char-icon">💖</div>
-              <div class="char-name">Mommy</div>
-              <div class="char-role">Super Mom</div>
-            </div>
-            <div class="char-card" data-char="daddy">
-              <div class="char-icon">💨</div>
-              <div class="char-name">Daddy</div>
-              <div class="char-role">Toot Master!</div>
+
+            <!-- Right Glass Panel: Customization Options (Hair, Clothing, Eyes) -->
+            <div class="home-glass-panel home-panel-right customizer-panel">
+              <div class="panel-section-title">✨ Hero Styling</div>
+              <!-- LADIES CUSTOMIZER OPTIONS (Ilianna, Ava, Mommy) -->
+              <div id="ladies-options">
+                <!-- Hairstyle Options -->
+                <div class="customizer-row">
+                  <span class="customizer-label">💇 Hair:</span>
+                  <div class="option-pill-group" id="hair-style-group">
+                    <button class="opt-pill active" data-style="classic">Classic</button>
+                    <button class="opt-pill" data-style="long_curls">Spiral Curls</button>
+                    <button class="opt-pill" data-style="braids">Twin Braids</button>
+                    <button class="opt-pill" data-style="ponytail">High Ponytail</button>
+                    <button class="opt-pill" data-style="short_bob">Short Bob</button>
+                  </div>
+                </div>
+
+                <!-- Clothing / Outfit Style -->
+                <div class="customizer-row">
+                  <span class="customizer-label">👗 Outfit:</span>
+                  <div class="option-pill-group" id="clothing-style-group">
+                    <button class="opt-pill active" data-clothing="adventurer">Adventurer</button>
+                    <button class="opt-pill" data-clothing="royal_tunic">Royal Velvet</button>
+                    <button class="opt-pill" data-clothing="explorer_vest">Explorer Vest</button>
+                    <button class="opt-pill" data-clothing="forest_cloak">Forest Cloak</button>
+                  </div>
+                </div>
+
+                <!-- Eye Type & Realism -->
+                <div class="customizer-row">
+                  <span class="customizer-label">👁️ Eyes:</span>
+                  <div class="option-pill-group" id="eye-type-group">
+                    <button class="opt-pill active" data-eyes="sapphire">Sapphire</button>
+                    <button class="opt-pill" data-eyes="emerald">Emerald</button>
+                    <button class="opt-pill" data-eyes="amber">Amber</button>
+                    <button class="opt-pill" data-eyes="violet">Violet</button>
+                    <button class="opt-pill" data-eyes="sparkle">Sparkle</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- DADDY CUSTOMIZER OPTIONS (All-Bald Hairstyles & Boy Clothes!) -->
+              <div id="daddy-options" style="display: none;">
+                <!-- All Bald Hairstyles for Daddy -->
+                <div class="customizer-row">
+                  <span class="customizer-label">🥚 Bald Dome:</span>
+                  <div class="option-pill-group" id="daddy-hair-style-group">
+                    <button class="opt-pill active" data-style="shiny_bald">Shiny Bald ✨</button>
+                    <button class="opt-pill" data-style="side_tufts">Side Tufts 👴</button>
+                    <button class="opt-pill" data-style="stubble_dome">Stubble Buzz 🪒</button>
+                    <button class="opt-pill" data-style="comb_over">Dad Comb-Over 💈</button>
+                    <button class="opt-pill" data-style="clean_shave">Clean Shave 🥚</button>
+                  </div>
+                </div>
+
+                <!-- Boy Clothes for Daddy -->
+                <div class="customizer-row">
+                  <span class="customizer-label">👖 Clothes:</span>
+                  <div class="option-pill-group" id="daddy-clothing-group">
+                    <button class="opt-pill active" data-clothing="blue_jeans">Blue Jeans 👖</button>
+                    <button class="opt-pill" data-clothing="sweat_pants">Sweat Pants 🏃</button>
+                    <button class="opt-pill" data-clothing="cargo_pants">Cargo Pants 🩳</button>
+                    <button class="opt-pill" data-clothing="work_flannel">Work Flannel 🪓</button>
+                  </div>
+                </div>
+
+                <!-- Dad Eyes -->
+                <div class="customizer-row">
+                  <span class="customizer-label">👁️ Dad Eyes:</span>
+                  <div class="option-pill-group" id="daddy-eye-type-group">
+                    <button class="opt-pill active" data-eyes="dad_brown">Warm Brown</button>
+                    <button class="opt-pill" data-eyes="dad_hazel">Hazel</button>
+                    <button class="opt-pill" data-eyes="dad_blue">Sky Blue</button>
+                    <button class="opt-pill" data-eyes="dad_gray">Dad Gray</button>
+                    <button class="opt-pill" data-eyes="dad_coffee">Dark Coffee</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Live Character Preview Showcase -->
-          <div class="hero-preview-container">
-            <div class="hero-preview-stage" id="hero-preview-stage" title="Click me for a happy jump!">
-              <canvas id="hero-preview-canvas" width="220" height="220"></canvas>
+          <!-- Footer: Action Button and Subtle Hint -->
+          <div class="home-scene-footer">
+            <button id="btn-start" class="btn-primary btn-unravel-start">🌿 START RESCUE ADVENTURE! 🌿</button>
+            <div class="instructions-banner unravel-instructions">
+              🐾 Explore Oregon cedar logs, ladders & mossy mountain trails &bull; 🔨 Smash rolling barrels &bull; 💨 Daddy toots on jump!
             </div>
-            <div class="hero-preview-details">
-              <div class="hero-preview-header">
-                <span class="hero-name-badge" id="preview-char-name">Ilianna</span>
-                <span class="hero-status-tag" id="preview-char-role">Brave Princess</span>
-              </div>
-              <div class="hero-style-summary" id="preview-style-summary">
-                Classic Tiara &bull; Adventurer Outfit &bull; Deep Sapphire Eyes
-              </div>
-              <div class="hero-preview-hint">✨ Click hero to celebrate! ✨</div>
-            </div>
-          </div>
-
-          <!-- Customization Panel: Hairstyle, Outfit, Eyes & Colors -->
-          <div class="customizer-panel">
-            <!-- Outfit Color Selection: Red, Pink, Light Blue, Blue, Black, Gray (Shared) -->
-            <div class="customizer-row">
-              <span class="customizer-label">🎨 Color:</span>
-              <div class="palette-group">
-                <div class="color-swatch" style="background: #e63946;" data-color="#e63946" title="Red"></div>
-                <div class="color-swatch active" style="background: #ff69b4;" data-color="#ff69b4" title="Pink"></div>
-                <div class="color-swatch" style="background: #38bdf8;" data-color="#38bdf8" title="Light Blue"></div>
-                <div class="color-swatch" style="background: #1d4ed8;" data-color="#1d4ed8" title="Blue"></div>
-                <div class="color-swatch" style="background: #18181b;" data-color="#18181b" title="Black"></div>
-                <div class="color-swatch" style="background: #71717a;" data-color="#71717a" title="Gray"></div>
-              </div>
-            </div>
-
-            <!-- LADIES CUSTOMIZER OPTIONS (Ilianna, Ava, Mommy) -->
-            <div id="ladies-options">
-              <!-- Hairstyle Options -->
-              <div class="customizer-row">
-                <span class="customizer-label">💇 Hair:</span>
-                <div class="option-pill-group" id="hair-style-group">
-                  <button class="opt-pill active" data-style="classic">Classic</button>
-                  <button class="opt-pill" data-style="long_curls">Long Curls</button>
-                  <button class="opt-pill" data-style="braids">Twin Braids</button>
-                  <button class="opt-pill" data-style="ponytail">High Ponytail</button>
-                  <button class="opt-pill" data-style="short_bob">Short Bob</button>
-                </div>
-              </div>
-
-              <!-- Clothing / Outfit Style -->
-              <div class="customizer-row">
-                <span class="customizer-label">👗 Clothing:</span>
-                <div class="option-pill-group" id="clothing-style-group">
-                  <button class="opt-pill active" data-clothing="adventurer">Adventurer</button>
-                  <button class="opt-pill" data-clothing="royal_tunic">Royal Tunic</button>
-                  <button class="opt-pill" data-clothing="explorer_vest">Explorer Vest</button>
-                  <button class="opt-pill" data-clothing="forest_cloak">Forest Cloak</button>
-                </div>
-              </div>
-
-              <!-- Eye Type & Realism -->
-              <div class="customizer-row">
-                <span class="customizer-label">👁️ Eyes:</span>
-                <div class="option-pill-group" id="eye-type-group">
-                  <button class="opt-pill active" data-eyes="sapphire">Deep Sapphire</button>
-                  <button class="opt-pill" data-eyes="emerald">Forest Emerald</button>
-                  <button class="opt-pill" data-eyes="amber">Warm Amber</button>
-                  <button class="opt-pill" data-eyes="violet">Mystic Violet</button>
-                  <button class="opt-pill" data-eyes="sparkle">Starlight Sparkle</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- DADDY CUSTOMIZER OPTIONS (All-Bald Hairstyles & Boy Clothes!) -->
-            <div id="daddy-options" style="display: none;">
-              <!-- All Bald Hairstyles for Daddy -->
-              <div class="customizer-row">
-                <span class="customizer-label">🥚 Bald Dome:</span>
-                <div class="option-pill-group" id="daddy-hair-style-group">
-                  <button class="opt-pill active" data-style="shiny_bald">Shiny Bald ✨</button>
-                  <button class="opt-pill" data-style="side_tufts">Side Tufts 👴</button>
-                  <button class="opt-pill" data-style="stubble_dome">Stubble Buzz 🪒</button>
-                  <button class="opt-pill" data-style="comb_over">Dad Comb-Over 💈</button>
-                  <button class="opt-pill" data-style="clean_shave">Clean Shave 🥚</button>
-                </div>
-              </div>
-
-              <!-- Boy Clothes for Daddy -->
-              <div class="customizer-row">
-                <span class="customizer-label">👖 Boy Clothes:</span>
-                <div class="option-pill-group" id="daddy-clothing-group">
-                  <button class="opt-pill active" data-clothing="blue_jeans">Blue Jeans & Polo 👖</button>
-                  <button class="opt-pill" data-clothing="sweat_pants">Sweat Pants & Tee 🏃</button>
-                  <button class="opt-pill" data-clothing="cargo_pants">Cargo Pants & Vest 🩳</button>
-                  <button class="opt-pill" data-clothing="work_flannel">Work Flannel & Jeans 🪓</button>
-                </div>
-              </div>
-
-              <!-- Dad Eyes (Friendly, rugged, no ladies lashes) -->
-              <div class="customizer-row">
-                <span class="customizer-label">👁️ Dad Eyes:</span>
-                <div class="option-pill-group" id="daddy-eye-type-group">
-                  <button class="opt-pill active" data-eyes="dad_brown">Warm Brown</button>
-                  <button class="opt-pill" data-eyes="dad_hazel">Friendly Hazel</button>
-                  <button class="opt-pill" data-eyes="dad_blue">Sky Blue</button>
-                  <button class="opt-pill" data-eyes="dad_gray">Tired Dad Gray</button>
-                  <button class="opt-pill" data-eyes="dad_coffee">Dark Coffee</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <button id="btn-start" class="btn-primary">START ADVENTURE! 🚀</button>
-
-          <div class="instructions-banner">
-            ✨ Jump over rolling barrels or grab the 🔨 <strong>HAMMER</strong> to SMASH them to pieces! ✨<br>
-            🌲 Climb realistic Oregon cedar twigs, rustic twine ladders & mountain trails to save the pet! (Daddy toots when he jumps! 💨)<br>
-            ⌨️ Press <kbd>H</kbd> or click <strong>🏡 Home</strong> anytime to return to this screen!
           </div>
         </div>
       </div>
@@ -234,9 +252,9 @@
   </div>
 
   <!-- Scripts with cache busters -->
-  <script src="audio.js?v=20260908_5"></script>
-  <script src="sprites.js?v=20260908_5"></script>
-  <script src="game.js?v=20260908_5"></script>
+  <script src="audio.js?v=20260908_6"></script>
+  <script src="sprites.js?v=20260908_6"></script>
+  <script src="game.js?v=20260908_6"></script>
 
   <script>
     // UI Interaction Glue
@@ -420,39 +438,67 @@
           const cx = w / 2;
           const cy = h / 2 + 6 * dpr;
 
-          // 1. Ambient Podium Radial Glow
-          const podGrad = ctx.createRadialGradient(cx, cy + 32 * dpr, 6 * dpr, cx, cy + 32 * dpr, 48 * dpr);
-          podGrad.addColorStop(0, 'rgba(116, 198, 157, 0.45)');
-          podGrad.addColorStop(0.6, 'rgba(45, 106, 79, 0.22)');
+          // 1. Ambient Creek Waters & Golden Sunbeam Glow
+          const podGrad = ctx.createRadialGradient(cx, cy + 30 * dpr, 6 * dpr, cx, cy + 30 * dpr, 52 * dpr);
+          podGrad.addColorStop(0, 'rgba(167, 243, 208, 0.35)');
+          podGrad.addColorStop(0.5, 'rgba(16, 185, 129, 0.15)');
           podGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
           ctx.fillStyle = podGrad;
           ctx.beginPath();
-          ctx.ellipse(cx, cy + 32 * dpr, 46 * dpr, 18 * dpr, 0, 0, Math.PI * 2);
+          ctx.ellipse(cx, cy + 30 * dpr, 50 * dpr, 20 * dpr, 0, 0, Math.PI * 2);
           ctx.fill();
 
-          // 2. Oregon Mossy Cedar Stepping-Stone Pedestal
-          ctx.fillStyle = '#1c130d'; // shadow
+          // 2. Oregon Mossy River Stone Pedestal with Water Droplets
+          ctx.fillStyle = 'rgba(10, 15, 12, 0.55)'; // Deep ambient shadow
           ctx.beginPath();
-          ctx.ellipse(cx, cy + 36 * dpr, 36 * dpr, 12 * dpr, 0, 0, Math.PI * 2);
+          ctx.ellipse(cx, cy + 34 * dpr, 40 * dpr, 14 * dpr, 0, 0, Math.PI * 2);
           ctx.fill();
 
-          // Wood slice top
-          const woodGrad = ctx.createLinearGradient(cx - 35 * dpr, cy + 28 * dpr, cx + 35 * dpr, cy + 36 * dpr);
-          woodGrad.addColorStop(0, '#5a3d28');
-          woodGrad.addColorStop(0.5, '#7f4f24');
-          woodGrad.addColorStop(1, '#3a2312');
-          ctx.fillStyle = woodGrad;
+          // Wet river stone top
+          const stoneGrad = ctx.createRadialGradient(cx - 12 * dpr, cy + 24 * dpr, 6 * dpr, cx, cy + 30 * dpr, 40 * dpr);
+          stoneGrad.addColorStop(0, '#6b7280');
+          stoneGrad.addColorStop(0.5, '#4b5563');
+          stoneGrad.addColorStop(1, '#1f2937');
+          ctx.fillStyle = stoneGrad;
           ctx.beginPath();
-          ctx.ellipse(cx, cy + 34 * dpr, 34 * dpr, 11 * dpr, 0, 0, Math.PI * 2);
+          ctx.ellipse(cx, cy + 30 * dpr, 38 * dpr, 13 * dpr, 0, 0, Math.PI * 2);
           ctx.fill();
 
-          // Emerald moss rim
-          ctx.strokeStyle = '#52b788';
-          ctx.lineWidth = 2 * dpr;
+          // Lush emerald river moss cushions on rock
+          ctx.fillStyle = '#059669';
           ctx.beginPath();
-          ctx.arc(cx - 10 * dpr, cy + 34 * dpr, 20 * dpr, Math.PI * 0.85, Math.PI * 1.45);
-          ctx.arc(cx + 10 * dpr, cy + 34 * dpr, 20 * dpr, Math.PI * 1.55, Math.PI * 2.15);
-          ctx.stroke();
+          ctx.ellipse(cx - 18 * dpr, cy + 29 * dpr, 10 * dpr, 6 * dpr, -0.2, 0, Math.PI * 2);
+          ctx.ellipse(cx + 19 * dpr, cy + 30 * dpr, 9 * dpr, 5 * dpr, 0.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#34d399';
+          ctx.beginPath();
+          ctx.arc(cx - 18 * dpr, cy + 27 * dpr, 3.5 * dpr, 0, Math.PI * 2);
+          ctx.arc(cx + 18 * dpr, cy + 28 * dpr, 3 * dpr, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Drifting golden forest pollen / spore motes (Unravel forest atmosphere)
+          if (!this.pollen) {
+            this.pollen = Array.from({ length: 14 }, () => ({
+              x: (Math.random() - 0.5) * 110,
+              y: Math.random() * 110 - 55,
+              r: Math.random() * 1.5 + 0.8,
+              vy: -Math.random() * 0.45 - 0.2,
+              vx: (Math.random() - 0.5) * 0.35,
+              alpha: Math.random() * 0.6 + 0.35
+            }));
+          }
+          for (const p of this.pollen) {
+            p.y += p.vy;
+            p.x += p.vx;
+            if (p.y < -65) {
+              p.y = 55;
+              p.x = (Math.random() - 0.5) * 110;
+            }
+            ctx.fillStyle = `rgba(255, 234, 115, ${p.alpha})`;
+            ctx.beginPath();
+            ctx.arc(cx + p.x * dpr, cy + p.y * dpr, p.r * dpr, 0, Math.PI * 2);
+            ctx.fill();
+          }
 
           // 3. Jump physics if clicked
           if (this.jumpTimer > 0) {
