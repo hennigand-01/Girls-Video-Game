@@ -94,8 +94,22 @@ const Sprites = {
       ctx.restore();
     }
 
+    // Determine pants color and styling
+    let activePantsColor = pantsColor;
+    if (isDaddy) {
+      if (clothingStyle === 'sweat_pants') {
+        activePantsColor = '#8e9aaf'; // Heather athletic gray sweatpants
+      } else if (clothingStyle === 'cargo_pants') {
+        activePantsColor = '#588157'; // Olive outdoor cargo pants
+      } else if (clothingStyle === 'work_flannel') {
+        activePantsColor = '#1d3557'; // Dark heavy work dungarees
+      } else {
+        activePantsColor = '#2b4c7e'; // Classic indigo blue jeans
+      }
+    }
+
     // --- LEGS & SHOES WITH ARTICULATION ---
-    ctx.fillStyle = pantsColor;
+    ctx.fillStyle = activePantsColor;
     const legW = isDaddy ? 8 : 6;
     const legH = 13;
 
@@ -114,8 +128,33 @@ const Sprites = {
       ctx.fillRect(1, h / 2 - legH, legW, legH);
     }
 
-    // Footwear: Detailed shoes / boots
-    ctx.fillStyle = player.springTimer > 0 ? '#ffea00' : (isDaddy ? '#f0f4f8' : '#ffffff');
+    // Boy pants details for Daddy
+    if (isDaddy) {
+      if (clothingStyle === 'blue_jeans' || !clothingStyle) {
+        // Gold contrast seam stitching on blue jeans
+        ctx.strokeStyle = '#e0a96d';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(-legW - 1, h / 2 - legH + 2);
+        ctx.lineTo(-legW - 1, h / 2 - 2);
+        ctx.moveTo(1 + legW, h / 2 - legH + 2);
+        ctx.lineTo(1 + legW, h / 2 - 2);
+        ctx.stroke();
+      } else if (clothingStyle === 'sweat_pants') {
+        // Elastic ribbed cuffs
+        ctx.fillStyle = '#6c757d';
+        ctx.fillRect(-legW - 1, h / 2 - 4, legW, 2);
+        ctx.fillRect(1, h / 2 - 4, legW, 2);
+      } else if (clothingStyle === 'cargo_pants') {
+        // Cargo flap pocket on sides
+        ctx.fillStyle = '#47624b';
+        ctx.fillRect(-legW - 2, h / 2 - legH + 4, 3, 5);
+        ctx.fillRect(legW, h / 2 - legH + 4, 3, 5);
+      }
+    }
+
+    // Footwear: Detailed shoes / boots (Daddy gets white dad sneakers)
+    ctx.fillStyle = player.springTimer > 0 ? '#ffea00' : (isDaddy ? '#f8f9fa' : '#ffffff');
     if (isClimbing) {
       const cLeg = Math.sin(player.animTimer * 12);
       ctx.fillRect(-legW - 3, h / 2 - 3 + (cLeg > 0 ? -4 : 2), legW + 2, 5);
@@ -128,8 +167,8 @@ const Sprites = {
       ctx.fillRect(1, h / 2 - 3, legW + 2, 5);
     }
 
-    // Shoe laces / buckle highlights
-    ctx.fillStyle = isDaddy ? '#3b7bd5' : (charType === 'ilianna' ? '#ffd700' : '#ff2a6d');
+    // Shoe laces / runner stripes
+    ctx.fillStyle = isDaddy ? '#1d4ed8' : (charType === 'ilianna' ? '#ffd700' : '#ff2a6d');
     ctx.fillRect(-legW - 1, h / 2 - 4 - yBob, 2, 2);
     ctx.fillRect(3, h / 2 - 4 - yBob, 2, 2);
 
@@ -168,81 +207,137 @@ const Sprites = {
       ctx.ellipse(3, bodyY + 11 + bellySpring, w * 0.48, 13, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Clothing Style Overlays for Daddy
-      if (clothingStyle === 'royal_tunic') {
-        // Royal velvet sheen & gold embroidery
-        ctx.strokeStyle = '#ffd700';
-        ctx.lineWidth = 1.6;
-        ctx.strokeRect(-w * 0.4, bodyY + 2, w * 0.8, h * 0.4);
-        // Royal diagonal sash
-        ctx.fillStyle = '#800f2f';
+      // BOY CLOTHES FOR DADDY (Blue Jeans & Polo, Sweat Pants & Tee, Cargo Pants & Vest, Work Flannel)
+      if (clothingStyle === 'sweat_pants') {
+        // Casual Athletic Sweatshirt & Cozy Tee in outfitColor
+        // Soft ribbed crewneck collar
+        ctx.fillStyle = '#ffffff';
         ctx.beginPath();
-        ctx.moveTo(-w * 0.35, bodyY + 2);
-        ctx.lineTo(-w * 0.15, bodyY + 2);
-        ctx.lineTo(w * 0.4, bodyY + h * 0.38);
-        ctx.lineTo(w * 0.2, bodyY + h * 0.38);
+        ctx.arc(0, bodyY + 3, 5, 0, Math.PI);
+        ctx.fill();
+
+        // Drawstring bow on elastic waistband
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.arc(-2.5, bodyY + h * 0.42, 2.2, 0, Math.PI * 2);
+        ctx.arc(2.5, bodyY + h * 0.42, 2.2, 0, Math.PI * 2);
+        ctx.moveTo(0, bodyY + h * 0.42);
+        ctx.lineTo(-2.5, bodyY + h * 0.42 + 6);
+        ctx.moveTo(0, bodyY + h * 0.42);
+        ctx.lineTo(2.5, bodyY + h * 0.42 + 6);
+        ctx.stroke();
+
+      } else if (clothingStyle === 'cargo_pants') {
+        // Outdoor Expedition Cargo Vest over Polo
+        ctx.fillStyle = '#4a5b48'; // Sturdy outdoor olive vest
+        ctx.beginPath();
+        ctx.roundRect(-w * 0.45, bodyY + 1, w * 0.38, h * 0.42, 3);
+        ctx.roundRect(w * 0.07, bodyY + 1, w * 0.38, h * 0.42, 3);
+        ctx.fill();
+
+        // Dual cargo pockets with snap flaps
+        ctx.fillStyle = '#374536';
+        ctx.fillRect(-w * 0.40, bodyY + 7, w * 0.28, 6);
+        ctx.fillRect(w * 0.12, bodyY + 7, w * 0.28, 6);
+        ctx.fillStyle = '#ffd700'; // brass snap buttons
+        ctx.beginPath();
+        ctx.arc(-w * 0.26, bodyY + 10, 1.2, 0, Math.PI * 2);
+        ctx.arc(w * 0.26, bodyY + 10, 1.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Heavy front zipper
+        ctx.strokeStyle = '#c68b59';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(0, bodyY + 1);
+        ctx.lineTo(0, bodyY + h * 0.42);
+        ctx.stroke();
+
+        // Polo collar underneath
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(-5, bodyY);
+        ctx.lineTo(0, bodyY + 5);
+        ctx.lineTo(5, bodyY);
         ctx.closePath();
         ctx.fill();
-      } else if (clothingStyle === 'explorer_vest') {
-        // Multi-pocket expedition vest over shirt
-        ctx.fillStyle = 'rgba(70, 80, 95, 0.45)';
+
+        // Heavy webbing outdoor belt
+        ctx.fillStyle = '#283618';
+        ctx.fillRect(-w * 0.38, bodyY + h * 0.42, w * 0.76, 4);
+        ctx.fillStyle = '#dda15e';
+        ctx.fillRect(-3, bodyY + h * 0.42 - 1, 6, 6);
+
+      } else if (clothingStyle === 'work_flannel') {
+        // Classic Oregon Lumberjack Buffalo Plaid Flannel Shirt!
+        ctx.save();
         ctx.beginPath();
-        ctx.roundRect(-w * 0.42, bodyY, w * 0.35, h * 0.42, 4);
-        ctx.roundRect(w * 0.07, bodyY, w * 0.35, h * 0.42, 4);
+        ctx.roundRect(-w * 0.44, bodyY, w * 0.88, h * 0.45, 10);
+        ctx.clip();
+        ctx.fillStyle = 'rgba(20, 20, 20, 0.45)';
+        for (let fx = -w * 0.44; fx < w * 0.44; fx += 6.5) {
+          ctx.fillRect(fx, bodyY, 3.2, h * 0.45);
+        }
+        for (let fy = bodyY; fy < bodyY + h * 0.45; fy += 6.5) {
+          ctx.fillRect(-w * 0.44, fy, w * 0.88, 3.2);
+        }
+        ctx.restore();
+
+        // Dual buttoned flannel chest pockets
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+        ctx.fillRect(-w * 0.36, bodyY + 5, w * 0.24, 6);
+        ctx.fillRect(w * 0.12, bodyY + 5, w * 0.24, 6);
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(-w * 0.24, bodyY + 8, 1, 0, Math.PI * 2);
+        ctx.arc(w * 0.24, bodyY + 8, 1, 0, Math.PI * 2);
         ctx.fill();
-        // Brass zipper teeth
-        ctx.strokeStyle = '#e5a93c';
-        ctx.lineWidth = 1.2;
+
+        // Flannel collar
+        ctx.fillStyle = '#2b2d42';
         ctx.beginPath();
-        ctx.moveTo(0, bodyY);
-        ctx.lineTo(0, bodyY + h * 0.38);
-        ctx.stroke();
-      } else if (clothingStyle === 'forest_cloak') {
-        // Oregon pine wool cowl over shoulders
-        ctx.fillStyle = '#2d6a4f';
-        ctx.beginPath();
-        ctx.ellipse(0, bodyY + 3, w * 0.46, 7, 0, 0, Math.PI * 2);
+        ctx.moveTo(-6, bodyY);
+        ctx.lineTo(-1, bodyY + 6);
+        ctx.lineTo(1, bodyY + 6);
+        ctx.lineTo(6, bodyY);
+        ctx.closePath();
         ctx.fill();
-        // Bronze leaf pin
-        ctx.fillStyle = '#cd7f32';
-        ctx.beginPath();
-        ctx.arc(-w * 0.22, bodyY + 5, 2.5, 0, Math.PI * 2);
-        ctx.fill();
+
+        // Heavy work belt & steel hammer loop
+        ctx.fillStyle = '#2c1810';
+        ctx.fillRect(-w * 0.4, bodyY + h * 0.41, w * 0.8, 5);
+        ctx.fillStyle = '#c08a3e';
+        ctx.fillRect(-4, bodyY + h * 0.41 - 1, 8, 7);
+        // Steel hammer loop on hip
+        ctx.strokeStyle = '#adb5bd';
+        ctx.lineWidth = 1.8;
+        ctx.strokeRect(w * 0.22, bodyY + h * 0.41, 4, 8);
+
       } else {
-        // Adventurer leather straps
-        ctx.strokeStyle = '#5a3d28';
-        ctx.lineWidth = 2.2;
+        // Classic Blue Jeans & Dad Polo (default)
+        // Dad polo collar
+        ctx.fillStyle = '#ffffff';
         ctx.beginPath();
-        ctx.moveTo(-w * 0.35, bodyY + 2);
-        ctx.lineTo(w * 0.25, bodyY + h * 0.38);
-        ctx.stroke();
-        ctx.fillStyle = '#ffd700';
-        ctx.beginPath();
-        ctx.arc(-w * 0.05, bodyY + 11, 2, 0, Math.PI * 2);
+        ctx.moveTo(-6, bodyY);
+        ctx.lineTo(0, bodyY + 7);
+        ctx.lineTo(6, bodyY);
+        ctx.closePath();
         ctx.fill();
+
+        // Placket & buttons stretched tight over the tummy
+        ctx.fillStyle = '#222222';
+        ctx.beginPath();
+        ctx.arc(0, bodyY + 10 + bellySpring * 0.5, 1.8, 0, Math.PI * 2);
+        ctx.arc(1, bodyY + 16 + bellySpring * 0.8, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Brown leather dad belt with golden buckle
+        ctx.fillStyle = '#3e2723';
+        ctx.fillRect(-w * 0.35, bodyY + h * 0.42, w * 0.7, 4);
+        ctx.fillStyle = '#ffd700';
+        ctx.fillRect(-3, bodyY + h * 0.42 - 1, 6, 6);
       }
-
-      // Dad polo collar
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.moveTo(-6, bodyY);
-      ctx.lineTo(0, bodyY + 7);
-      ctx.lineTo(6, bodyY);
-      ctx.closePath();
-      ctx.fill();
-
-      // Placket & buttons stretched tight over the tummy
-      ctx.fillStyle = '#222222';
-      ctx.beginPath();
-      ctx.arc(0, bodyY + 10 + bellySpring * 0.5, 1.8, 0, Math.PI * 2);
-      ctx.arc(1, bodyY + 16 + bellySpring * 0.8, 1.8, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Belt with golden buckle peeking underneath
-      ctx.fillStyle = '#3e2723';
-      ctx.fillRect(-w * 0.35, bodyY + h * 0.42, w * 0.7, 4);
-      ctx.fillStyle = '#ffd700';
-      ctx.fillRect(-3, bodyY + h * 0.42 - 1, 6, 6);
 
     } else {
       // ILIANNA, AVA, MOMMY: Detailed, tailored outfits with Hyper-Realistic Style Variations!
@@ -489,23 +584,44 @@ const Sprites = {
       ctx.stroke();
     } else {
       let eyeTones;
-      switch (eyeType) {
-        case 'emerald':
-          eyeTones = { limbal: '#081c14', outer: '#1b4332', inner: '#2d6a4f', highlight: '#74c69d', fleck: '#ffd166' };
-          break;
-        case 'amber':
-          eyeTones = { limbal: '#2b1604', outer: '#7f4f24', inner: '#b07d62', highlight: '#f4a261', fleck: '#ffe66d' };
-          break;
-        case 'violet':
-          eyeTones = { limbal: '#1e0038', outer: '#5a189a', inner: '#7b2cbf', highlight: '#c77dff', fleck: '#e0aaff' };
-          break;
-        case 'sparkle':
-          eyeTones = { limbal: '#002855', outer: '#0077b6', inner: '#00b4d8', highlight: '#90e0ef', fleck: '#ffffff' };
-          break;
-        case 'sapphire':
-        default:
-          eyeTones = { limbal: '#03045e', outer: '#023e8a', inner: '#0077b6', highlight: '#48cae4', fleck: '#caf0f8' };
-          break;
+      if (isDaddy) {
+        switch (eyeType) {
+          case 'dad_blue':
+            eyeTones = { limbal: '#0d223a', outer: '#1b4d89', inner: '#3f88c5', highlight: '#70b8ff', fleck: '#d0e8ff' };
+            break;
+          case 'dad_hazel':
+            eyeTones = { limbal: '#2b210e', outer: '#58431c', inner: '#8c6d31', highlight: '#c29b38', fleck: '#e0c870' };
+            break;
+          case 'dad_gray':
+            eyeTones = { limbal: '#1b2220', outer: '#3f4e48', inner: '#60726b', highlight: '#8fa59c', fleck: '#d3ded9' };
+            break;
+          case 'dad_coffee':
+            eyeTones = { limbal: '#190a00', outer: '#3a1803', inner: '#5e2a07', highlight: '#8c4815', fleck: '#c27d42' };
+            break;
+          case 'dad_brown':
+          default:
+            eyeTones = { limbal: '#211003', outer: '#452208', inner: '#6e3c11', highlight: '#9c5e1c', fleck: '#d99e52' };
+            break;
+        }
+      } else {
+        switch (eyeType) {
+          case 'emerald':
+            eyeTones = { limbal: '#081c14', outer: '#1b4332', inner: '#2d6a4f', highlight: '#74c69d', fleck: '#ffd166' };
+            break;
+          case 'amber':
+            eyeTones = { limbal: '#2b1604', outer: '#7f4f24', inner: '#b07d62', highlight: '#f4a261', fleck: '#ffe66d' };
+            break;
+          case 'violet':
+            eyeTones = { limbal: '#1e0038', outer: '#5a189a', inner: '#7b2cbf', highlight: '#c77dff', fleck: '#e0aaff' };
+            break;
+          case 'sparkle':
+            eyeTones = { limbal: '#002855', outer: '#0077b6', inner: '#00b4d8', highlight: '#90e0ef', fleck: '#ffffff' };
+            break;
+          case 'sapphire':
+          default:
+            eyeTones = { limbal: '#03045e', outer: '#023e8a', inner: '#0077b6', highlight: '#48cae4', fleck: '#caf0f8' };
+            break;
+        }
       }
 
       const drawEye = (ex, ey) => {
@@ -564,7 +680,7 @@ const Sprites = {
         ctx.arc(ex - 0.4, ey + 0.8, 0.45, 0, Math.PI * 2);
         ctx.fill();
 
-        if (eyeType === 'sparkle') {
+        if (!isDaddy && eyeType === 'sparkle') {
           ctx.fillStyle = '#ffffff';
           Sprites.drawStar(ctx, ex + 0.9, ey - 0.9, 1.4, 0.5, 4);
         }
@@ -573,7 +689,7 @@ const Sprites = {
       drawEye(3.2, headY - 1);
       drawEye(8.2, headY - 1);
 
-      // Curved eyeliner & eyelashes for non-daddy
+      // Curved eyeliner & eyelashes for ladies only (Daddy gets friendly laugh lines / crinkles)
       if (!isDaddy) {
         ctx.strokeStyle = '#18181b';
         ctx.lineWidth = 1.3;
@@ -589,18 +705,43 @@ const Sprites = {
         ctx.moveTo(8.5, headY - 3.2);
         ctx.lineTo(9.8, headY - 5.2);
         ctx.stroke();
+      } else {
+        // Daddy eye crinkles / warm laugh lines (friendly dad expression!)
+        ctx.strokeStyle = 'rgba(90, 40, 15, 0.42)';
+        ctx.lineWidth = 0.9;
+        ctx.beginPath();
+        ctx.moveTo(1.2, headY - 1.2);
+        ctx.lineTo(-0.8, headY - 2.2);
+        ctx.moveTo(1.2, headY - 0.2);
+        ctx.lineTo(-0.8, headY + 0.6);
+        ctx.moveTo(10.2, headY - 1.2);
+        ctx.lineTo(12.2, headY - 2.2);
+        ctx.moveTo(10.2, headY - 0.2);
+        ctx.lineTo(12.2, headY + 0.6);
+        ctx.stroke();
       }
 
-      // Feathered expressive eyebrows
-      const browColor = player.customization?.hair || (charType === 'mommy' ? '#2e1c12' : '#7f4f24');
-      ctx.strokeStyle = isDaddy ? '#3a2b22' : browColor;
-      ctx.lineWidth = isDaddy ? 1.8 : 1.2;
-      ctx.beginPath();
-      ctx.moveTo(1.2, headY - 4.5);
-      ctx.quadraticCurveTo(3.2, headY - 5.6, 5.2, headY - 4.8);
-      ctx.moveTo(6.8, headY - 4.8);
-      ctx.quadraticCurveTo(8.8, headY - 5.6, 10.8, headY - 4.5);
-      ctx.stroke();
+      // Eyebrows: Bushy, friendly dad brows vs. elegant arched feminine brows
+      if (isDaddy) {
+        ctx.strokeStyle = '#2d1f18';
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.moveTo(0.8, headY - 4.5);
+        ctx.quadraticCurveTo(3.2, headY - 6.2, 5.5, headY - 5.0);
+        ctx.moveTo(6.5, headY - 5.0);
+        ctx.quadraticCurveTo(8.8, headY - 6.2, 11.2, headY - 4.5);
+        ctx.stroke();
+      } else {
+        const browColor = player.customization?.hair || (charType === 'mommy' ? '#2e1c12' : '#7f4f24');
+        ctx.strokeStyle = browColor;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(1.2, headY - 4.5);
+        ctx.quadraticCurveTo(3.2, headY - 5.6, 5.2, headY - 4.8);
+        ctx.moveTo(6.8, headY - 4.8);
+        ctx.quadraticCurveTo(8.8, headY - 5.6, 10.8, headY - 4.5);
+        ctx.stroke();
+      }
     }
 
     // Cheerful, expressive smile
@@ -614,32 +755,135 @@ const Sprites = {
     const hairSway = (player.hairSway || 0) * 12;
     const hColor = player.customization?.hair || (charType === 'ilianna' ? '#e6a147' : (charType === 'ava' ? '#5c3826' : (charType === 'mommy' ? '#3a2312' : '#4a3b32')));
 
-    if (isDaddy && hairStyle === 'classic') {
-      // DADDY: SIGNATURE BALD DOME WITH SPECULAR GLEAM & MUSTACHE!
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
-      ctx.beginPath();
-      ctx.ellipse(-2, headY - 7.5, 5.5, 2.4, -0.4, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(4.5, headY - 8.5, 1.4, 0, Math.PI * 2);
-      ctx.fill();
+    if (isDaddy) {
+      // DADDY: 100% ALL-BALD BOY HAIRSTYLES!
+      const hairDark = '#3d2b1f';
 
-      // Comic sparkle twinkle
-      ctx.fillStyle = '#ffffff';
-      Sprites.drawStar(ctx, 3, headY - 9, 3, 1, 4);
+      if (hairStyle === 'side_tufts') {
+        // 1. SIDE TUFTS: Completely bald smooth dome on top with funny puffy side tufts flaring out above the ears!
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
+        ctx.beginPath();
+        ctx.ellipse(-1, headY - 8, 4.5, 2, -0.3, 0, Math.PI * 2);
+        ctx.fill();
 
-      // Side hair tufts around ears
-      ctx.fillStyle = '#4a3b32';
-      ctx.beginPath();
-      ctx.ellipse(-13, headY + 1, 3.5, 5.5, 0.2, 0, Math.PI * 2);
-      ctx.ellipse(13, headY + 1, 3.5, 5.5, -0.2, 0, Math.PI * 2);
-      ctx.fill();
+        // Fluffy, comical side hair tufts sticking out over ears
+        ctx.fillStyle = hairDark;
+        // Left side puffy tuft
+        ctx.beginPath();
+        ctx.arc(-13, headY - 2, 4, 0, Math.PI * 2);
+        ctx.arc(-15, headY + 2, 4.5, 0, Math.PI * 2);
+        ctx.arc(-12, headY + 5, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+        // Right side puffy tuft
+        ctx.beginPath();
+        ctx.arc(13, headY - 2, 4, 0, Math.PI * 2);
+        ctx.arc(15, headY + 2, 4.5, 0, Math.PI * 2);
+        ctx.arc(12, headY + 5, 3.5, 0, Math.PI * 2);
+        ctx.fill();
 
-      // Textured Dad Mustache
+      } else if (hairStyle === 'stubble_dome') {
+        // 2. STUBBLE BUZZ: Shaved head with 5 o'clock shadow buzz stubble
+        // Darker shadow ring around sides and back
+        ctx.fillStyle = 'rgba(60, 45, 35, 0.22)';
+        ctx.beginPath();
+        ctx.arc(0, headY, headR + 0.4, 0.15 * Math.PI, 0.85 * Math.PI, false);
+        ctx.arc(0, headY - 2, headR - 1.5, 0.85 * Math.PI, 0.15 * Math.PI, true);
+        ctx.closePath();
+        ctx.fill();
+
+        // Stipple micro-stubble dots
+        ctx.fillStyle = hairDark;
+        const stubbleOffsets = [
+          [-11, 0], [-10, 3], [-8, 6], [-5, 8], [5, 8], [8, 6], [10, 3], [11, 0],
+          [-12, -3], [-11, -6], [11, -6], [12, -3], [-9, -8], [9, -8]
+        ];
+        for (const [sx, sy] of stubbleOffsets) {
+          ctx.beginPath();
+          ctx.arc(sx, headY + sy, 0.8, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Subtle specular highlight on stubble dome
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+        ctx.beginPath();
+        ctx.ellipse(-2, headY - 7.5, 4.5, 1.8, -0.3, 0, Math.PI * 2);
+        ctx.fill();
+
+      } else if (hairStyle === 'comb_over') {
+        // 3. DAD COMB-OVER: Shiny bald scalp with desperate long hair strands combed across!
+        // Shiny dome highlight underneath
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+        ctx.beginPath();
+        ctx.ellipse(-1, headY - 7.5, 5, 2.2, -0.3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Hair origin on left side
+        ctx.fillStyle = hairDark;
+        ctx.beginPath();
+        ctx.ellipse(-12, headY + 1, 2.8, 4.5, 0.1, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 4 Desperate comb-over strands swooping across the shiny bald head to the right
+        ctx.strokeStyle = hairDark;
+        ctx.lineWidth = 1.4;
+        const sway = hairSway * 0.4;
+        for (let i = 0; i < 4; i++) {
+          ctx.beginPath();
+          ctx.moveTo(-11, headY - 1 + i * 2.2);
+          ctx.bezierCurveTo(
+            -4, headY - 11 - i * 0.8 + sway,
+            4, headY - 11 - i * 0.8 + sway,
+            11, headY - 2 + i * 2.4
+          );
+          ctx.stroke();
+        }
+
+      } else if (hairStyle === 'clean_shave') {
+        // 4. CLEAN SHAVE: 100% hairless, mirror-buffed chrome dome clean shave!
+        // Primary mirror specular shine
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+        ctx.beginPath();
+        ctx.ellipse(-2.5, headY - 7.8, 6, 2.6, -0.35, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Secondary rim specular shine
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+        ctx.beginPath();
+        ctx.arc(5.2, headY - 8.5, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Double gleam star
+        ctx.fillStyle = '#ffffff';
+        Sprites.drawStar(ctx, -2, headY - 8, 3.8, 1.2, 4);
+        Sprites.drawStar(ctx, 5.5, headY - 9, 2.2, 0.8, 4);
+
+      } else {
+        // 5. SHINY BALD (default): Smooth bald dome with comic sparkle twinkle & neat side tufts
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+        ctx.beginPath();
+        ctx.ellipse(-2, headY - 7.5, 5.5, 2.4, -0.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(4.5, headY - 8.5, 1.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Comic sparkle twinkle
+        ctx.fillStyle = '#ffffff';
+        Sprites.drawStar(ctx, 3, headY - 9, 3, 1, 4);
+
+        // Neat trimmed side hair tufts around ears
+        ctx.fillStyle = hairDark;
+        ctx.beginPath();
+        ctx.ellipse(-13, headY + 1, 3.5, 5.5, 0.2, 0, Math.PI * 2);
+        ctx.ellipse(13, headY + 1, 3.5, 5.5, -0.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // ALWAYS FOR DADDY: Textured Dad Mustache & Warm Smile!
       ctx.fillStyle = '#3a2b22';
       ctx.beginPath();
-      ctx.ellipse(3, headY + 2.2, 5, 2.4, 0.15, 0, Math.PI * 2);
-      ctx.ellipse(8, headY + 2.2, 5, 2.4, -0.15, 0, Math.PI * 2);
+      ctx.ellipse(3, headY + 2.2, 5.2, 2.5, 0.15, 0, Math.PI * 2);
+      ctx.ellipse(8, headY + 2.2, 5.2, 2.5, -0.15, 0, Math.PI * 2);
       ctx.fill();
 
       // Mustache bristle highlights

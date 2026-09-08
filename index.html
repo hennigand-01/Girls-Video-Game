@@ -62,9 +62,9 @@
 
           <!-- Customization Panel: Hairstyle, Outfit, Eyes & Colors -->
           <div class="customizer-panel">
-            <!-- Outfit Color Selection: Red, Pink, Light Blue, Blue, Black, Gray -->
+            <!-- Outfit Color Selection: Red, Pink, Light Blue, Blue, Black, Gray (Shared) -->
             <div class="customizer-row">
-              <span class="customizer-label">🎨 Outfit Color:</span>
+              <span class="customizer-label">🎨 Color:</span>
               <div class="palette-group">
                 <div class="color-swatch" style="background: #e63946;" data-color="#e63946" title="Red"></div>
                 <div class="color-swatch active" style="background: #ff69b4;" data-color="#ff69b4" title="Pink"></div>
@@ -75,38 +75,79 @@
               </div>
             </div>
 
-            <!-- Hairstyle Options -->
-            <div class="customizer-row">
-              <span class="customizer-label">💇 Hairstyle:</span>
-              <div class="option-pill-group" id="hair-style-group">
-                <button class="opt-pill active" data-style="classic">Classic</button>
-                <button class="opt-pill" data-style="long_curls">Long Curls</button>
-                <button class="opt-pill" data-style="braids">Twin Braids</button>
-                <button class="opt-pill" data-style="ponytail">High Ponytail</button>
-                <button class="opt-pill" data-style="short_bob">Short Bob</button>
+            <!-- LADIES CUSTOMIZER OPTIONS (Ilianna, Ava, Mommy) -->
+            <div id="ladies-options">
+              <!-- Hairstyle Options -->
+              <div class="customizer-row">
+                <span class="customizer-label">💇 Hair:</span>
+                <div class="option-pill-group" id="hair-style-group">
+                  <button class="opt-pill active" data-style="classic">Classic</button>
+                  <button class="opt-pill" data-style="long_curls">Long Curls</button>
+                  <button class="opt-pill" data-style="braids">Twin Braids</button>
+                  <button class="opt-pill" data-style="ponytail">High Ponytail</button>
+                  <button class="opt-pill" data-style="short_bob">Short Bob</button>
+                </div>
+              </div>
+
+              <!-- Clothing / Outfit Style -->
+              <div class="customizer-row">
+                <span class="customizer-label">👗 Clothing:</span>
+                <div class="option-pill-group" id="clothing-style-group">
+                  <button class="opt-pill active" data-clothing="adventurer">Adventurer</button>
+                  <button class="opt-pill" data-clothing="royal_tunic">Royal Tunic</button>
+                  <button class="opt-pill" data-clothing="explorer_vest">Explorer Vest</button>
+                  <button class="opt-pill" data-clothing="forest_cloak">Forest Cloak</button>
+                </div>
+              </div>
+
+              <!-- Eye Type & Realism -->
+              <div class="customizer-row">
+                <span class="customizer-label">👁️ Eyes:</span>
+                <div class="option-pill-group" id="eye-type-group">
+                  <button class="opt-pill active" data-eyes="sapphire">Deep Sapphire</button>
+                  <button class="opt-pill" data-eyes="emerald">Forest Emerald</button>
+                  <button class="opt-pill" data-eyes="amber">Warm Amber</button>
+                  <button class="opt-pill" data-eyes="violet">Mystic Violet</button>
+                  <button class="opt-pill" data-eyes="sparkle">Starlight Sparkle</button>
+                </div>
               </div>
             </div>
 
-            <!-- Clothing / Outfit Style -->
-            <div class="customizer-row">
-              <span class="customizer-label">👗 Clothing:</span>
-              <div class="option-pill-group" id="clothing-style-group">
-                <button class="opt-pill active" data-clothing="adventurer">Adventurer</button>
-                <button class="opt-pill" data-clothing="royal_tunic">Royal Tunic</button>
-                <button class="opt-pill" data-clothing="explorer_vest">Explorer Vest</button>
-                <button class="opt-pill" data-clothing="forest_cloak">Forest Cloak</button>
+            <!-- DADDY CUSTOMIZER OPTIONS (All-Bald Hairstyles & Boy Clothes!) -->
+            <div id="daddy-options" style="display: none;">
+              <!-- All Bald Hairstyles for Daddy -->
+              <div class="customizer-row">
+                <span class="customizer-label">🥚 Bald Dome:</span>
+                <div class="option-pill-group" id="daddy-hair-style-group">
+                  <button class="opt-pill active" data-style="shiny_bald">Shiny Bald ✨</button>
+                  <button class="opt-pill" data-style="side_tufts">Side Tufts 👴</button>
+                  <button class="opt-pill" data-style="stubble_dome">Stubble Buzz 🪒</button>
+                  <button class="opt-pill" data-style="comb_over">Dad Comb-Over 💈</button>
+                  <button class="opt-pill" data-style="clean_shave">Clean Shave 🥚</button>
+                </div>
               </div>
-            </div>
 
-            <!-- Eye Type & Realism -->
-            <div class="customizer-row">
-              <span class="customizer-label">👁️ Eyes:</span>
-              <div class="option-pill-group" id="eye-type-group">
-                <button class="opt-pill active" data-eyes="sapphire">Deep Sapphire</button>
-                <button class="opt-pill" data-eyes="emerald">Forest Emerald</button>
-                <button class="opt-pill" data-eyes="amber">Warm Amber</button>
-                <button class="opt-pill" data-eyes="violet">Mystic Violet</button>
-                <button class="opt-pill" data-eyes="sparkle">Starlight Sparkle</button>
+              <!-- Boy Clothes for Daddy -->
+              <div class="customizer-row">
+                <span class="customizer-label">👖 Boy Clothes:</span>
+                <div class="option-pill-group" id="daddy-clothing-group">
+                  <button class="opt-pill active" data-clothing="blue_jeans">Blue Jeans & Polo 👖</button>
+                  <button class="opt-pill" data-clothing="sweat_pants">Sweat Pants & Tee 🏃</button>
+                  <button class="opt-pill" data-clothing="cargo_pants">Cargo Pants & Vest 🩳</button>
+                  <button class="opt-pill" data-clothing="work_flannel">Work Flannel & Jeans 🪓</button>
+                </div>
+              </div>
+
+              <!-- Dad Eyes (Friendly, rugged, no ladies lashes) -->
+              <div class="customizer-row">
+                <span class="customizer-label">👁️ Dad Eyes:</span>
+                <div class="option-pill-group" id="daddy-eye-type-group">
+                  <button class="opt-pill active" data-eyes="dad_brown">Warm Brown</button>
+                  <button class="opt-pill" data-eyes="dad_hazel">Friendly Hazel</button>
+                  <button class="opt-pill" data-eyes="dad_blue">Sky Blue</button>
+                  <button class="opt-pill" data-eyes="dad_gray">Tired Dad Gray</button>
+                  <button class="opt-pill" data-eyes="dad_coffee">Dark Coffee</button>
+                </div>
               </div>
             </div>
           </div>
@@ -186,13 +227,56 @@
         card.addEventListener('click', () => {
           charCards.forEach(c => c.classList.remove('selected'));
           card.classList.add('selected');
+          const char = card.dataset.char;
           if (window.game) {
-            window.game.selectedChar = card.dataset.char;
+            window.game.selectedChar = char;
+            if (!window.game.customization) window.game.customization = {};
+          }
+
+          const ladiesOpts = document.getElementById('ladies-options');
+          const daddyOpts = document.getElementById('daddy-options');
+
+          if (char === 'daddy') {
+            if (ladiesOpts) ladiesOpts.style.display = 'none';
+            if (daddyOpts) daddyOpts.style.display = 'block';
+
+            if (window.game) {
+              const activeHair = document.querySelector('#daddy-hair-style-group .opt-pill.active')?.dataset.style || 'shiny_bald';
+              const activeCloth = document.querySelector('#daddy-clothing-group .opt-pill.active')?.dataset.clothing || 'blue_jeans';
+              const activeEyes = document.querySelector('#daddy-eye-type-group .opt-pill.active')?.dataset.eyes || 'dad_brown';
+              window.game.customization.hairStyle = activeHair;
+              window.game.customization.clothingStyle = activeCloth;
+              window.game.customization.eyeType = activeEyes;
+              if (window.game.player && window.game.player.customization) {
+                window.game.player.customization.type = 'daddy';
+                window.game.player.customization.hairStyle = activeHair;
+                window.game.player.customization.clothingStyle = activeCloth;
+                window.game.player.customization.eyeType = activeEyes;
+              }
+            }
+          } else {
+            if (ladiesOpts) ladiesOpts.style.display = 'block';
+            if (daddyOpts) daddyOpts.style.display = 'none';
+
+            if (window.game) {
+              const activeHair = document.querySelector('#hair-style-group .opt-pill.active')?.dataset.style || 'classic';
+              const activeCloth = document.querySelector('#clothing-style-group .opt-pill.active')?.dataset.clothing || 'adventurer';
+              const activeEyes = document.querySelector('#eye-type-group .opt-pill.active')?.dataset.eyes || 'sapphire';
+              window.game.customization.hairStyle = activeHair;
+              window.game.customization.clothingStyle = activeCloth;
+              window.game.customization.eyeType = activeEyes;
+              if (window.game.player && window.game.player.customization) {
+                window.game.player.customization.type = char;
+                window.game.player.customization.hairStyle = activeHair;
+                window.game.player.customization.clothingStyle = activeCloth;
+                window.game.player.customization.eyeType = activeEyes;
+              }
+            }
           }
         });
       });
 
-      // Outfit Color selection
+      // Outfit Color selection (Shared)
       const swatches = document.querySelectorAll('.color-swatch');
       swatches.forEach(swatch => {
         swatch.addEventListener('click', () => {
@@ -211,7 +295,7 @@
         });
       });
 
-      // Hairstyle Pill Selection
+      // Ladies Hairstyle Pill Selection
       const hairPills = document.querySelectorAll('#hair-style-group .opt-pill');
       hairPills.forEach(pill => {
         pill.addEventListener('click', () => {
@@ -228,7 +312,7 @@
         });
       });
 
-      // Clothing Pill Selection
+      // Ladies Clothing Pill Selection
       const clothingPills = document.querySelectorAll('#clothing-style-group .opt-pill');
       clothingPills.forEach(pill => {
         pill.addEventListener('click', () => {
@@ -245,11 +329,62 @@
         });
       });
 
-      // Eye Type Pill Selection
+      // Ladies Eye Type Pill Selection
       const eyePills = document.querySelectorAll('#eye-type-group .opt-pill');
       eyePills.forEach(pill => {
         pill.addEventListener('click', () => {
           eyePills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          const eyes = pill.dataset.eyes;
+          if (window.game) {
+            if (!window.game.customization) window.game.customization = {};
+            window.game.customization.eyeType = eyes;
+            if (window.game.player && window.game.player.customization) {
+              window.game.player.customization.eyeType = eyes;
+            }
+          }
+        });
+      });
+
+      // Daddy Bald Dome Pill Selection
+      const daddyHairPills = document.querySelectorAll('#daddy-hair-style-group .opt-pill');
+      daddyHairPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          daddyHairPills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          const style = pill.dataset.style;
+          if (window.game) {
+            if (!window.game.customization) window.game.customization = {};
+            window.game.customization.hairStyle = style;
+            if (window.game.player && window.game.player.customization) {
+              window.game.player.customization.hairStyle = style;
+            }
+          }
+        });
+      });
+
+      // Daddy Boy Clothes Pill Selection
+      const daddyClothPills = document.querySelectorAll('#daddy-clothing-group .opt-pill');
+      daddyClothPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          daddyClothPills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          const cloth = pill.dataset.clothing;
+          if (window.game) {
+            if (!window.game.customization) window.game.customization = {};
+            window.game.customization.clothingStyle = cloth;
+            if (window.game.player && window.game.player.customization) {
+              window.game.player.customization.clothingStyle = cloth;
+            }
+          }
+        });
+      });
+
+      // Daddy Eye Pill Selection
+      const daddyEyePills = document.querySelectorAll('#daddy-eye-type-group .opt-pill');
+      daddyEyePills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          daddyEyePills.forEach(p => p.classList.remove('active'));
           pill.classList.add('active');
           const eyes = pill.dataset.eyes;
           if (window.game) {
