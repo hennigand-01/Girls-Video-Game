@@ -711,39 +711,39 @@ const Sprites = {
       if (isDaddy) {
         switch (eyeType) {
           case 'dad_blue':
-            eyeTones = { rim: '#075985', outer: '#0284c7', core: '#38bdf8', highlight: '#bae6fd' };
+            eyeTones = { rim: '#0284c7', outer: '#0ea5e9', core: '#38bdf8', highlight: '#ffffff' };
             break;
           case 'dad_hazel':
-            eyeTones = { rim: '#1a2e05', outer: '#65a30d', core: '#a3e635', highlight: '#ecfccb' };
+            eyeTones = { rim: '#3f6212', outer: '#65a30d', core: '#84cc16', highlight: '#f7fee7' };
             break;
           case 'dad_gray':
-            eyeTones = { rim: '#0f172a', outer: '#475569', core: '#94a3b8', highlight: '#f8fafc' };
+            eyeTones = { rim: '#334155', outer: '#64748b', core: '#cbd5e1', highlight: '#ffffff' };
             break;
           case 'dad_coffee':
-            eyeTones = { rim: '#290e02', outer: '#78350f', core: '#d97706', highlight: '#ffedd5' };
+            eyeTones = { rim: '#451a03', outer: '#92400e', core: '#d97706', highlight: '#fef3c7' };
             break;
           case 'dad_brown':
           default:
-            eyeTones = { rim: '#451a03', outer: '#b45309', core: '#f59e0b', highlight: '#fde68a' };
+            eyeTones = { rim: '#451a03', outer: '#b45309', core: '#f59e0b', highlight: '#fef3c7' };
             break;
         }
       } else {
         switch (eyeType) {
           case 'emerald':
-            eyeTones = { rim: '#022c22', outer: '#059669', core: '#10b981', highlight: '#a7f3d0' };
+            eyeTones = { rim: '#064e3b', outer: '#059669', core: '#10e78c', highlight: '#ecfdf5' };
             break;
           case 'amber':
-            eyeTones = { rim: '#451a03', outer: '#d97706', core: '#f59e0b', highlight: '#fef08a' };
+            eyeTones = { rim: '#78350f', outer: '#d97706', core: '#ffb703', highlight: '#fffbeb' };
             break;
           case 'violet':
-            eyeTones = { rim: '#3b0764', outer: '#9333ea', core: '#c084fc', highlight: '#f3e8ff' };
+            eyeTones = { rim: '#581c87', outer: '#9333ea', core: '#d946ef', highlight: '#faf5ff' };
             break;
           case 'sparkle':
-            eyeTones = { rim: '#082f49', outer: '#0284c7', core: '#38bdf8', highlight: '#ffffff' };
+            eyeTones = { rim: '#0369a1', outer: '#0284c7', core: '#38bdf8', highlight: '#ffffff' };
             break;
           case 'sapphire':
           default:
-            eyeTones = { rim: '#03045e', outer: '#0077b6', core: '#00d4ff', highlight: '#caf0f8' };
+            eyeTones = { rim: '#075985', outer: '#0284c7', core: '#00e5ff', highlight: '#e0f2fe' };
             break;
         }
       }
@@ -752,48 +752,48 @@ const Sprites = {
         // 1. Crisp white almond sclera
         ctx.fillStyle = '#ffffff';
         ctx.beginPath();
-        ctx.arc(ex, ey, 3.4, 0, Math.PI * 2);
+        ctx.arc(ex, ey, 3.5, 0, Math.PI * 2);
         ctx.fill();
 
         // 2. Bold, luminous colored iris (large and vivid so color jumps out!)
         ctx.fillStyle = eyeTones.core;
         ctx.beginPath();
-        ctx.arc(ex + 0.2, ey, 2.6, 0, Math.PI * 2);
+        ctx.arc(ex + 0.2, ey, 2.7, 0, Math.PI * 2);
         ctx.fill();
 
         // Iris rich radial depth gradient
-        const irisGrad = ctx.createRadialGradient(ex + 0.2, ey, 0.4, ex + 0.2, ey, 2.6);
+        const irisGrad = ctx.createRadialGradient(ex + 0.2, ey, 0.3, ex + 0.2, ey, 2.7);
         irisGrad.addColorStop(0, eyeTones.highlight);
-        irisGrad.addColorStop(0.45, eyeTones.core);
+        irisGrad.addColorStop(0.4, eyeTones.core);
         irisGrad.addColorStop(1, eyeTones.outer);
         ctx.fillStyle = irisGrad;
         ctx.beginPath();
-        ctx.arc(ex + 0.2, ey, 2.6, 0, Math.PI * 2);
+        ctx.arc(ex + 0.2, ey, 2.7, 0, Math.PI * 2);
         ctx.fill();
 
         // Sharp dark limbal ring
         ctx.strokeStyle = eyeTones.rim;
-        ctx.lineWidth = 0.75;
+        ctx.lineWidth = 0.7;
         ctx.beginPath();
-        ctx.arc(ex + 0.2, ey, 2.6, 0, Math.PI * 2);
+        ctx.arc(ex + 0.2, ey, 2.7, 0, Math.PI * 2);
         ctx.stroke();
 
-        // 3. Crisp obsidian pupil
+        // 3. Crisp obsidian pupil (compact so colored iris dominates!)
         ctx.fillStyle = '#0a0a0c';
         ctx.beginPath();
-        ctx.arc(ex + 0.25, ey, 1.0, 0, Math.PI * 2);
+        ctx.arc(ex + 0.25, ey, 0.95, 0, Math.PI * 2);
         ctx.fill();
 
         // 4. Primary specular catchlight
         ctx.fillStyle = '#ffffff';
         ctx.beginPath();
-        ctx.arc(ex + 0.85, ey - 0.85, 0.9, 0, Math.PI * 2);
+        ctx.arc(ex + 0.85, ey - 0.85, 0.85, 0, Math.PI * 2);
         ctx.fill();
 
         // 5. Secondary soft bounce catchlight
         ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
         ctx.beginPath();
-        ctx.arc(ex - 0.45, ey + 0.75, 0.45, 0, Math.PI * 2);
+        ctx.arc(ex - 0.45, ey + 0.75, 0.4, 0, Math.PI * 2);
         ctx.fill();
 
         // Starlight Diamond Sparkle in iris
@@ -996,18 +996,7 @@ const Sprites = {
       }
 
     } else {
-      // LADIES FOREGROUND STYLING & ACCESSORIES
-      ctx.fillStyle = hColor;
-
-      // Forehead bangs (neatly framed on upper forehead, staying strictly above eyebrows at headY - 6.5)
-      ctx.beginPath();
-      ctx.moveTo(-9, headY - 8);
-      ctx.quadraticCurveTo(0, headY - 6.2, 8, headY - 8);
-      ctx.lineTo(8, headY - 12);
-      ctx.quadraticCurveTo(0, headY - 13.5, -9, headY - 12);
-      ctx.closePath();
-      ctx.fill();
-
+      // LADIES FOREGROUND STYLING & ACCESSORIES (Face & forehead remain 100% unobstructed!)
       // Hair crown sheen highlight
       ctx.strokeStyle = 'rgba(255, 245, 190, 0.45)';
       ctx.lineWidth = 1.8;
