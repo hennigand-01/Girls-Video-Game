@@ -7,7 +7,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Adventure Hill Rescue | Super Arcade Game</title>
-  <link rel="stylesheet" href="style.css?v=20260908_9">
+  <link rel="stylesheet" href="style.css?v=20260908_13">
 </head>
 <body>
   <div class="game-wrapper">
@@ -190,8 +190,16 @@
             </div>
           </div>
 
-          <!-- Footer: Action Button and Subtle Hint -->
+          <!-- Footer: Action Button and Level Selection -->
           <div class="home-scene-footer">
+            <div class="level-select-group" id="home-level-select">
+              <span class="level-select-label">🏔️ Choose Level:</span>
+              <button class="level-pill active" data-level="1">1: Woods 🐶</button>
+              <button class="level-pill" data-level="2">2: River 🐱</button>
+              <button class="level-pill" data-level="3">3: Pass 🐰</button>
+              <button class="level-pill" data-level="4">4: Canyon 🦌</button>
+              <button class="level-pill" data-level="5">5: Mt Hood 🐕</button>
+            </div>
             <button id="btn-start" class="btn-primary btn-unravel-start">🌿 START RESCUE ADVENTURE! 🌿</button>
             <div class="instructions-banner unravel-instructions">
               🐾 Explore Oregon cedar logs, ladders & mossy mountain trails &bull; 🔨 Smash rolling barrels &bull; 💨 Daddy toots on jump!
@@ -256,9 +264,9 @@
   </div>
 
   <!-- Scripts with cache busters -->
-  <script src="audio.js?v=20260908_12"></script>
-  <script src="sprites.js?v=20260908_12"></script>
-  <script src="game.js?v=20260908_12"></script>
+  <script src="audio.js?v=20260908_13"></script>
+  <script src="sprites.js?v=20260908_13"></script>
+  <script src="game.js?v=20260908_13"></script>
 
   <script>
     // UI Interaction Glue
@@ -810,6 +818,18 @@
         }
       });
 
+      // Level Selector Pills on Home Screen
+      let selectedStartLevel = 1;
+      const levelPills = document.querySelectorAll('#home-level-select .level-pill');
+      levelPills.forEach(pill => {
+        pill.addEventListener('click', (e) => {
+          e.stopPropagation();
+          levelPills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          selectedStartLevel = parseInt(pill.dataset.level || '1', 10);
+        });
+      });
+
       // Start Button
       const startBtn = document.getElementById('btn-start');
       if (startBtn) {
@@ -827,24 +847,27 @@
             window.soundEngine.init();
           }
           if (window.game) {
-            window.game.startGame(1);
+            window.game.startGame(selectedStartLevel);
           } else if (window.Game) {
             window.game = new window.Game();
-            window.game.startGame(1);
+            window.game.startGame(selectedStartLevel);
           }
         });
       }
 
-      // Next Level Button
-      const nextBtn = document.getElementById('btn-next-level');
-      if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
+      // HUD Level Badge click to cycle levels easily during play
+      const hudLevel = document.getElementById('hud-level');
+      if (hudLevel) {
+        hudLevel.style.cursor = 'pointer';
+        hudLevel.title = 'Click to switch levels!';
+        hudLevel.addEventListener('click', () => {
           if (window.game) {
-            const nextLvl = window.game.level < window.game.maxLevels ? window.game.level + 1 : 1;
+            const nextLvl = (window.game.level % window.game.maxLevels) + 1;
             window.game.startGame(nextLvl, { resume: true });
           }
         });
       }
+      // Note: btn-next-level is handled dynamically in game.js levelClear() to avoid double-advancement bugs
 
       // Restart Button
       const restartBtn = document.getElementById('btn-restart');
