@@ -217,12 +217,36 @@ class Game {
     this.loadLevel(this.level);
     this.state = 'PLAYING';
 
-    document.getElementById('start-screen').classList.add('hidden');
-    document.getElementById('game-over-screen').classList.add('hidden');
-    document.getElementById('win-screen').classList.add('hidden');
+    const startScreen = document.getElementById('start-screen');
+    const gameOverScreen = document.getElementById('game-over-screen');
+    const winScreen = document.getElementById('win-screen');
+
+    if (startScreen) {
+      startScreen.classList.add('hidden');
+      if (startScreen.style) {
+        if (startScreen.style.setProperty) startScreen.style.setProperty('display', 'none', 'important');
+        else startScreen.style.display = 'none';
+      }
+    }
+    if (gameOverScreen) {
+      gameOverScreen.classList.add('hidden');
+      if (gameOverScreen.style) {
+        if (gameOverScreen.style.setProperty) gameOverScreen.style.setProperty('display', 'none', 'important');
+        else gameOverScreen.style.display = 'none';
+      }
+    }
+    if (winScreen) {
+      winScreen.classList.add('hidden');
+      if (winScreen.style) {
+        if (winScreen.style.setProperty) winScreen.style.setProperty('display', 'none', 'important');
+        else winScreen.style.display = 'none';
+      }
+    }
 
     // Continue the song from where it left off between levels!
-    window.soundEngine.startMusic({ resume });
+    if (window.soundEngine) {
+      window.soundEngine.startMusic({ resume });
+    }
   }
 
   loadLevel(lvl) {
@@ -418,8 +442,12 @@ class Game {
     const dt = Math.min((timestamp - this.lastTime) / 1000, 0.05); // cap delta time
     this.lastTime = timestamp;
 
-    this.update(dt);
-    this.render();
+    try {
+      this.update(dt);
+      this.render();
+    } catch (err) {
+      console.error('Game loop error:', err);
+    }
 
     requestAnimationFrame((t) => this.loop(t));
   }
@@ -926,15 +954,29 @@ class Game {
       nextBtn.onclick = () => this.startGame(1, { resume: true });
     }
 
-    winScreen.classList.remove('hidden');
+    if (winScreen) {
+      winScreen.classList.remove('hidden');
+      if (winScreen.style) {
+        if (winScreen.style.removeProperty) winScreen.style.removeProperty('display');
+        else winScreen.style.display = '';
+      }
+    }
   }
 
   gameOver() {
     this.state = 'GAME_OVER';
     window.soundEngine.stopMusic();
 
-    document.getElementById('game-over-screen').classList.remove('hidden');
-    document.getElementById('final-score-text').innerText = `Final Score: ${this.score}`;
+    const overScreen = document.getElementById('game-over-screen');
+    if (overScreen) {
+      overScreen.classList.remove('hidden');
+      if (overScreen.style) {
+        if (overScreen.style.removeProperty) overScreen.style.removeProperty('display');
+        else overScreen.style.display = '';
+      }
+    }
+    const scoreText = document.getElementById('final-score-text');
+    if (scoreText) scoreText.innerText = `Final Score: ${this.score}`;
   }
 
   togglePause() {
@@ -962,9 +1004,27 @@ class Game {
     const startScreen = document.getElementById('start-screen');
     const winScreen = document.getElementById('win-screen');
     const overScreen = document.getElementById('game-over-screen');
-    if (startScreen) startScreen.classList.remove('hidden');
-    if (winScreen) winScreen.classList.add('hidden');
-    if (overScreen) overScreen.classList.add('hidden');
+    if (startScreen) {
+      startScreen.classList.remove('hidden');
+      if (startScreen.style) {
+        if (startScreen.style.removeProperty) startScreen.style.removeProperty('display');
+        else startScreen.style.display = '';
+      }
+    }
+    if (winScreen) {
+      winScreen.classList.add('hidden');
+      if (winScreen.style) {
+        if (winScreen.style.setProperty) winScreen.style.setProperty('display', 'none', 'important');
+        else winScreen.style.display = 'none';
+      }
+    }
+    if (overScreen) {
+      overScreen.classList.add('hidden');
+      if (overScreen.style) {
+        if (overScreen.style.setProperty) overScreen.style.setProperty('display', 'none', 'important');
+        else overScreen.style.display = 'none';
+      }
+    }
     this.updateHUD();
     if (window.heroPreview && typeof window.heroPreview.syncFromDOM === 'function') {
       window.heroPreview.syncFromDOM();
