@@ -966,6 +966,9 @@ class Game {
     if (winScreen) winScreen.classList.add('hidden');
     if (overScreen) overScreen.classList.add('hidden');
     this.updateHUD();
+    if (window.heroPreview && typeof window.heroPreview.syncFromDOM === 'function') {
+      window.heroPreview.syncFromDOM();
+    }
   }
 
   // --- PARTICLE GENERATORS ---

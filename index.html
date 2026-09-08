@@ -60,6 +60,23 @@
             </div>
           </div>
 
+          <!-- Live Character Preview Showcase -->
+          <div class="hero-preview-container">
+            <div class="hero-preview-stage" id="hero-preview-stage" title="Click me for a happy jump!">
+              <canvas id="hero-preview-canvas" width="220" height="220"></canvas>
+            </div>
+            <div class="hero-preview-details">
+              <div class="hero-preview-header">
+                <span class="hero-name-badge" id="preview-char-name">Ilianna</span>
+                <span class="hero-status-tag" id="preview-char-role">Brave Princess</span>
+              </div>
+              <div class="hero-style-summary" id="preview-style-summary">
+                Classic Tiara &bull; Adventurer Outfit &bull; Deep Sapphire Eyes
+              </div>
+              <div class="hero-preview-hint">✨ Click hero to celebrate! ✨</div>
+            </div>
+          </div>
+
           <!-- Customization Panel: Hairstyle, Outfit, Eyes & Colors -->
           <div class="customizer-panel">
             <!-- Outfit Color Selection: Red, Pink, Light Blue, Blue, Black, Gray (Shared) -->
@@ -220,7 +237,304 @@
 
   <script>
     // UI Interaction Glue
+    // UI Interaction Glue
     function initUI() {
+      // Live Hero Preview Controller
+      const heroPreview = {
+        canvas: null,
+        ctx: null,
+        char: 'ilianna',
+        outfit: '#ff69b4',
+        hairStyle: 'classic',
+        clothingStyle: 'adventurer',
+        eyeType: 'sapphire',
+        animTimer: 0,
+        jumpTimer: 0,
+        jumpVy: 0,
+        jumpY: 0,
+        toots: [],
+        sparkles: [],
+
+        init() {
+          this.canvas = document.getElementById('hero-preview-canvas');
+          if (!this.canvas) return;
+          this.ctx = this.canvas.getContext('2d');
+
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          this.canvas.width = 110 * dpr;
+          this.canvas.height = 110 * dpr;
+
+          // Click on hero preview to do a happy jump/toot!
+          const stage = document.getElementById('hero-preview-stage');
+          if (stage) {
+            stage.addEventListener('click', () => {
+              this.jumpTimer = 0.65;
+              this.jumpVy = -7.5;
+              if (window.soundEngine) {
+                if (this.char === 'daddy') {
+                  window.soundEngine.playToot();
+                  for (let i = 0; i < 6; i++) {
+                    this.toots.push({
+                      x: 6 + (Math.random() - 0.5) * 10,
+                      y: 12 + Math.random() * 8,
+                      vx: (Math.random() - 0.5) * 1.8,
+                      vy: -0.8 - Math.random() * 0.9,
+                      r: 5 + Math.random() * 4,
+                      life: 0.75,
+                      maxLife: 0.75
+                    });
+                  }
+                } else {
+                  window.soundEngine.playJump();
+                  for (let i = 0; i < 7; i++) {
+                    this.sparkles.push({
+                      x: (Math.random() - 0.5) * 22,
+                      y: -10 + (Math.random() - 0.5) * 18,
+                      vx: (Math.random() - 0.5) * 1.8,
+                      vy: -1.2 - Math.random() * 1.5,
+                      color: this.char === 'ilianna' ? '#ffd700' : (this.char === 'ava' ? '#ff69b4' : '#00f0ff'),
+                      r: 4 + Math.random() * 3,
+                      life: 0.65,
+                      maxLife: 0.65
+                    });
+                  }
+                }
+              }
+            });
+          }
+
+          this.syncFromDOM();
+          this.loop();
+        },
+
+        syncFromDOM() {
+          const activeCard = document.querySelector('.char-card.selected');
+          this.char = activeCard?.dataset.char || 'ilianna';
+
+          const activeSwatch = document.querySelector('.color-swatch.active');
+          this.outfit = activeSwatch?.dataset.color || '#ff69b4';
+
+          if (this.char === 'daddy') {
+            this.hairStyle = document.querySelector('#daddy-hair-style-group .opt-pill.active')?.dataset.style || 'shiny_bald';
+            this.clothingStyle = document.querySelector('#daddy-clothing-group .opt-pill.active')?.dataset.clothing || 'blue_jeans';
+            this.eyeType = document.querySelector('#daddy-eye-type-group .opt-pill.active')?.dataset.eyes || 'dad_brown';
+          } else {
+            this.hairStyle = document.querySelector('#hair-style-group .opt-pill.active')?.dataset.style || 'classic';
+            this.clothingStyle = document.querySelector('#clothing-style-group .opt-pill.active')?.dataset.clothing || 'adventurer';
+            this.eyeType = document.querySelector('#eye-type-group .opt-pill.active')?.dataset.eyes || 'sapphire';
+          }
+
+          this.updateLabels();
+        },
+
+        updateLabels() {
+          const nameEl = document.getElementById('preview-char-name');
+          const roleEl = document.getElementById('preview-char-role');
+          const summaryEl = document.getElementById('preview-style-summary');
+          if (!nameEl || !summaryEl) return;
+
+          const charMeta = {
+            ilianna: { name: 'Ilianna', role: 'Brave Princess' },
+            ava: { name: 'Ava', role: 'Animal Whisperer' },
+            mommy: { name: 'Mommy', role: 'Super Mom' },
+            daddy: { name: 'Daddy', role: 'Toot Master! 💨' }
+          };
+
+          const hairLabels = {
+            classic: (this.char === 'ilianna' ? 'Classic Tiara' : (this.char === 'ava' ? 'Classic Braids' : 'Classic Waves')),
+            long_curls: 'Long Curls',
+            braids: 'Twin Braids',
+            ponytail: 'High Ponytail',
+            short_bob: 'Short Bob',
+            shiny_bald: 'Shiny Bald ✨',
+            side_tufts: 'Side Tufts 👴',
+            stubble_dome: 'Stubble Buzz 🪒',
+            comb_over: 'Dad Comb-Over 💈',
+            clean_shave: 'Clean Shave 🥚'
+          };
+
+          const clothingLabels = {
+            adventurer: 'Adventurer Tunic',
+            royal_tunic: 'Royal Velvet Tunic',
+            explorer_vest: 'Explorer Vest',
+            forest_cloak: 'Oregon Forest Cloak',
+            blue_jeans: 'Blue Jeans & Polo 👖',
+            sweat_pants: 'Sweat Pants & Tee 🏃',
+            cargo_pants: 'Cargo Pants & Vest 🩳',
+            work_flannel: 'Work Flannel & Jeans 🪓'
+          };
+
+          const eyeLabels = {
+            sapphire: 'Deep Sapphire 👁️',
+            emerald: 'Forest Emerald 👁️',
+            amber: 'Warm Amber 👁️',
+            violet: 'Mystic Violet 👁️',
+            sparkle: 'Starlight Sparkle ✨',
+            dad_brown: 'Warm Brown 🪵',
+            dad_hazel: 'Friendly Hazel 🌰',
+            dad_blue: 'Sky Blue 🌊',
+            dad_gray: 'Tired Dad Gray 🪨',
+            dad_coffee: 'Dark Coffee ☕'
+          };
+
+          const colorNames = {
+            '#e63946': 'Red',
+            '#ff69b4': 'Pink',
+            '#38bdf8': 'Light Blue',
+            '#1d4ed8': 'Blue',
+            '#18181b': 'Black',
+            '#71717a': 'Gray'
+          };
+
+          const cMeta = charMeta[this.char] || { name: this.char, role: 'Hero' };
+          nameEl.innerText = cMeta.name;
+          if (roleEl) roleEl.innerText = cMeta.role;
+
+          const hName = hairLabels[this.hairStyle] || this.hairStyle;
+          const cName = clothingLabels[this.clothingStyle] || this.clothingStyle;
+          const eName = eyeLabels[this.eyeType] || this.eyeType;
+          const colName = colorNames[this.outfit] || '';
+
+          summaryEl.innerHTML = `<strong>${colName}</strong> &bull; ${hName} &bull; ${cName} &bull; ${eName}`;
+        },
+
+        loop() {
+          this.render();
+          requestAnimationFrame(() => this.loop());
+        },
+
+        render() {
+          if (!this.ctx || !this.canvas) return;
+          const ctx = this.ctx;
+          const w = this.canvas.width;
+          const h = this.canvas.height;
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          const t = performance.now() / 1000;
+          this.animTimer = t;
+
+          ctx.clearRect(0, 0, w, h);
+
+          const cx = w / 2;
+          const cy = h / 2 + 6 * dpr;
+
+          // 1. Ambient Podium Radial Glow
+          const podGrad = ctx.createRadialGradient(cx, cy + 32 * dpr, 6 * dpr, cx, cy + 32 * dpr, 48 * dpr);
+          podGrad.addColorStop(0, 'rgba(116, 198, 157, 0.45)');
+          podGrad.addColorStop(0.6, 'rgba(45, 106, 79, 0.22)');
+          podGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          ctx.fillStyle = podGrad;
+          ctx.beginPath();
+          ctx.ellipse(cx, cy + 32 * dpr, 46 * dpr, 18 * dpr, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // 2. Oregon Mossy Cedar Stepping-Stone Pedestal
+          ctx.fillStyle = '#1c130d'; // shadow
+          ctx.beginPath();
+          ctx.ellipse(cx, cy + 36 * dpr, 36 * dpr, 12 * dpr, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Wood slice top
+          const woodGrad = ctx.createLinearGradient(cx - 35 * dpr, cy + 28 * dpr, cx + 35 * dpr, cy + 36 * dpr);
+          woodGrad.addColorStop(0, '#5a3d28');
+          woodGrad.addColorStop(0.5, '#7f4f24');
+          woodGrad.addColorStop(1, '#3a2312');
+          ctx.fillStyle = woodGrad;
+          ctx.beginPath();
+          ctx.ellipse(cx, cy + 34 * dpr, 34 * dpr, 11 * dpr, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Emerald moss rim
+          ctx.strokeStyle = '#52b788';
+          ctx.lineWidth = 2 * dpr;
+          ctx.beginPath();
+          ctx.arc(cx - 10 * dpr, cy + 34 * dpr, 20 * dpr, Math.PI * 0.85, Math.PI * 1.45);
+          ctx.arc(cx + 10 * dpr, cy + 34 * dpr, 20 * dpr, Math.PI * 1.55, Math.PI * 2.15);
+          ctx.stroke();
+
+          // 3. Jump physics if clicked
+          if (this.jumpTimer > 0) {
+            this.jumpTimer -= 0.016;
+            this.jumpY += this.jumpVy;
+            this.jumpVy += 0.55;
+            if (this.jumpY > 0) {
+              this.jumpY = 0;
+              this.jumpVy = 0;
+            }
+          } else {
+            this.jumpY = 0;
+          }
+
+          // Idle breathing & natural blinking
+          const breath = Math.sin(t * 2.8) * 1.2 * dpr;
+          const blinkCycle = (t * 0.6) % 3.2;
+          const isBlinking = blinkCycle > 3.05;
+          const hairSway = Math.sin(t * 2.2) * 0.15;
+          const bellySpring = this.char === 'daddy' ? Math.sin(t * 3.5) * 1.2 : 0;
+
+          // 4. Draw Hero at 2.25x scale
+          ctx.save();
+          ctx.translate(cx, cy + this.jumpY * dpr + breath);
+          ctx.scale(dpr * 2.25, dpr * 2.25);
+
+          if (typeof Sprites !== 'undefined' && Sprites.drawPlayer) {
+            Sprites.drawPlayer(ctx, 0, 0, 20, 30, {
+              animTimer: t,
+              facing: 1,
+              blinkTimer: isBlinking ? 0.2 : 0,
+              scaleX: this.jumpTimer > 0 ? (this.jumpY < -4 ? 0.88 : 1.14) : 1,
+              scaleY: this.jumpTimer > 0 ? (this.jumpY < -4 ? 1.16 : 0.86) : 1,
+              hairSway: hairSway,
+              bellyOffset: bellySpring,
+              customization: {
+                type: this.char,
+                hairStyle: this.hairStyle,
+                clothingStyle: this.clothingStyle,
+                eyeType: this.eyeType,
+                outfit: this.outfit,
+                hair: this.char === 'ilianna' ? '#e6a147' : (this.char === 'ava' ? '#5c3826' : (this.char === 'mommy' ? '#3a2312' : '#4a3b32')),
+                skin: '#ffdfbf'
+              }
+            });
+          }
+          ctx.restore();
+
+          // 5. Draw Particle Bursts (Toots or Sparkles)
+          if (this.toots.length > 0) {
+            for (let i = this.toots.length - 1; i >= 0; i--) {
+              const p = this.toots[i];
+              p.x += p.vx;
+              p.y += p.vy;
+              p.life -= 0.02;
+              const alpha = Math.max(0, p.life / p.maxLife);
+              ctx.fillStyle = `rgba(132, 204, 22, ${alpha * 0.75})`;
+              ctx.beginPath();
+              ctx.arc(cx + p.x * dpr, cy + 18 * dpr + p.y * dpr, p.r * dpr * (1 + (1 - alpha) * 0.5), 0, Math.PI * 2);
+              ctx.fill();
+              if (p.life <= 0) this.toots.splice(i, 1);
+            }
+          }
+
+          if (this.sparkles.length > 0) {
+            for (let i = this.sparkles.length - 1; i >= 0; i--) {
+              const s = this.sparkles[i];
+              s.x += s.vx;
+              s.y += s.vy;
+              s.life -= 0.02;
+              const alpha = Math.max(0, s.life / s.maxLife);
+              ctx.fillStyle = s.color;
+              ctx.globalAlpha = alpha;
+              if (typeof Sprites !== 'undefined' && Sprites.drawStar) {
+                Sprites.drawStar(ctx, cx + s.x * dpr, cy - 18 * dpr + s.y * dpr, s.r * dpr, s.r * 0.45 * dpr, 5);
+              }
+              ctx.globalAlpha = 1;
+              if (s.life <= 0) this.sparkles.splice(i, 1);
+            }
+          }
+        }
+      };
+
+      window.heroPreview = heroPreview;
+
       // Character selection
       const charCards = document.querySelectorAll('.char-card');
       charCards.forEach(card => {
@@ -273,6 +587,7 @@
               }
             }
           }
+          heroPreview.syncFromDOM();
         });
       });
 
@@ -292,6 +607,7 @@
               window.game.player.customization.outfit = col;
             }
           }
+          heroPreview.syncFromDOM();
         });
       });
 
@@ -309,6 +625,7 @@
               window.game.player.customization.hairStyle = style;
             }
           }
+          heroPreview.syncFromDOM();
         });
       });
 
@@ -326,6 +643,7 @@
               window.game.player.customization.clothingStyle = cloth;
             }
           }
+          heroPreview.syncFromDOM();
         });
       });
 
@@ -343,6 +661,7 @@
               window.game.player.customization.eyeType = eyes;
             }
           }
+          heroPreview.syncFromDOM();
         });
       });
 
@@ -360,6 +679,7 @@
               window.game.player.customization.hairStyle = style;
             }
           }
+          heroPreview.syncFromDOM();
         });
       });
 
@@ -377,6 +697,7 @@
               window.game.player.customization.clothingStyle = cloth;
             }
           }
+          heroPreview.syncFromDOM();
         });
       });
 
@@ -394,8 +715,12 @@
               window.game.player.customization.eyeType = eyes;
             }
           }
+          heroPreview.syncFromDOM();
         });
       });
+
+      // Initialize preview
+      heroPreview.init();
 
       // Home Buttons (HUD, Win Screen, Game Over Screen)
       const homeBtns = [
