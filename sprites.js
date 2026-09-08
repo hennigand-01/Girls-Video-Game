@@ -121,29 +121,28 @@ const Sprites = {
     }
 
     // --- LEGS & SHOES WITH ARTICULATION ---
-    ctx.fillStyle = activePantsColor;
-    const legW = isDaddy ? 8 : 6;
-    const legH = 13;
-
-    if (isClimbing) {
-      const cLeg = Math.sin(player.animTimer * 12);
-      ctx.fillRect(-legW - 2, h / 2 - legH + (cLeg > 0 ? -4 : 2), legW, legH);
-      ctx.fillRect(2, h / 2 - legH + (cLeg > 0 ? 2 : -4), legW, legH);
-    } else if (isJumping) {
-      ctx.fillRect(-legW - 1, h / 2 - legH - 2, legW, legH - 2);
-      ctx.fillRect(1, h / 2 - legH - 4, legW, legH - 2);
-    } else if (isRunning) {
-      ctx.fillRect(-legW - 1 + legCycle * 5.5, h / 2 - legH - yBob, legW, legH);
-      ctx.fillRect(1 - legCycle * 5.5, h / 2 - legH - yBob, legW, legH);
-    } else {
-      ctx.fillRect(-legW - 1, h / 2 - legH, legW, legH);
-      ctx.fillRect(1, h / 2 - legH, legW, legH);
-    }
-
-    // Boy pants details for Daddy
     if (isDaddy) {
+      ctx.fillStyle = activePantsColor;
+      const legW = 8;
+      const legH = 13;
+
+      if (isClimbing) {
+        const cLeg = Math.sin(player.animTimer * 12);
+        ctx.fillRect(-legW - 2, h / 2 - legH + (cLeg > 0 ? -4 : 2), legW, legH);
+        ctx.fillRect(2, h / 2 - legH + (cLeg > 0 ? 2 : -4), legW, legH);
+      } else if (isJumping) {
+        ctx.fillRect(-legW - 1, h / 2 - legH - 2, legW, legH - 2);
+        ctx.fillRect(1, h / 2 - legH - 4, legW, legH - 2);
+      } else if (isRunning) {
+        ctx.fillRect(-legW - 1 + legCycle * 5.5, h / 2 - legH - yBob, legW, legH);
+        ctx.fillRect(1 - legCycle * 5.5, h / 2 - legH - yBob, legW, legH);
+      } else {
+        ctx.fillRect(-legW - 1, h / 2 - legH, legW, legH);
+        ctx.fillRect(1, h / 2 - legH, legW, legH);
+      }
+
+      // Boy pants details for Daddy
       if (clothingStyle === 'blue_jeans' || !clothingStyle) {
-        // Gold contrast seam stitching on blue jeans
         ctx.strokeStyle = '#e0a96d';
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -153,41 +152,72 @@ const Sprites = {
         ctx.lineTo(1 + legW, h / 2 - 2);
         ctx.stroke();
       } else if (clothingStyle === 'sweat_pants') {
-        // Elastic ribbed cuffs
         ctx.fillStyle = '#6c757d';
         ctx.fillRect(-legW - 1, h / 2 - 4, legW, 2);
         ctx.fillRect(1, h / 2 - 4, legW, 2);
       } else if (clothingStyle === 'cargo_pants') {
-        // Cargo flap pocket on sides
         ctx.fillStyle = '#47624b';
         ctx.fillRect(-legW - 2, h / 2 - legH + 4, 3, 5);
         ctx.fillRect(legW, h / 2 - legH + 4, 3, 5);
       }
-    }
 
-    // Footwear: Detailed shoes / boots (Daddy gets white dad sneakers)
-    ctx.fillStyle = player.springTimer > 0 ? '#ffea00' : (isDaddy ? '#f8f9fa' : '#ffffff');
-    if (isClimbing) {
-      const cLeg = Math.sin(player.animTimer * 12);
-      ctx.fillRect(-legW - 3, h / 2 - 3 + (cLeg > 0 ? -4 : 2), legW + 2, 5);
-      ctx.fillRect(1, h / 2 - 3 + (cLeg > 0 ? 2 : -4), legW + 2, 5);
-    } else if (isJumping) {
-      // Athletic jumping tuck: tuck feet up by 2 to 4 pixels for maximum clearance!
-      ctx.fillRect(-legW - 3, h / 2 - 5, legW + 2, 5);
-      ctx.fillRect(1, h / 2 - 7, legW + 2, 5);
-    } else if (isRunning) {
-      ctx.fillRect(-legW - 3 + legCycle * 5.5, h / 2 - 3 - yBob, legW + 3, 5);
-      ctx.fillRect(0 - legCycle * 5.5, h / 2 - 3 - yBob, legW + 3, 5);
+      // Footwear: White dad sneakers
+      ctx.fillStyle = player.springTimer > 0 ? '#ffea00' : '#f8f9fa';
+      if (isClimbing) {
+        const cLeg = Math.sin(player.animTimer * 12);
+        ctx.fillRect(-legW - 3, h / 2 - 3 + (cLeg > 0 ? -4 : 2), legW + 2, 5);
+        ctx.fillRect(1, h / 2 - 3 + (cLeg > 0 ? 2 : -4), legW + 2, 5);
+      } else if (isJumping) {
+        ctx.fillRect(-legW - 3, h / 2 - 5, legW + 2, 5);
+        ctx.fillRect(1, h / 2 - 7, legW + 2, 5);
+      } else if (isRunning) {
+        ctx.fillRect(-legW - 3 + legCycle * 5.5, h / 2 - 3 - yBob, legW + 3, 5);
+        ctx.fillRect(0 - legCycle * 5.5, h / 2 - 3 - yBob, legW + 3, 5);
+      } else {
+        ctx.fillRect(-legW - 3, h / 2 - 3, legW + 2, 5);
+        ctx.fillRect(1, h / 2 - 3, legW + 2, 5);
+      }
+
+      // Sneaker stripes
+      ctx.fillStyle = '#1d4ed8';
+      const laceY = isJumping ? h / 2 - 6 : (h / 2 - 4 - yBob);
+      ctx.fillRect(-legW - 1, laceY, 2, 2);
+      ctx.fillRect(3, isJumping ? laceY - 2 : laceY, 2, 2);
+
     } else {
-      ctx.fillRect(-legW - 3, h / 2 - 3, legW + 2, 5);
-      ctx.fillRect(1, h / 2 - 3, legW + 2, 5);
-    }
+      // PRINCESS SILHOUETTE: Dainty white tights & elegant princess slippers (pumps)
+      const pLegW = 3.6;
+      const pLegH = 11;
+      const stepOff = isRunning ? legCycle * 4.5 : 0;
+      const tuck = isJumping ? 3 : 0;
 
-    // Shoe laces / runner stripes
-    ctx.fillStyle = isDaddy ? '#1d4ed8' : (charType === 'ilianna' ? '#ffd700' : '#ff2a6d');
-    const laceY = isJumping ? h / 2 - 6 : (h / 2 - 4 - yBob);
-    ctx.fillRect(-legW - 1, laceY, 2, 2);
-    ctx.fillRect(3, isJumping ? laceY - 2 : laceY, 2, 2);
+      // Dainty white tights
+      ctx.fillStyle = '#fff0f5';
+      if (isClimbing) {
+        const cLeg = Math.sin(player.animTimer * 12);
+        ctx.fillRect(-pLegW - 1, h / 2 - pLegH + (cLeg > 0 ? -3 : 2), pLegW, pLegH);
+        ctx.fillRect(1, h / 2 - pLegH + (cLeg > 0 ? 2 : -3), pLegW, pLegH);
+      } else {
+        ctx.fillRect(-pLegW - 1 + stepOff, h / 2 - pLegH - (isRunning ? yBob : 0) - tuck, pLegW, pLegH);
+        ctx.fillRect(1 - stepOff, h / 2 - pLegH - (isRunning ? yBob : 0) - tuck, pLegW, pLegH);
+      }
+
+      // Elegant princess slippers (pumps) in outfitColor / gold
+      ctx.fillStyle = player.springTimer > 0 ? '#ffea00' : outfitColor;
+      const shoeY = isJumping ? (h / 2 - 4) : (isRunning ? h / 2 - 2 - yBob : h / 2 - 2);
+
+      ctx.beginPath();
+      ctx.ellipse(-pLegW - 0.5 + stepOff, shoeY, 3.4, 2.2, -0.1, 0, Math.PI * 2);
+      ctx.ellipse(2.5 - stepOff, shoeY, 3.4, 2.2, 0.1, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Slipper golden gem/pearl accent
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(-pLegW + stepOff, shoeY - 0.8, 0.9, 0, Math.PI * 2);
+      ctx.arc(2.5 - stepOff, shoeY - 0.8, 0.9, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
     // Spring boots wings
     if (player.springTimer > 0) {
@@ -357,179 +387,207 @@ const Sprites = {
       }
 
     } else {
-      // ILIANNA, AVA, MOMMY: Graceful, feminine tailored silhouette with tapered waist and flared tunic/skirt hem!
-      const outfitGrad = ctx.createLinearGradient(0, bodyY, 0, bodyY + h * 0.44);
-      outfitGrad.addColorStop(0, outfitColor);
-      outfitGrad.addColorStop(1, '#4a0e20');
-      ctx.fillStyle = outfitGrad;
+      // ILIANNA, AVA, MOMMY: Iconic Princess Peach Dress Silhouette!
+      // (Fitted bodice, flared bell skirt with sway physics, puffy ball sleeves, peplum panniers, white opera gloves, golden chest brooch)
+      const skirtSway = (isRunning ? legCycle * 3.2 : 0) + (player.hairSway || 0) * 4;
+
+      // 1. Flared Princess Bell Skirt (Sweeps down toward slippers with fluid motion)
+      const skirtGrad = ctx.createLinearGradient(0, bodyY + h * 0.2, 0, h / 2);
+      skirtGrad.addColorStop(0, outfitColor);
+      skirtGrad.addColorStop(0.85, outfitColor);
+      skirtGrad.addColorStop(1, '#a01248');
+      ctx.fillStyle = skirtGrad;
       ctx.beginPath();
-      // Graceful feminine hourglass silhouette: shoulders (w*0.28), tapered waist (w*0.2), flared hem (w*0.33)
-      ctx.moveTo(-w * 0.28, bodyY + 1);
-      ctx.lineTo(w * 0.28, bodyY + 1);
-      ctx.quadraticCurveTo(w * 0.2, bodyY + h * 0.22, w * 0.33, bodyY + h * 0.43);
-      ctx.lineTo(-w * 0.33, bodyY + h * 0.43);
-      ctx.quadraticCurveTo(-w * 0.2, bodyY + h * 0.22, -w * 0.28, bodyY + 1);
+      ctx.moveTo(-w * 0.22, bodyY + h * 0.20);
+      ctx.lineTo(w * 0.22, bodyY + h * 0.20);
+      ctx.quadraticCurveTo(w * 0.38 + skirtSway * 0.3, bodyY + h * 0.38, w * 0.50 + skirtSway, h / 2 - 2);
+      ctx.quadraticCurveTo(skirtSway * 0.5, h / 2 + 1, -w * 0.50 + skirtSway, h / 2 - 2);
+      ctx.quadraticCurveTo(-w * 0.38 + skirtSway * 0.3, bodyY + h * 0.38, -w * 0.22, bodyY + h * 0.20);
       ctx.closePath();
       ctx.fill();
 
-      // Slender waistline cinch belt
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
-      ctx.fillRect(-w * 0.22, bodyY + h * 0.21, w * 0.44, 2.8);
+      // Scalloped hem accent frill (Princess Peach darker pink/gold hem border)
+      ctx.strokeStyle = '#c2185b';
+      ctx.lineWidth = 2.0;
+      ctx.beginPath();
+      ctx.moveTo(-w * 0.48 + skirtSway, h / 2 - 2);
+      ctx.quadraticCurveTo(skirtSway * 0.5, h / 2 + 0.8, w * 0.48 + skirtSway, h / 2 - 2);
+      ctx.stroke();
 
-      // Hyper-Realistic Clothing Styles
-      if (clothingStyle === 'royal_tunic') {
-        // Royal velvet sheen overlay
-        const sheen = ctx.createLinearGradient(-w * 0.3, bodyY, w * 0.3, bodyY);
-        sheen.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
-        sheen.addColorStop(0.5, 'rgba(255, 215, 0, 0.15)');
-        sheen.addColorStop(1, 'rgba(0, 0, 0, 0.25)');
-        ctx.fillStyle = sheen;
+      // 2. Fitted Feminine Bodice (tapered waistline)
+      const bodiceGrad = ctx.createLinearGradient(0, bodyY, 0, bodyY + h * 0.22);
+      bodiceGrad.addColorStop(0, '#ffffff');
+      bodiceGrad.addColorStop(0.2, outfitColor);
+      bodiceGrad.addColorStop(1, '#981042');
+      ctx.fillStyle = bodiceGrad;
+      ctx.beginPath();
+      ctx.moveTo(-w * 0.26, bodyY + 1);
+      ctx.lineTo(w * 0.26, bodyY + 1);
+      ctx.quadraticCurveTo(w * 0.23, bodyY + h * 0.10, w * 0.20, bodyY + h * 0.21);
+      ctx.lineTo(-w * 0.20, bodyY + h * 0.21);
+      ctx.quadraticCurveTo(-w * 0.23, bodyY + h * 0.10, -w * 0.26, bodyY + 1);
+      ctx.closePath();
+      ctx.fill();
+
+      // 3. Scalloped Peplum Panniers (Peach's signature waist hip frills)
+      ctx.fillStyle = '#ff80ab';
+      ctx.beginPath();
+      ctx.ellipse(-w * 0.21 + skirtSway * 0.1, bodyY + h * 0.20, 5.0, 3.2, -0.3, 0, Math.PI * 2);
+      ctx.ellipse(w * 0.21 + skirtSway * 0.1, bodyY + h * 0.20, 5.0, 3.2, 0.3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#f06292';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // 4. Princess Peach Iconic Puffed Ball Sleeves on shoulders
+      const drawPuffedSleeve = (sx, sy) => {
+        const puffGrad = ctx.createRadialGradient(sx - 1, sy - 1, 1, sx, sy, 5.2);
+        puffGrad.addColorStop(0, '#ffffff');
+        puffGrad.addColorStop(0.35, outfitColor);
+        puffGrad.addColorStop(1, '#880e4f');
+        ctx.fillStyle = puffGrad;
         ctx.beginPath();
-        ctx.roundRect(-w * 0.32, bodyY, w * 0.64, h * 0.42, 7);
+        ctx.arc(sx, sy, 4.8, 0, Math.PI * 2);
         ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      };
+      drawPuffedSleeve(-w * 0.31, bodyY + 3.2);
+      drawPuffedSleeve(w * 0.31, bodyY + 3.2);
 
-        // Shimmering gold filigree hem & collar embroidery
+      // Clothing Style Overlays
+      if (clothingStyle === 'royal_tunic') {
+        // Royal velvet sheen overlay & Shimmering gold filigree
         ctx.strokeStyle = '#ffd700';
-        ctx.lineWidth = 1.6;
+        ctx.lineWidth = 1.4;
         ctx.beginPath();
-        ctx.moveTo(-w * 0.3, bodyY + h * 0.4);
-        ctx.lineTo(w * 0.3, bodyY + h * 0.4);
-        ctx.moveTo(-w * 0.25, bodyY + 2);
-        ctx.lineTo(w * 0.25, bodyY + 2);
+        ctx.moveTo(-w * 0.20, bodyY + 2);
+        ctx.lineTo(w * 0.20, bodyY + 2);
+        ctx.moveTo(-w * 0.18, bodyY + h * 0.18);
+        ctx.lineTo(w * 0.18, bodyY + h * 0.18);
         ctx.stroke();
 
-        // Royal Diagonal Satin Sash with gold tassels
+        // Royal Diagonal Satin Sash with gold tassel
         ctx.fillStyle = '#7209b7';
         ctx.beginPath();
-        ctx.moveTo(-w * 0.28, bodyY + 2);
-        ctx.lineTo(-w * 0.1, bodyY + 2);
-        ctx.lineTo(w * 0.28, bodyY + h * 0.38);
-        ctx.lineTo(w * 0.12, bodyY + h * 0.38);
+        ctx.moveTo(-w * 0.24, bodyY + 2);
+        ctx.lineTo(-w * 0.08, bodyY + 2);
+        ctx.lineTo(w * 0.24, bodyY + h * 0.22);
+        ctx.lineTo(w * 0.10, bodyY + h * 0.22);
         ctx.closePath();
         ctx.fill();
-
-        // Gold tassel at hip
         ctx.fillStyle = '#ffd700';
-        ctx.fillRect(w * 0.18, bodyY + h * 0.38, 4, 5);
+        ctx.fillRect(w * 0.16, bodyY + h * 0.22, 3.5, 4.5);
 
       } else if (clothingStyle === 'explorer_vest') {
-        // Multi-pocket canvas expedition vest
-        ctx.fillStyle = 'rgba(240, 240, 245, 0.3)';
+        // Multi-pocket canvas expedition vest over princess gown
+        ctx.fillStyle = 'rgba(240, 240, 245, 0.4)';
         ctx.beginPath();
-        ctx.roundRect(-w * 0.32, bodyY, w * 0.28, h * 0.42, 4);
-        ctx.roundRect(w * 0.04, bodyY, w * 0.28, h * 0.42, 4);
+        ctx.roundRect(-w * 0.26, bodyY, w * 0.22, h * 0.22, 3);
+        ctx.roundRect(w * 0.04, bodyY, w * 0.22, h * 0.22, 3);
         ctx.fill();
-
-        // Brass zipper teeth
         ctx.strokeStyle = '#ffd700';
-        ctx.lineWidth = 1.3;
+        ctx.lineWidth = 1.2;
         ctx.beginPath();
         ctx.moveTo(0, bodyY);
-        ctx.lineTo(0, bodyY + h * 0.4);
+        ctx.lineTo(0, bodyY + h * 0.22);
         ctx.stroke();
-
-        // Cargo flap pockets with snap buttons
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
-        ctx.fillRect(-w * 0.28, bodyY + h * 0.22, 6, 5);
-        ctx.fillRect(w * 0.12, bodyY + h * 0.22, 6, 5);
-        ctx.fillStyle = '#ffd700';
-        ctx.beginPath();
-        ctx.arc(-w * 0.28 + 3, bodyY + h * 0.24, 0.9, 0, Math.PI * 2);
-        ctx.arc(w * 0.12 + 3, bodyY + h * 0.24, 0.9, 0, Math.PI * 2);
-        ctx.fill();
 
       } else if (clothingStyle === 'forest_cloak') {
         // Draped Oregon wool cowl around shoulders
         ctx.fillStyle = '#1b4332';
         ctx.beginPath();
-        ctx.ellipse(0, bodyY + 4, w * 0.36, 6.5, 0, 0, Math.PI * 2);
+        ctx.ellipse(0, bodyY + 4, w * 0.34, 5.5, 0, 0, Math.PI * 2);
         ctx.fill();
 
         // Cascading cape back with dynamic motion
         const capeWave = (isRunning ? Math.sin(player.animTimer * 14) * 4 : 0) + (player.hairSway || 0) * 8;
         ctx.fillStyle = '#2d6a4f';
         ctx.beginPath();
-        ctx.moveTo(-w * 0.32, bodyY + 4);
-        ctx.quadraticCurveTo(-w * 0.45 - capeWave, bodyY + h * 0.3, -w * 0.28 - capeWave, bodyY + h * 0.44);
-        ctx.lineTo(-w * 0.15, bodyY + h * 0.38);
+        ctx.moveTo(-w * 0.28, bodyY + 4);
+        ctx.quadraticCurveTo(-w * 0.45 - capeWave, bodyY + h * 0.25, -w * 0.32 - capeWave, bodyY + h * 0.42);
+        ctx.lineTo(-w * 0.14, bodyY + h * 0.35);
         ctx.closePath();
-        ctx.fill();
-
-        // Carved bronze Oregon pine/leaf pin
-        ctx.fillStyle = '#cd7f32';
-        ctx.beginPath();
-        ctx.ellipse(-w * 0.15, bodyY + 5, 2.5, 4, 0.4, 0, Math.PI * 2);
         ctx.fill();
 
       } else {
         // Adventurer Style: Rugged cross-body leather harness & belt
         ctx.strokeStyle = '#5a3d28';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1.8;
         ctx.beginPath();
-        ctx.moveTo(-w * 0.26, bodyY + 2);
-        ctx.lineTo(w * 0.22, bodyY + h * 0.38);
+        ctx.moveTo(-w * 0.24, bodyY + 2);
+        ctx.lineTo(w * 0.18, bodyY + h * 0.21);
         ctx.stroke();
-
-        // Brass ring buckle
         ctx.fillStyle = '#ffd700';
         ctx.beginPath();
-        ctx.arc(0, bodyY + 9, 2.2, 0, Math.PI * 2);
+        ctx.arc(0, bodyY + 8, 2.0, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = '#5a3d28';
-        ctx.beginPath();
-        ctx.arc(0, bodyY + 9, 1, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Adventure belt with pouch
-        ctx.fillStyle = '#4a2810';
-        ctx.fillRect(-w * 0.3, bodyY + h * 0.38, w * 0.6, 3);
-        ctx.fillRect(w * 0.18, bodyY + h * 0.35, 4, 5); // Mini pouch
       }
 
-      // Character-specific emblems & fine jewelry
-      if (charType === 'ilianna') {
-        // Princess Golden Star Sapphire Brooch
-        ctx.fillStyle = '#ffd700';
-        Sprites.drawStar(ctx, 0, bodyY + 7, 5, 2.5, 5);
-        ctx.fillStyle = '#00f0ff';
-        ctx.beginPath();
-        ctx.arc(0, bodyY + 7, 1.8, 0, Math.PI * 2);
-        ctx.fill();
-      } else if (charType === 'ava') {
-        // Sweet Sparkle Heart Brooch
-        ctx.fillStyle = '#ff2a6d';
-        Sprites.drawHeart(ctx, 0, bodyY + 6, 6);
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(0, bodyY + 4, 1.2, 0, Math.PI * 2);
-        ctx.fill();
+      // 5. ICONIC PRINCESS PEACH CHEST BROOCH (Gold oval setting with radiant cyan/sapphire jewel)
+      const broochY = bodyY + 5.5;
+      // Gold ornate oval frame
+      ctx.fillStyle = '#ffd700';
+      ctx.beginPath();
+      ctx.ellipse(0, broochY, 3.6, 4.6, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#b8860b';
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
+
+      // Glowing Jewel Center (Sapphire cyan for Peach / emerald for Ava / Pearl for Mommy)
+      const gemGrad = ctx.createRadialGradient(0.6, broochY - 0.8, 0.4, 0, broochY, 3.2);
+      if (charType === 'ava') {
+        gemGrad.addColorStop(0, '#ffffff');
+        gemGrad.addColorStop(0.3, '#ff4081');
+        gemGrad.addColorStop(1, '#880e4f');
+      } else if (charType === 'mommy') {
+        gemGrad.addColorStop(0, '#ffffff');
+        gemGrad.addColorStop(0.4, '#e0f7fa');
+        gemGrad.addColorStop(1, '#00838f');
       } else {
-        // Mommy Pearl Necklace
-        ctx.fillStyle = '#ffffff';
-        for (let i = -5; i <= 5; i += 2.5) {
-          ctx.beginPath();
-          ctx.arc(i, bodyY + 4 + Math.abs(i) * 0.4, 1.4, 0, Math.PI * 2);
-          ctx.fill();
-        }
+        gemGrad.addColorStop(0, '#ffffff');
+        gemGrad.addColorStop(0.3, '#00e5ff');
+        gemGrad.addColorStop(1, '#01579b');
       }
+      ctx.fillStyle = gemGrad;
+      ctx.beginPath();
+      ctx.ellipse(0, broochY, 2.4, 3.2, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Brilliant diamond glint on brooch
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(0.7, broochY - 1.0, 0.75, 0, Math.PI * 2);
+      ctx.fill();
     }
 
     // --- ARMS & WEAPONS ---
-    ctx.fillStyle = skinColor;
-    const armW = isDaddy ? 6.5 : 5;
+    // (Daddy gets bare arms, Princesses get elegant white opera gloves!)
+    const armW = isDaddy ? 6.5 : 4.4;
+    ctx.fillStyle = isDaddy ? skinColor : '#ffffff';
+
     if (isClimbing) {
       const cArm = Math.sin(player.animTimer * 12);
-      ctx.fillRect(-w * 0.46, bodyY - 6 + (cArm > 0 ? 6 : -4), armW, 12);
-      ctx.fillRect(w * 0.32, bodyY - 6 + (cArm > 0 ? -4 : 6), armW, 12);
+      ctx.fillRect(-w * 0.44, bodyY - 5 + (cArm > 0 ? 6 : -4), armW, 11);
+      ctx.fillRect(w * 0.31, bodyY - 5 + (cArm > 0 ? -4 : 6), armW, 11);
     } else if (isJumping) {
-      ctx.fillRect(-w * 0.48, bodyY - 8, armW, 12);
-      ctx.fillRect(w * 0.34, bodyY - 8, armW, 12);
+      ctx.fillRect(-w * 0.46, bodyY - 7, armW, 11);
+      ctx.fillRect(w * 0.33, bodyY - 7, armW, 11);
     } else if (isRunning) {
-      ctx.fillRect(-w * 0.45 - legCycle * 4.5, bodyY + 3, armW, 11);
-      ctx.fillRect(w * 0.32 + legCycle * 4.5, bodyY + 3, armW, 11);
+      ctx.fillRect(-w * 0.43 - legCycle * 4.5, bodyY + 4, armW, 10);
+      ctx.fillRect(w * 0.31 + legCycle * 4.5, bodyY + 4, armW, 10);
     } else {
-      ctx.fillRect(-w * 0.42, bodyY + 3, armW, 11);
-      ctx.fillRect(w * 0.3, bodyY + 3, armW, 11);
+      ctx.fillRect(-w * 0.41, bodyY + 4, armW, 10);
+      ctx.fillRect(w * 0.29, bodyY + 4, armW, 10);
+    }
+
+    // Princess glove cuff trim
+    if (!isDaddy) {
+      ctx.fillStyle = '#fce4ec';
+      ctx.fillRect(-w * 0.42, bodyY + 4, armW + 0.5, 1.8);
+      ctx.fillRect(w * 0.28, bodyY + 4, armW + 0.5, 1.8);
     }
 
     // --- HAMMER WEAPON (IF ACTIVE) ---
@@ -680,49 +738,42 @@ const Sprites = {
     // =========================================================================
     if (!isDaddy) {
       // Graceful slender feminine neck
-      const neckGrad = ctx.createLinearGradient(0, headY + 7, 0, headY + 13);
-      neckGrad.addColorStop(0, '#f2bf9e');
-      neckGrad.addColorStop(1, '#c98a68');
-      ctx.fillStyle = neckGrad;
+      ctx.fillStyle = '#fce2d0';
       ctx.beginPath();
-      ctx.roundRect(-2.2, headY + 6.5, 4.4, 6.5, 2);
+      ctx.roundRect(-2.0, headY + 6.8, 4.0, 6.2, 1.8);
       ctx.fill();
 
-      // Delicate feminine face: sculpted oval with gentle tapered chin
-      const faceGrad = ctx.createRadialGradient(1.5, headY - 3, 2, 0.5, headY, 11);
+      // Soft round/heart-shaped Princess anime face (delicate, youthful, no harsh jawline)
+      const faceGrad = ctx.createRadialGradient(0.5, headY - 2.5, 2, 0.5, headY, 11);
       faceGrad.addColorStop(0, '#fffbf5');
-      faceGrad.addColorStop(0.35, skinColor);
-      faceGrad.addColorStop(1, '#d89b78');
+      faceGrad.addColorStop(0.45, skinColor);
+      faceGrad.addColorStop(1, '#ffdfd2');
       ctx.fillStyle = faceGrad;
       ctx.beginPath();
-      ctx.moveTo(-8.5, headY - 4);
-      ctx.bezierCurveTo(-8.8, headY - 11.5, 8.8, headY - 11.5, 8.5, headY - 4);
-      ctx.bezierCurveTo(8.2, headY + 4, 4.8, headY + 9.5, 0.5, headY + 9.8);
-      ctx.bezierCurveTo(-4.0, headY + 9.5, -8.2, headY + 4, -8.5, headY - 4);
+      ctx.moveTo(-8.6, headY - 4);
+      ctx.bezierCurveTo(-9.0, headY - 11.5, 9.0, headY - 11.5, 8.6, headY - 4);
+      ctx.bezierCurveTo(8.4, headY + 3.5, 4.5, headY + 9.2, 0.5, headY + 9.4);
+      ctx.bezierCurveTo(-4.0, headY + 9.2, -8.4, headY + 3.5, -8.6, headY - 4);
       ctx.closePath();
       ctx.fill();
 
-      // Soft jawline ambient occlusion shadow
-      ctx.fillStyle = 'rgba(120, 45, 20, 0.12)';
+      // Soft ambient jawline shadow
+      ctx.fillStyle = 'rgba(180, 70, 70, 0.10)';
       ctx.beginPath();
-      ctx.arc(0.5, headY + 8.2, 5.0, 0, Math.PI);
+      ctx.arc(0.5, headY + 8.0, 4.8, 0, Math.PI);
       ctx.fill();
 
-      // Glowing peach-pink blushed cheeks
-      ctx.fillStyle = 'rgba(255, 110, 130, 0.42)';
+      // Glowing peach-pink blushed cheeks (Peach's signature rosy cheeks right under eyes)
+      ctx.fillStyle = 'rgba(255, 105, 145, 0.45)';
       ctx.beginPath();
-      ctx.ellipse(-3.6, headY + 3.2, 2.6, 1.6, -0.1, 0, Math.PI * 2);
-      ctx.ellipse(4.4, headY + 3.2, 2.6, 1.6, 0.1, 0, Math.PI * 2);
+      ctx.ellipse(-3.8, headY + 3.4, 2.8, 1.6, -0.08, 0, Math.PI * 2);
+      ctx.ellipse(4.6, headY + 3.4, 2.8, 1.6, 0.08, 0, Math.PI * 2);
       ctx.fill();
 
-      // Soft feminine nose tip
-      ctx.fillStyle = 'rgba(255, 130, 140, 0.55)';
+      // Dainty Princess button nose dot
+      ctx.fillStyle = 'rgba(255, 120, 140, 0.6)';
       ctx.beginPath();
-      ctx.arc(0.5, headY + 1.4, 0.7, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-      ctx.beginPath();
-      ctx.arc(0.6, headY + 1.2, 0.35, 0, Math.PI * 2);
+      ctx.arc(0.5, headY + 1.2, 0.65, 0, Math.PI * 2);
       ctx.fill();
 
     } else {
@@ -811,95 +862,56 @@ const Sprites = {
         }
       }
 
-      const drawEye = (ex, ey, rScale = 1.0) => {
-        const scleraR = 3.2 * rScale;
-        const irisR = 2.4 * rScale;
-        const pupilR = 0.85 * rScale;
-
-        // 1. Crisp white almond sclera
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(ex, ey, scleraR, 0, Math.PI * 2);
-        ctx.fill();
-
-        // 2. Bold, luminous colored iris (large and vivid so color jumps out!)
-        ctx.fillStyle = eyeTones.core;
-        ctx.beginPath();
-        ctx.arc(ex + 0.15, ey, irisR, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Iris rich radial depth gradient
-        const irisGrad = ctx.createRadialGradient(ex + 0.15, ey, 0.3, ex + 0.15, ey, irisR);
-        irisGrad.addColorStop(0, eyeTones.highlight);
-        irisGrad.addColorStop(0.4, eyeTones.core);
-        irisGrad.addColorStop(1, eyeTones.outer);
-        ctx.fillStyle = irisGrad;
-        ctx.beginPath();
-        ctx.arc(ex + 0.15, ey, irisR, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Sharp dark limbal ring
-        ctx.strokeStyle = eyeTones.rim;
-        ctx.lineWidth = 0.65;
-        ctx.beginPath();
-        ctx.arc(ex + 0.15, ey, irisR, 0, Math.PI * 2);
-        ctx.stroke();
-
-        // 3. Crisp obsidian pupil (compact so colored iris dominates!)
-        ctx.fillStyle = '#0a0a0c';
-        ctx.beginPath();
-        ctx.arc(ex + 0.2, ey, pupilR, 0, Math.PI * 2);
-        ctx.fill();
-
-        // 4. Primary specular catchlight
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(ex + 0.75 * rScale, ey - 0.75 * rScale, 0.8 * rScale, 0, Math.PI * 2);
-        ctx.fill();
-
-        // 5. Secondary soft bounce catchlight
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-        ctx.beginPath();
-        ctx.arc(ex - 0.4 * rScale, ey + 0.65 * rScale, 0.38 * rScale, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Starlight Diamond Sparkle in iris
-        if (!isDaddy && eyeType === 'sparkle') {
-          ctx.fillStyle = '#ffffff';
-          Sprites.drawStar(ctx, ex + 0.75 * rScale, ey - 0.75 * rScale, 1.4 * rScale, 0.45 * rScale, 4);
-        }
-      };
-
       if (isDaddy) {
-        drawEye(2.0, headY - 1, 1.05);
-        drawEye(7.5, headY - 1, 1.05);
-      } else {
-        drawEye(-2.6, headY - 0.8, 0.95);
-        drawEye(3.6, headY - 0.8, 0.95);
-      }
+        const drawDadEye = (ex, ey, rScale = 1.0) => {
+          const scleraR = 3.2 * rScale;
+          const irisR = 2.4 * rScale;
+          const pupilR = 0.85 * rScale;
 
-      // Eyeliner & fine curved eyelashes for ladies
-      if (!isDaddy) {
-        ctx.strokeStyle = '#18181b';
-        ctx.lineWidth = 1.2;
-        // Left eye upper lash with wing
-        ctx.beginPath();
-        ctx.arc(-2.6, headY - 1.0, 3.1, 1.1 * Math.PI, 1.85 * Math.PI);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(-5.2, headY - 1.2);
-        ctx.quadraticCurveTo(-6.1, headY - 2.6, -6.6, headY - 3.6);
-        ctx.stroke();
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(ex, ey, scleraR, 0, Math.PI * 2);
+          ctx.fill();
 
-        // Right eye upper lash with wing
-        ctx.beginPath();
-        ctx.arc(3.6, headY - 1.0, 3.1, 1.1 * Math.PI, 1.85 * Math.PI);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(6.2, headY - 1.2);
-        ctx.quadraticCurveTo(7.1, headY - 2.6, 7.6, headY - 3.6);
-        ctx.stroke();
-      } else {
+          ctx.fillStyle = eyeTones.core;
+          ctx.beginPath();
+          ctx.arc(ex + 0.15, ey, irisR, 0, Math.PI * 2);
+          ctx.fill();
+
+          const irisGrad = ctx.createRadialGradient(ex + 0.15, ey, 0.3, ex + 0.15, ey, irisR);
+          irisGrad.addColorStop(0, eyeTones.highlight);
+          irisGrad.addColorStop(0.4, eyeTones.core);
+          irisGrad.addColorStop(1, eyeTones.outer);
+          ctx.fillStyle = irisGrad;
+          ctx.beginPath();
+          ctx.arc(ex + 0.15, ey, irisR, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.strokeStyle = eyeTones.rim;
+          ctx.lineWidth = 0.65;
+          ctx.beginPath();
+          ctx.arc(ex + 0.15, ey, irisR, 0, Math.PI * 2);
+          ctx.stroke();
+
+          ctx.fillStyle = '#0a0a0c';
+          ctx.beginPath();
+          ctx.arc(ex + 0.2, ey, pupilR, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(ex + 0.75 * rScale, ey - 0.75 * rScale, 0.8 * rScale, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+          ctx.beginPath();
+          ctx.arc(ex - 0.4 * rScale, ey + 0.65 * rScale, 0.38 * rScale, 0, Math.PI * 2);
+          ctx.fill();
+        };
+
+        drawDadEye(2.0, headY - 1, 1.05);
+        drawDadEye(7.5, headY - 1, 1.05);
+
         // Daddy eye crinkles & warm laugh lines
         ctx.strokeStyle = 'rgba(90, 40, 15, 0.45)';
         ctx.lineWidth = 0.9;
@@ -913,10 +925,8 @@ const Sprites = {
         ctx.moveTo(9.5, headY - 0.2);
         ctx.lineTo(11.5, headY + 0.6);
         ctx.stroke();
-      }
 
-      // Eyebrows (positioned cleanly above each eye)
-      if (isDaddy) {
+        // Eyebrows for Daddy
         ctx.strokeStyle = '#2d1f18';
         ctx.lineWidth = 2.4;
         ctx.beginPath();
@@ -925,17 +935,93 @@ const Sprites = {
         ctx.moveTo(5.8, headY - 4.8);
         ctx.quadraticCurveTo(8.0, headY - 6.0, 10.4, headY - 4.5);
         ctx.stroke();
+
       } else {
+        // PRINCESS PEACH ANIME EYES: Tall, luminous jewel irises with double specular shine & fluttery winged lashes
+        const drawPeachEye = (ex, ey, flip = 1) => {
+          // 1. Tall Crisp White Anime Sclera
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.ellipse(ex, ey, 2.9, 3.8, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // 2. Large Jewel Iris (multi-shade gradient)
+          const irisGrad = ctx.createLinearGradient(ex, ey - 3.2, ex, ey + 3.2);
+          irisGrad.addColorStop(0, eyeTones.highlight);
+          irisGrad.addColorStop(0.35, eyeTones.core);
+          irisGrad.addColorStop(1, eyeTones.outer);
+          ctx.fillStyle = irisGrad;
+          ctx.beginPath();
+          ctx.ellipse(ex + 0.1, ey + 0.3, 2.3, 3.2, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Dark limbal ring
+          ctx.strokeStyle = eyeTones.rim;
+          ctx.lineWidth = 0.7;
+          ctx.beginPath();
+          ctx.ellipse(ex + 0.1, ey + 0.3, 2.3, 3.2, 0, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // 3. Compact Obsidian Pupil
+          ctx.fillStyle = '#08080c';
+          ctx.beginPath();
+          ctx.ellipse(ex + 0.1, ey + 0.5, 1.0, 1.5, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // 4. Double Specular Anime Reflections
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.ellipse(ex + 0.7, ey - 1.2, 0.9, 1.3, -0.2, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+          ctx.beginPath();
+          ctx.arc(ex - 0.5, ey + 1.2, 0.45, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Diamond sparkle for sparkle eye type
+          if (eyeType === 'sparkle') {
+            ctx.fillStyle = '#ffffff';
+            Sprites.drawStar(ctx, ex + 0.7, ey - 1.2, 1.5, 0.5, 4);
+          }
+
+          // 5. Bold curved upper anime eyeliner
+          ctx.strokeStyle = '#111827';
+          ctx.lineWidth = 1.35;
+          ctx.beginPath();
+          ctx.arc(ex, ey - 0.8, 3.1, 1.05 * Math.PI, 1.95 * Math.PI);
+          ctx.stroke();
+
+          // 6. Two distinct fluttery upward winged lashes (Peach's iconic look!)
+          const outerX = ex + flip * 2.7;
+          const outerY = ey - 0.9;
+          // Primary outer wing lash
+          ctx.lineWidth = 1.25;
+          ctx.beginPath();
+          ctx.moveTo(outerX, outerY);
+          ctx.quadraticCurveTo(outerX + flip * 1.4, outerY - 1.6, outerX + flip * 2.2, outerY - 2.6);
+          ctx.stroke();
+
+          // Secondary upward lash
+          ctx.lineWidth = 1.05;
+          ctx.beginPath();
+          ctx.moveTo(outerX - flip * 0.8, outerY - 1.7);
+          ctx.quadraticCurveTo(outerX - flip * 0.4, outerY - 3.0, outerX + flip * 0.5, outerY - 3.8);
+          ctx.stroke();
+        };
+
+        drawPeachEye(-2.7, headY - 0.8, -1);
+        drawPeachEye(3.7, headY - 0.8, 1);
+
+        // Eyebrows for ladies (sweet, gentle arch in hair color)
         const browColor = player.customization?.hair || (charType === 'mommy' ? '#2e1c12' : '#7f4f24');
         ctx.strokeStyle = browColor;
         ctx.lineWidth = 1.15;
         ctx.beginPath();
-        // Left eyebrow over left eye
-        ctx.moveTo(-5.0, headY - 4.5);
-        ctx.quadraticCurveTo(-2.8, headY - 5.8, -0.6, headY - 4.7);
-        // Right eyebrow over right eye
-        ctx.moveTo(1.4, headY - 4.7);
-        ctx.quadraticCurveTo(3.6, headY - 5.8, 5.8, headY - 4.5);
+        ctx.moveTo(-5.2, headY - 4.6);
+        ctx.quadraticCurveTo(-3.0, headY - 5.8, -0.8, headY - 4.7);
+        ctx.moveTo(1.6, headY - 4.7);
+        ctx.quadraticCurveTo(3.8, headY - 5.8, 6.0, headY - 4.6);
         ctx.stroke();
       }
     }
@@ -966,18 +1052,18 @@ const Sprites = {
       ctx.lineTo(10.5, headY + 3.5);
       ctx.stroke();
     } else {
-      // Sweet feminine smile with subtle rose lower lip cushion
-      ctx.fillStyle = 'rgba(230, 75, 110, 0.32)';
+      // Sweet feminine anime smile with soft pink/coral lip tint
+      ctx.fillStyle = 'rgba(255, 64, 129, 0.45)';
       ctx.beginPath();
-      ctx.ellipse(0.5, headY + 4.9, 1.8, 0.9, 0, 0, Math.PI);
+      ctx.ellipse(0.5, headY + 5.0, 2.0, 1.0, 0, 0, Math.PI);
       ctx.fill();
 
       // Delicate smile line with upturned corners
-      ctx.strokeStyle = '#9c3848';
-      ctx.lineWidth = 1.1;
+      ctx.strokeStyle = '#c2185b';
+      ctx.lineWidth = 1.15;
       ctx.beginPath();
-      ctx.moveTo(-1.8, headY + 3.9);
-      ctx.quadraticCurveTo(0.5, headY + 5.1, 2.8, headY + 3.9);
+      ctx.moveTo(-1.9, headY + 3.8);
+      ctx.quadraticCurveTo(0.5, headY + 5.2, 2.9, headY + 3.8);
       ctx.stroke();
     }
 
@@ -1026,7 +1112,6 @@ const Sprites = {
 
       } else if (hairStyle === 'comb_over') {
         // 3. DAD COMB-OVER: Shiny bald scalp with desperate long strands swooping across the TOP of dome!
-        // Shiny dome highlight underneath
         ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
         ctx.beginPath();
         ctx.ellipse(-1, headY - 8.5, 5, 2.2, -0.3, 0, Math.PI * 2);
@@ -1090,7 +1175,44 @@ const Sprites = {
       }
 
     } else {
-      // LADIES FOREGROUND STYLING & ACCESSORIES (Face & forehead remain 100% unobstructed!)
+      // LADIES FOREGROUND STYLING & PRINCESS ACCESSORIES (Face & eyes remain 100% unobstructed!)
+
+      // 1. Signature Princess Peach Flared Side Locks (Cheek-framing hair flips curving OUTWARD away from face)
+      ctx.fillStyle = hColor;
+      // Left flared side lock
+      ctx.beginPath();
+      ctx.moveTo(-8.0, headY - 5);
+      ctx.quadraticCurveTo(-14.5, headY + 1, -12.2, headY + 8);
+      ctx.quadraticCurveTo(-10.2, headY + 3, -7.5, headY - 2);
+      ctx.closePath();
+      ctx.fill();
+
+      // Right flared side lock
+      ctx.beginPath();
+      ctx.moveTo(8.0, headY - 5);
+      ctx.quadraticCurveTo(14.5, headY + 1, 12.2, headY + 8);
+      ctx.quadraticCurveTo(10.2, headY + 3, 7.5, headY - 2);
+      ctx.closePath();
+      ctx.fill();
+
+      // 2. Princess Peach Turquoise / Sapphire Drop Earrings
+      const drawPrincessEarring = (ex, ey) => {
+        ctx.fillStyle = '#00e5ff';
+        ctx.beginPath();
+        ctx.arc(ex, ey, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#0097a7';
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+        // Bright specular glint
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(ex + 0.6, ey - 0.7, 0.65, 0, Math.PI * 2);
+        ctx.fill();
+      };
+      drawPrincessEarring(-10.2, headY + 3.8);
+      drawPrincessEarring(10.2, headY + 3.8);
+
       // Hair crown sheen highlight
       ctx.strokeStyle = 'rgba(255, 245, 190, 0.45)';
       ctx.lineWidth = 1.8;
@@ -1098,9 +1220,9 @@ const Sprites = {
       ctx.arc(0, headY - 6, 11, Math.PI * 0.9, Math.PI * 1.45);
       ctx.stroke();
 
-      // Style-specific accessories & clips
+      // Style-specific accessories & Golden Tiara/Crown
       if (hairStyle === 'long_curls') {
-        // Delicate golden star hair clip
+        // Golden star hair clip
         ctx.fillStyle = '#ffea00';
         Sprites.drawStar(ctx, -7, headY - 8, 3.5, 1.8, 5);
 
@@ -1118,7 +1240,7 @@ const Sprites = {
 
       } else if (hairStyle === 'ponytail' || (hairStyle === 'classic' && charType === 'mommy')) {
         if (charType === 'mommy') {
-          // Tortoiseshell sunglasses resting on forehead & crystal drop earrings
+          // Chic tortoiseshell sunglasses on forehead
           ctx.fillStyle = '#e65100';
           ctx.beginPath();
           ctx.roundRect(-8, headY - 13, 7, 5, 2);
@@ -1135,62 +1257,48 @@ const Sprites = {
           ctx.moveTo(-1, headY - 11);
           ctx.lineTo(1, headY - 11);
           ctx.stroke();
-
-          // Chandelier drop earrings
-          const earSwing = (player.hairSway || 0) * 8;
-          ctx.fillStyle = '#00f0ff';
-          ctx.beginPath();
-          ctx.arc(10.5, headY + 4, 2, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.strokeStyle = '#ffd700';
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(10.5, headY + 4);
-          ctx.lineTo(10.5 + earSwing, headY + 9);
-          ctx.stroke();
-          ctx.fillStyle = '#00f0ff';
-          ctx.beginPath();
-          ctx.arc(10.5 + earSwing, headY + 9, 2, 0, Math.PI * 2);
-          ctx.fill();
         }
 
       } else if (hairStyle === 'short_bob') {
-        // Delicate side wisps framing ears (away from face)
-        ctx.strokeStyle = hColor;
-        ctx.lineWidth = 1.6;
-        ctx.beginPath();
-        ctx.moveTo(-8, headY - 6);
-        ctx.lineTo(-10, headY - 1);
-        ctx.moveTo(8, headY - 6);
-        ctx.lineTo(10, headY - 1);
-        ctx.stroke();
-
-      } else {
-        // Classic style (Princess Golden Tiara with Ruby Gem)
+        // Chic hair clip
         ctx.fillStyle = '#ffd700';
         ctx.beginPath();
-        ctx.moveTo(-7, headY - 9);
-        ctx.lineTo(-5, headY - 15);
-        ctx.lineTo(-2, headY - 11);
-        ctx.lineTo(2, headY - 17);
-        ctx.lineTo(6, headY - 11);
-        ctx.lineTo(9, headY - 15);
-        ctx.lineTo(11, headY - 9);
+        ctx.ellipse(-6, headY - 8, 3.0, 1.8, 0.4, 0, Math.PI * 2);
+        ctx.fill();
+
+      } else {
+        // Classic style: ICONIC PRINCESS PEACH GOLDEN ROYAL CROWN!
+        // 4 Golden peaks with center ruby & side cyan gems
+        ctx.fillStyle = '#ffd700';
+        ctx.beginPath();
+        ctx.moveTo(-7.5, headY - 9);
+        ctx.lineTo(-6.0, headY - 16.5);
+        ctx.lineTo(-2.2, headY - 11.5);
+        ctx.lineTo(1.5, headY - 18.0);
+        ctx.lineTo(5.5, headY - 11.5);
+        ctx.lineTo(8.5, headY - 16.5);
+        ctx.lineTo(10.0, headY - 9);
         ctx.closePath();
         ctx.fill();
         ctx.strokeStyle = '#b8860b';
         ctx.lineWidth = 1;
         ctx.stroke();
 
-        // Center Jewels
-        ctx.fillStyle = '#ff1493';
+        // Center ruby cabochon gem
+        ctx.fillStyle = '#ff1744';
         ctx.beginPath();
-        ctx.arc(2, headY - 13, 2, 0, Math.PI * 2);
+        ctx.ellipse(1.5, headY - 13.5, 2.2, 2.8, 0, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = '#00f0ff';
+        ctx.fillStyle = '#ffffff';
         ctx.beginPath();
-        ctx.arc(-5, headY - 12, 1.3, 0, Math.PI * 2);
-        ctx.arc(9, headY - 12, 1.3, 0, Math.PI * 2);
+        ctx.arc(2.0, headY - 14.5, 0.7, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Twin cyan side gems
+        ctx.fillStyle = '#00e5ff';
+        ctx.beginPath();
+        ctx.arc(-4.5, headY - 12.5, 1.4, 0, Math.PI * 2);
+        ctx.arc(7.5, headY - 12.5, 1.4, 0, Math.PI * 2);
         ctx.fill();
       }
     }
