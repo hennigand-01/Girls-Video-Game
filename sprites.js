@@ -221,10 +221,11 @@ const Sprites = {
 
     // Spring boots wings
     if (player.springTimer > 0) {
+      const bootLegW = isDaddy ? 8 : 5;
       ctx.fillStyle = '#fffbe6';
       ctx.beginPath();
-      ctx.ellipse(-legW - 5, isJumping ? h / 2 - 6 : h / 2 - 4, 5, 2.5, -0.3, 0, Math.PI * 2);
-      ctx.ellipse(legW + 5, isJumping ? h / 2 - 8 : h / 2 - 4, 5, 2.5, 0.3, 0, Math.PI * 2);
+      ctx.ellipse(-bootLegW - 5, isJumping ? h / 2 - 6 : h / 2 - 4, 5, 2.5, -0.3, 0, Math.PI * 2);
+      ctx.ellipse(bootLegW + 5, isJumping ? h / 2 - 8 : h / 2 - 4, 5, 2.5, 0.3, 0, Math.PI * 2);
       ctx.fill();
     }
 
@@ -1948,16 +1949,17 @@ const Sprites = {
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Pet Types: puppy, kitten, bunny, fawn, royal_pup
+    // Pet Types: puppy, kitten, bunny, fawn, max
     const type = goal.petType || 'puppy';
     const isKitty = type === 'kitten';
     const isBunny = type === 'bunny';
     const isFawn = type === 'fawn';
-    const isRoyalPup = type === 'royal_pup';
+    const isMax = type === 'max' || type === 'royal_pup';
 
     let petColor = '#f5b041'; // default golden
     if (isKitty || isBunny) petColor = '#ffffff';
     else if (isFawn) petColor = '#c67d43'; // warm fawn chestnut
+    else if (isMax) petColor = '#f4c062'; // Max: rich golden retriever / yellow lab honey coat
 
     // Tail / Cottontail
     if (isBunny) {
@@ -1967,19 +1969,19 @@ const Sprites = {
       ctx.arc(-11, 4 + bob, 4.5, 0, Math.PI * 2);
       ctx.fill();
     } else {
-      // Wagging tail
-      ctx.fillStyle = petColor;
+      // Wagging tail (Max wags enthusiastically!)
+      ctx.fillStyle = isMax ? '#df992d' : petColor;
       ctx.save();
       ctx.translate(-10, 2 + bob);
       ctx.rotate(tailWag - 0.5);
-      ctx.fillRect(-3, -10, 4, 10);
+      ctx.fillRect(-3, -10, isMax ? 5 : 4, isMax ? 13 : 10);
       ctx.restore();
     }
 
     // Body
     ctx.fillStyle = petColor;
     ctx.beginPath();
-    ctx.ellipse(0, 2 + bob, 11, 9, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 2 + bob, isMax ? 13 : 11, isMax ? 10.5 : 9, 0, 0, Math.PI * 2);
     ctx.fill();
 
     // Fawn white spots on back!
@@ -1996,7 +1998,7 @@ const Sprites = {
     // Head
     ctx.fillStyle = petColor;
     ctx.beginPath();
-    ctx.arc(6, -6 + bob, 8.5, 0, Math.PI * 2);
+    ctx.arc(6, -6 + bob, isMax ? 9.5 : 8.5, 0, Math.PI * 2);
     ctx.fill();
 
     // Ears
@@ -2044,6 +2046,13 @@ const Sprites = {
       ctx.ellipse(2, -12 + bob, 2, 4.5, -0.5, 0, Math.PI * 2);
       ctx.ellipse(10, -12 + bob, 2, 4.5, 0.5, 0, Math.PI * 2);
       ctx.fill();
+    } else if (isMax) {
+      // Max's soft floppy golden retriever / lab ears
+      ctx.fillStyle = '#d48c2a';
+      ctx.beginPath();
+      ctx.ellipse(1, -5 + bob, 4.5, 8.5, 0.35, 0, Math.PI * 2);
+      ctx.ellipse(11, -5 + bob, 4.5, 8.5, -0.35, 0, Math.PI * 2);
+      ctx.fill();
     } else {
       // Floppy puppy ears
       ctx.fillStyle = '#cf7d15';
@@ -2065,32 +2074,41 @@ const Sprites = {
     ctx.arc(9.5, -6.6 + bob, 0.8, 0, Math.PI * 2);
     ctx.fill();
 
-    // Cute pink or black nose
-    ctx.fillStyle = isFawn ? '#1a1a1a' : '#ff4d6d';
+    // Cute nose
+    ctx.fillStyle = (isFawn || isMax) ? '#1a1a1a' : '#ff4d6d';
     ctx.beginPath();
-    ctx.arc(7, -3 + bob, 1.3, 0, Math.PI * 2);
+    ctx.arc(7, -3 + bob, isMax ? 1.7 : 1.3, 0, Math.PI * 2);
     ctx.fill();
 
-    // Royal Crown for Level 5 Royal Pup!
-    if (isRoyalPup) {
-      ctx.fillStyle = '#ffd700';
+    // Max's happy panting mouth & pink tongue!
+    if (isMax) {
+      ctx.fillStyle = '#ff85a2';
       ctx.beginPath();
-      ctx.moveTo(1, -14 + bob);
-      ctx.lineTo(3, -22 + bob);
-      ctx.lineTo(6, -17 + bob);
-      ctx.lineTo(9, -22 + bob);
-      ctx.lineTo(11, -14 + bob);
-      ctx.closePath();
+      ctx.ellipse(7, -0.5 + bob, 1.8, 2.5, 0, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = '#b38f00';
+    }
+
+    // Collar & Tag / Ribbon
+    if (isMax) {
+      // Max's Royal Blue Collar
+      ctx.fillStyle = '#1d4ed8';
+      ctx.beginPath();
+      ctx.roundRect(0, -1.5 + bob, 13, 3.5, 1.5);
+      ctx.fill();
+
+      // Shiny Silver Tag engraved with "MAX"
+      ctx.fillStyle = '#f1f5f9';
+      ctx.strokeStyle = '#94a3b8';
       ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(6.5, 4.5 + bob, 3.8, 0, Math.PI * 2);
+      ctx.fill();
       ctx.stroke();
 
-      // Crown ruby jewel
-      ctx.fillStyle = '#ff0055';
-      ctx.beginPath();
-      ctx.arc(6, -16 + bob, 1.5, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.font = 'bold 5px "Fredoka", sans-serif';
+      ctx.fillStyle = '#0f172a';
+      ctx.textAlign = 'center';
+      ctx.fillText('MAX', 6.5, 6.2 + bob);
     } else {
       // Little pink bow / ribbon
       ctx.fillStyle = '#ff007f';
@@ -2101,8 +2119,8 @@ const Sprites = {
 
     // Floating heart above pet
     const heartY = -22 + Math.sin(Date.now() * 0.007) * 4;
-    ctx.fillStyle = isRoyalPup ? '#ffd700' : '#ff2b5f';
-    Sprites.drawHeart(ctx, 6, heartY, 6);
+    ctx.fillStyle = isMax ? '#ff2b5f' : '#ff2b5f';
+    Sprites.drawHeart(ctx, 6, heartY, isMax ? 7 : 6);
 
     ctx.restore();
   },
@@ -2301,6 +2319,215 @@ const Sprites = {
 
       ctx.restore();
     });
+  },
+
+  // Draw Grand Finale Family Reunion Scene (Ilianna, Ava, Mommy, Daddy, and Max the dog!)
+  drawFamilyReunion(ctx, width, height, customColors = {}, customization = {}) {
+    ctx.clearRect(0, 0, width, height);
+
+    // 1. Mount Hood Sunset Alpenglow Sky
+    const skyGrad = ctx.createLinearGradient(0, 0, 0, height);
+    skyGrad.addColorStop(0, '#2d1b4e');    // Deep twilight violet
+    skyGrad.addColorStop(0.35, '#8b3a62'); // Alpenglow magenta
+    skyGrad.addColorStop(0.7, '#d9534f');  // Sunset coral
+    skyGrad.addColorStop(1, '#f39c12');    // Warm amber glow
+    ctx.fillStyle = skyGrad;
+    ctx.fillRect(0, 0, width, height);
+
+    // 2. Distant Snow-Capped Peak of Mount Hood
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.moveTo(width * 0.5 - 90, height - 30);
+    ctx.lineTo(width * 0.5, 32); // Mount Hood Summit Peak!
+    ctx.lineTo(width * 0.5 + 90, height - 30);
+    ctx.closePath();
+    ctx.fill();
+
+    // Mountain shadow ridge
+    ctx.fillStyle = '#cfd8dc';
+    ctx.beginPath();
+    ctx.moveTo(width * 0.5, 32);
+    ctx.lineTo(width * 0.5 + 90, height - 30);
+    ctx.lineTo(width * 0.5, height - 30);
+    ctx.closePath();
+    ctx.fill();
+
+    // 3. Summit Meadow Ground (Mossy rock and alpine wildflowers)
+    const groundGrad = ctx.createLinearGradient(0, height - 45, 0, height);
+    groundGrad.addColorStop(0, '#2e7d32');
+    groundGrad.addColorStop(0.4, '#1b5e20');
+    groundGrad.addColorStop(1, '#0d3311');
+    ctx.fillStyle = groundGrad;
+    ctx.beginPath();
+    ctx.ellipse(width / 2, height - 10, width * 0.55, 38, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 4. Wildflower dots & celebration sparkles
+    const time = Date.now() * 0.003;
+    for (let i = 0; i < 20; i++) {
+      const fx = (i * 31 + Math.sin(time + i) * 6) % width;
+      const fy = height - 12 - (i % 5) * 4;
+      ctx.fillStyle = i % 3 === 0 ? '#ff3366' : (i % 3 === 1 ? '#ffea00' : '#a66fe6');
+      ctx.beginPath();
+      ctx.arc(fx, fy, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // 5. Celebration Floating Confetti & Hearts
+    for (let c = 0; c < 16; c++) {
+      const cx = (c * 42 + Math.cos(time + c) * 15) % width;
+      const cy = (height * 0.15 + (c * 23 + time * 25) % (height * 0.65));
+      ctx.fillStyle = ['#ffd700', '#ff4081', '#00e5ff', '#76ff03', '#ff9100'][c % 5];
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(time * 2 + c);
+      ctx.fillRect(-3, -2, 6, 3);
+      ctx.restore();
+    }
+
+    // 6. Draw The Family and Max together!
+    const baseGroundY = height - 35;
+    const happyBob = Math.sin(Date.now() * 0.008) * 3;
+
+    // --- CHARACTER 1: DADDY (Standing on far left, proud and waving) ---
+    const dadX = width * 0.16;
+    const dadY = baseGroundY - 26;
+    Sprites.drawPlayer(ctx, {
+      x: dadX,
+      y: dadY + happyBob * 0.5,
+      width: 24,
+      height: 34,
+      facing: 1,
+      isGrounded: true,
+      isClimbing: false,
+      animTimer: Date.now() * 0.004,
+      customization: {
+        type: 'daddy',
+        outfit: customColors.outfit || '#ff69b4',
+        pants: '#2b4c7e',
+        skin: customColors.skin || '#ffdfbf',
+        hair: customColors.hair || '#4a3525',
+        hairStyle: customization.hairStyle || 'bald',
+        clothingStyle: customization.clothingStyle || 'blue_jeans'
+      }
+    });
+
+    // --- CHARACTER 2: MOMMY (Standing on far right, happy & elegant) ---
+    const momX = width * 0.84;
+    const momY = baseGroundY - 24;
+    Sprites.drawPlayer(ctx, {
+      x: momX,
+      y: momY - happyBob * 0.5,
+      width: 20,
+      height: 30,
+      facing: -1,
+      isGrounded: true,
+      isClimbing: false,
+      animTimer: Date.now() * 0.004,
+      customization: {
+        type: 'mommy',
+        outfit: '#38bdf8',
+        pants: '#3a7bd5',
+        skin: '#ffdfbf',
+        hair: '#4a2f1b',
+        hairStyle: 'classic',
+        clothingStyle: 'adventurer',
+        eyeType: 'violet'
+      }
+    });
+
+    // --- CHARACTER 3: ILIANNA (To the left of Max, petting him happily) ---
+    const iliannaX = width * 0.35;
+    const iliannaY = baseGroundY - 22;
+    Sprites.drawPlayer(ctx, {
+      x: iliannaX,
+      y: iliannaY + Math.sin(Date.now() * 0.01) * 4,
+      width: 20,
+      height: 30,
+      facing: 1,
+      isGrounded: true,
+      isClimbing: false,
+      animTimer: Date.now() * 0.005,
+      customization: {
+        type: 'ilianna',
+        outfit: customColors.outfit || '#ff69b4',
+        pants: '#3a7bd5',
+        skin: customColors.skin || '#ffdfbf',
+        hair: customColors.hair || '#e6a147',
+        hairStyle: customization.hairStyle || 'classic',
+        clothingStyle: customization.clothingStyle || 'adventurer',
+        eyeType: customization.eyeType || 'sapphire'
+      }
+    });
+
+    // --- CHARACTER 4: AVA (To the right of Max, hugging him happily) ---
+    const avaX = width * 0.65;
+    const avaY = baseGroundY - 22;
+    Sprites.drawPlayer(ctx, {
+      x: avaX,
+      y: avaY - Math.sin(Date.now() * 0.01) * 4,
+      width: 20,
+      height: 30,
+      facing: -1,
+      isGrounded: true,
+      isClimbing: false,
+      animTimer: Date.now() * 0.005,
+      customization: {
+        type: 'ava',
+        outfit: '#e63946',
+        pants: '#1d4ed8',
+        skin: '#ffdfbf',
+        hair: '#5c3a21',
+        hairStyle: 'long_curls',
+        clothingStyle: 'royal_tunic',
+        eyeType: 'emerald'
+      }
+    });
+
+    // --- CHARACTER 5: MAX THE GOLDEN RETRIEVER / YELLOW LAB (Center Stage!) ---
+    const maxX = width * 0.50;
+    const maxY = baseGroundY - 14;
+    Sprites.drawGoalPet(ctx, {
+      x: maxX,
+      y: maxY,
+      petType: 'max'
+    });
+
+    // 7. Max's Happy Speech Bubble & Hearts
+    const maxBob = Math.sin(Date.now() * 0.006) * 2;
+    ctx.save();
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#ffb703';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(maxX - 44, maxY - 42 + maxBob, 88, 22, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    // Bubble pointer
+    ctx.beginPath();
+    ctx.moveTo(maxX - 4, maxY - 20 + maxBob);
+    ctx.lineTo(maxX, maxY - 12 + maxBob);
+    ctx.lineTo(maxX + 4, maxY - 20 + maxBob);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.font = 'bold 11px "Fredoka", sans-serif';
+    ctx.fillStyle = '#d97706';
+    ctx.textAlign = 'center';
+    ctx.fillText('WOOF! 💖 MAX', maxX, maxY - 27 + maxBob);
+    ctx.restore();
+
+    // 8. Top Celebration Ribbon Banner
+    ctx.save();
+    ctx.font = 'bold 15px "Fredoka", sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.strokeStyle = '#1b1424';
+    ctx.lineWidth = 3;
+    ctx.strokeText('✨ THE FAMILY IS REUNITED WITH MAX! ✨', width / 2, 22);
+    ctx.fillText('✨ THE FAMILY IS REUNITED WITH MAX! ✨', width / 2, 22);
+    ctx.restore();
   }
 };
 

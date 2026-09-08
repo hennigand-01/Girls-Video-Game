@@ -220,6 +220,7 @@ class Game {
     this.score = (level === 1 && !isContinuingLevel) ? 0 : this.score;
     this.loadLevel(this.level);
     this.state = 'PLAYING';
+    this.stopReunionAnimation();
 
     const startScreen = document.getElementById('start-screen');
     const gameOverScreen = document.getElementById('game-over-screen');
@@ -274,7 +275,7 @@ class Game {
       2: 'kitten',
       3: 'bunny',
       4: 'fawn',
-      5: 'royal_pup'
+      5: 'max'
     };
     this.goal = {
       x: 660,
@@ -288,7 +289,7 @@ class Game {
       2: '🌊 CASCADE RIVER RIDGE 🌲',
       3: '🏔️ HIGH CASCADE MOUNTAIN PASS 🏔️',
       4: '🌿 OREGON FERN CANYON 🦌',
-      5: '🌋 MOUNT HOOD ALPINE SUMMIT 👑'
+      5: '🌋 MOUNT HOOD SUMMIT • RESCUE MAX! 🐕'
     };
     this.particles.push({
       x: 400,
@@ -629,9 +630,46 @@ class Game {
         p.y = p.currentLadder.y - p.height / 2 - 2;
         p.vy = 0;
         p.isGrounded = true;
-      } else if (p.y - p.height / 2 > p.currentLadder.y + p.currentLadder.height) {
-        // Reached bottom of ladder
-        p.isClimbing = false;
+      } else if (wantDown || p.vy > 0) {
+        // Climbing down: check if player's feet reached a platform below the ladder top
+        const feetY = p.y + p.height / 2;
+        let landedPlat = false;
+        for (const plat of this.platforms) {
+          const minX = Math.min(plat.x1, plat.x2);
+          const maxX = Math.max(plat.x1, plat.x2);
+          if (p.x >= minX - 12 && p.x <= maxX + 12) {
+            const t = (p.x - plat.x1) / (plat.x2 - plat.x1);
+            const slopeY = plat.y1 + t * (plat.y2 - plat.y1);
+            if (slopeY > p.currentLadder.y + 14 && feetY >= slopeY - 4 && feetY <= slopeY + 16) {
+              p.isClimbing = false;
+              p.y = slopeY - p.height / 2;
+              p.vy = 0;
+              p.isGrounded = true;
+              landedPlat = true;
+              break;
+            }
+          }
+        }
+
+        // Or reached bottom rung of ladder -> step safely onto lower platform or ground
+        if (!landedPlat && (feetY >= p.currentLadder.y + p.currentLadder.height || feetY >= 605)) {
+          p.isClimbing = false;
+          let bestY = 600;
+          for (const plat of this.platforms) {
+            const minX = Math.min(plat.x1, plat.x2);
+            const maxX = Math.max(plat.x1, plat.x2);
+            if (p.x >= minX - 12 && p.x <= maxX + 12) {
+              const t = (p.x - plat.x1) / (plat.x2 - plat.x1);
+              const slopeY = plat.y1 + t * (plat.y2 - plat.y1);
+              if (slopeY > p.currentLadder.y + 14 && slopeY < bestY + 40) {
+                bestY = slopeY;
+              }
+            }
+          }
+          p.y = bestY - p.height / 2;
+          p.vy = 0;
+          p.isGrounded = true;
+        }
       }
 
       return; // Skip regular gravity while on ladder
@@ -738,6 +776,13 @@ class Game {
           break;
         }
       }
+    }
+
+    // Safety clamp: Never allow player to fall out of the bottom of the screen
+    if (!p.isGrounded && p.y + p.height / 2 >= 612) {
+      p.y = 612 - p.height / 2;
+      p.vy = 0;
+      p.isGrounded = true;
     }
 
     // Running forward lean
@@ -1026,29 +1071,36 @@ class Game {
     const nextBtn = document.getElementById('btn-next-level');
 
     if (this.level < this.maxLevels) {
+      this.stopReunionAnimation();
       winTitle.innerText = `🎉 LEVEL ${this.level} COMPLETE! 🎉`;
       const nextAreas = {
         1: 'Misty Cascade River Ridge',
         2: 'High Cascade Mountain Pass',
         3: 'Oregon Fern Canyon & Redwoods',
-        4: 'Mount Hood Alpine Summit'
+        4: 'Mount Hood Summit to Rescue Max!'
       };
       const petNames = {
         puppy: 'Golden Puppy',
         kitten: 'Fluffy Kitten',
         bunny: 'Snowshoe Bunny',
         fawn: 'Baby Fawn',
-        royal_pup: 'Royal Crown Pup'
+        max: 'Max the Family Dog'
       };
       const petName = petNames[this.goal.petType] || this.goal.petType;
       winMsg.innerText = `You rescued the ${petName}! Ready to hike into ${nextAreas[this.level]}?`;
       nextBtn.innerText = 'NEXT LEVEL ❯';
       nextBtn.onclick = () => this.startGame(this.level + 1, { resume: true });
     } else {
-      winTitle.innerText = '🏆 YOU CONQUERED MOUNT HOOD! 👑';
-      winMsg.innerText = `Congratulations! You climbed all 5 Oregon levels and rescued all the cute forest pets! You are the Ultimate Oregon Mountain Hero!`;
+      winTitle.innerText = '🎉 MAX IS HOME! FAMILY REUNITED! 🐕💖';
+      winMsg.innerText = `Max, the family's beloved golden retriever / yellow lab mix, was lost in the Oregon wilderness! Thanks to your brave climb to the summit of Mount Hood, Max is safe and sound! The whole family is together again at last! 🐾✨`;
       nextBtn.innerText = 'PLAY AGAIN ↺';
-      nextBtn.onclick = () => this.startGame(1, { resume: true });
+      nextBtn.onclick = () => {
+        this.stopReunionAnimation();
+        this.startGame(1, { resume: true });
+      };
+
+      // Launch animated Family Reunion Scene on canvas!
+      this.startReunionAnimation();
     }
 
     if (winScreen) {
@@ -1058,6 +1110,33 @@ class Game {
         else winScreen.style.display = '';
       }
     }
+  }
+
+  startReunionAnimation() {
+    const reunionCont = document.getElementById('reunion-container');
+    const canvas = document.getElementById('reunionCanvas');
+    if (!reunionCont || !canvas) return;
+
+    reunionCont.classList.remove('hidden');
+    const ctx = canvas.getContext('2d');
+    this.reunionActive = true;
+
+    const animLoop = () => {
+      if (!this.reunionActive) return;
+      try {
+        window.Sprites.drawFamilyReunion(ctx, canvas.width, canvas.height, this.customColors, this.customization);
+      } catch (err) {
+        console.error('Reunion animation error:', err);
+      }
+      requestAnimationFrame(animLoop);
+    };
+    requestAnimationFrame(animLoop);
+  }
+
+  stopReunionAnimation() {
+    this.reunionActive = false;
+    const reunionCont = document.getElementById('reunion-container');
+    if (reunionCont) reunionCont.classList.add('hidden');
   }
 
   gameOver() {
@@ -1087,6 +1166,7 @@ class Game {
   goToHomeScreen() {
     this.state = 'MENU';
     window.soundEngine.pauseMusic();
+    this.stopReunionAnimation();
     this.barrels = [];
     this.particles = [];
     if (this.player) {

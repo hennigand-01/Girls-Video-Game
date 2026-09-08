@@ -202,8 +202,12 @@
 
       <!-- LEVEL WIN MODAL -->
       <div id="win-screen" class="modal-overlay hidden">
-        <div class="modal-content">
+        <div class="modal-content" id="win-modal-content">
           <h2 class="modal-title" id="win-title">🎉 LEVEL COMPLETE! 🎉</h2>
+          <!-- Special Grand Finale Family Reunion Stage for Level 5 -->
+          <div id="reunion-container" class="hidden" style="margin: 8px auto 12px; text-align: center;">
+            <canvas id="reunionCanvas" width="480" height="200" style="max-width: 100%; height: auto; border-radius: 14px; border: 2px solid rgba(255, 215, 0, 0.7); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 215, 0, 0.35);"></canvas>
+          </div>
           <p class="modal-subtitle" id="win-msg">You rescued the pet! Ready for the next mountain peak?</p>
           <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
             <button id="btn-next-level" class="btn-primary">NEXT LEVEL ❯</button>
@@ -252,9 +256,9 @@
   </div>
 
   <!-- Scripts with cache busters -->
-  <script src="audio.js?v=20260908_10"></script>
-  <script src="sprites.js?v=20260908_10"></script>
-  <script src="game.js?v=20260908_10"></script>
+  <script src="audio.js?v=20260908_11"></script>
+  <script src="sprites.js?v=20260908_11"></script>
+  <script src="game.js?v=20260908_11"></script>
 
   <script>
     // UI Interaction Glue
