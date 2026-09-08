@@ -558,397 +558,41 @@ const Sprites = {
       ctx.restore();
     }
 
-    // --- HEAD & EXQUISITE FACE DETAILS ---
+    // --- HEAD, FACE & HAIR SYSTEM (LAYERED: BACK HAIR -> HEAD/FACE/EYES -> FRONT HAIR/ACCESSORIES) ---
     const headY = bodyY - 14;
     const headR = isDaddy ? 12.8 : 11.5;
-
-    // Hyper-realistic skin gradient with subsurface light simulation
-    const headGrad = ctx.createRadialGradient(2, headY - 4, 2, 0, headY, headR);
-    headGrad.addColorStop(0, '#fff5ea');
-    headGrad.addColorStop(0.35, skinColor);
-    headGrad.addColorStop(1, '#d4916a');
-    ctx.fillStyle = headGrad;
-    ctx.beginPath();
-    ctx.arc(0, headY, headR, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Soft jawline ambient occlusion shadow
-    ctx.fillStyle = 'rgba(100, 40, 15, 0.14)';
-    ctx.beginPath();
-    ctx.arc(0, headY + headR - 1, headR * 0.65, 0, Math.PI);
-    ctx.fill();
-
-    // Cute blushing cheeks with subsurface warmth
-    ctx.fillStyle = isDaddy ? 'rgba(255, 120, 100, 0.4)' : 'rgba(255, 95, 135, 0.52)';
-    ctx.beginPath();
-    ctx.arc(-5.5, headY + 3.5, isDaddy ? 3.5 : 3, 0, Math.PI * 2);
-    ctx.arc(5.5, headY + 3.5, isDaddy ? 3.5 : 3, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Soft nose tip highlight
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
-    ctx.beginPath();
-    ctx.arc(6, headY + 1.2, 1, 0, Math.PI * 2);
-    ctx.fill();
-
-    // --- HYPER-REALISTIC EYES (SAPPHIRE, EMERALD, AMBER, VIOLET, SPARKLE) ---
-    if (player.blinkTimer > 0) {
-      ctx.lineWidth = 1.8;
-      ctx.strokeStyle = '#222222';
-      ctx.beginPath();
-      ctx.arc(2.5, headY - 1, 2.8, 0, Math.PI, false);
-      ctx.arc(7.5, headY - 1, 2.8, 0, Math.PI, false);
-      ctx.stroke();
-    } else {
-      let eyeTones;
-      if (isDaddy) {
-        switch (eyeType) {
-          case 'dad_blue':
-            eyeTones = { limbal: '#0d223a', outer: '#1b4d89', inner: '#3f88c5', highlight: '#70b8ff', fleck: '#d0e8ff' };
-            break;
-          case 'dad_hazel':
-            eyeTones = { limbal: '#2b210e', outer: '#58431c', inner: '#8c6d31', highlight: '#c29b38', fleck: '#e0c870' };
-            break;
-          case 'dad_gray':
-            eyeTones = { limbal: '#1b2220', outer: '#3f4e48', inner: '#60726b', highlight: '#8fa59c', fleck: '#d3ded9' };
-            break;
-          case 'dad_coffee':
-            eyeTones = { limbal: '#190a00', outer: '#3a1803', inner: '#5e2a07', highlight: '#8c4815', fleck: '#c27d42' };
-            break;
-          case 'dad_brown':
-          default:
-            eyeTones = { limbal: '#211003', outer: '#452208', inner: '#6e3c11', highlight: '#9c5e1c', fleck: '#d99e52' };
-            break;
-        }
-      } else {
-        switch (eyeType) {
-          case 'emerald':
-            eyeTones = { limbal: '#081c14', outer: '#1b4332', inner: '#2d6a4f', highlight: '#74c69d', fleck: '#ffd166' };
-            break;
-          case 'amber':
-            eyeTones = { limbal: '#2b1604', outer: '#7f4f24', inner: '#b07d62', highlight: '#f4a261', fleck: '#ffe66d' };
-            break;
-          case 'violet':
-            eyeTones = { limbal: '#1e0038', outer: '#5a189a', inner: '#7b2cbf', highlight: '#c77dff', fleck: '#e0aaff' };
-            break;
-          case 'sparkle':
-            eyeTones = { limbal: '#002855', outer: '#0077b6', inner: '#00b4d8', highlight: '#90e0ef', fleck: '#ffffff' };
-            break;
-          case 'sapphire':
-          default:
-            eyeTones = { limbal: '#03045e', outer: '#023e8a', inner: '#0077b6', highlight: '#48cae4', fleck: '#caf0f8' };
-            break;
-        }
-      }
-
-      const drawEye = (ex, ey) => {
-        // Sclera with subtle 3D sphere gradient
-        const scleraGrad = ctx.createLinearGradient(ex, ey - 3, ex, ey + 3);
-        scleraGrad.addColorStop(0, '#dbe2ec');
-        scleraGrad.addColorStop(0.35, '#ffffff');
-        scleraGrad.addColorStop(1, '#edf2f7');
-        ctx.fillStyle = scleraGrad;
-        ctx.beginPath();
-        ctx.arc(ex, ey, 3.2, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Dark limbal ring
-        ctx.strokeStyle = eyeTones.limbal;
-        ctx.lineWidth = 0.8;
-        ctx.beginPath();
-        ctx.arc(ex + 0.2, ey, 2.2, 0, Math.PI * 2);
-        ctx.stroke();
-
-        // Iris multi-tone depth gradient
-        const irisGrad = ctx.createRadialGradient(ex + 0.2, ey, 0.4, ex + 0.2, ey, 2.2);
-        irisGrad.addColorStop(0, eyeTones.inner);
-        irisGrad.addColorStop(0.65, eyeTones.outer);
-        irisGrad.addColorStop(1, eyeTones.limbal);
-        ctx.fillStyle = irisGrad;
-        ctx.beginPath();
-        ctx.arc(ex + 0.2, ey, 2.2, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Iris micro-striations
-        ctx.strokeStyle = eyeTones.highlight;
-        ctx.lineWidth = 0.55;
-        for (let a = 0; a < Math.PI * 2; a += Math.PI / 3) {
-          ctx.beginPath();
-          ctx.moveTo(ex + 0.2 + Math.cos(a) * 0.8, ey + Math.sin(a) * 0.8);
-          ctx.lineTo(ex + 0.2 + Math.cos(a) * 1.85, ey + Math.sin(a) * 1.85);
-          ctx.stroke();
-        }
-
-        // Deep obsidian pupil
-        ctx.fillStyle = '#0a0a0c';
-        ctx.beginPath();
-        ctx.arc(ex + 0.3, ey, 1.15, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Specular corneal catchlights
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(ex + 0.9, ey - 0.9, 0.9, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Secondary soft bounce catchlight
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
-        ctx.beginPath();
-        ctx.arc(ex - 0.4, ey + 0.8, 0.45, 0, Math.PI * 2);
-        ctx.fill();
-
-        if (!isDaddy && eyeType === 'sparkle') {
-          ctx.fillStyle = '#ffffff';
-          Sprites.drawStar(ctx, ex + 0.9, ey - 0.9, 1.4, 0.5, 4);
-        }
-      };
-
-      drawEye(3.2, headY - 1);
-      drawEye(8.2, headY - 1);
-
-      // Curved eyeliner & eyelashes for ladies only (Daddy gets friendly laugh lines / crinkles)
-      if (!isDaddy) {
-        ctx.strokeStyle = '#18181b';
-        ctx.lineWidth = 1.3;
-        ctx.beginPath();
-        ctx.arc(3.2, headY - 1.2, 3.2, 1.1 * Math.PI, 1.8 * Math.PI);
-        ctx.arc(8.2, headY - 1.2, 3.2, 1.1 * Math.PI, 1.8 * Math.PI);
-        ctx.stroke();
-
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(2.5, headY - 3.2);
-        ctx.lineTo(1.5, headY - 5.2);
-        ctx.moveTo(8.5, headY - 3.2);
-        ctx.lineTo(9.8, headY - 5.2);
-        ctx.stroke();
-      } else {
-        // Daddy eye crinkles / warm laugh lines (friendly dad expression!)
-        ctx.strokeStyle = 'rgba(90, 40, 15, 0.42)';
-        ctx.lineWidth = 0.9;
-        ctx.beginPath();
-        ctx.moveTo(1.2, headY - 1.2);
-        ctx.lineTo(-0.8, headY - 2.2);
-        ctx.moveTo(1.2, headY - 0.2);
-        ctx.lineTo(-0.8, headY + 0.6);
-        ctx.moveTo(10.2, headY - 1.2);
-        ctx.lineTo(12.2, headY - 2.2);
-        ctx.moveTo(10.2, headY - 0.2);
-        ctx.lineTo(12.2, headY + 0.6);
-        ctx.stroke();
-      }
-
-      // Eyebrows: Bushy, friendly dad brows vs. elegant arched feminine brows
-      if (isDaddy) {
-        ctx.strokeStyle = '#2d1f18';
-        ctx.lineWidth = 2.4;
-        ctx.beginPath();
-        ctx.moveTo(0.8, headY - 4.5);
-        ctx.quadraticCurveTo(3.2, headY - 6.2, 5.5, headY - 5.0);
-        ctx.moveTo(6.5, headY - 5.0);
-        ctx.quadraticCurveTo(8.8, headY - 6.2, 11.2, headY - 4.5);
-        ctx.stroke();
-      } else {
-        const browColor = player.customization?.hair || (charType === 'mommy' ? '#2e1c12' : '#7f4f24');
-        ctx.strokeStyle = browColor;
-        ctx.lineWidth = 1.2;
-        ctx.beginPath();
-        ctx.moveTo(1.2, headY - 4.5);
-        ctx.quadraticCurveTo(3.2, headY - 5.6, 5.2, headY - 4.8);
-        ctx.moveTo(6.8, headY - 4.8);
-        ctx.quadraticCurveTo(8.8, headY - 5.6, 10.8, headY - 4.5);
-        ctx.stroke();
-      }
-    }
-
-    // Cheerful, expressive smile
-    ctx.strokeStyle = '#8d3e23';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.arc(5.5, headY + 3.2, isDaddy ? 4.5 : 3.2, 0.1 * Math.PI, 0.9 * Math.PI);
-    ctx.stroke();
-
-    // --- CHARACTER HAIRSTYLES & ACCESSORIES (CUSTOMIZABLE) ---
     const hairSway = (player.hairSway || 0) * 12;
     const hColor = player.customization?.hair || (charType === 'ilianna' ? '#e6a147' : (charType === 'ava' ? '#5c3826' : (charType === 'mommy' ? '#3a2312' : '#4a3b32')));
+    const hairDark = '#3d2b1f';
 
-    if (isDaddy) {
-      // DADDY: 100% ALL-BALD BOY HAIRSTYLES!
-      const hairDark = '#3d2b1f';
-
-      if (hairStyle === 'side_tufts') {
-        // 1. SIDE TUFTS: Completely bald smooth dome on top with funny puffy side tufts flaring out above the ears!
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
-        ctx.beginPath();
-        ctx.ellipse(-1, headY - 8, 4.5, 2, -0.3, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Fluffy, comical side hair tufts sticking out over ears
-        ctx.fillStyle = hairDark;
-        // Left side puffy tuft
-        ctx.beginPath();
-        ctx.arc(-13, headY - 2, 4, 0, Math.PI * 2);
-        ctx.arc(-15, headY + 2, 4.5, 0, Math.PI * 2);
-        ctx.arc(-12, headY + 5, 3.5, 0, Math.PI * 2);
-        ctx.fill();
-        // Right side puffy tuft
-        ctx.beginPath();
-        ctx.arc(13, headY - 2, 4, 0, Math.PI * 2);
-        ctx.arc(15, headY + 2, 4.5, 0, Math.PI * 2);
-        ctx.arc(12, headY + 5, 3.5, 0, Math.PI * 2);
-        ctx.fill();
-
-      } else if (hairStyle === 'stubble_dome') {
-        // 2. STUBBLE BUZZ: Shaved head with 5 o'clock shadow buzz stubble
-        // Darker shadow ring around sides and back
-        ctx.fillStyle = 'rgba(60, 45, 35, 0.22)';
-        ctx.beginPath();
-        ctx.arc(0, headY, headR + 0.4, 0.15 * Math.PI, 0.85 * Math.PI, false);
-        ctx.arc(0, headY - 2, headR - 1.5, 0.85 * Math.PI, 0.15 * Math.PI, true);
-        ctx.closePath();
-        ctx.fill();
-
-        // Stipple micro-stubble dots
-        ctx.fillStyle = hairDark;
-        const stubbleOffsets = [
-          [-11, 0], [-10, 3], [-8, 6], [-5, 8], [5, 8], [8, 6], [10, 3], [11, 0],
-          [-12, -3], [-11, -6], [11, -6], [12, -3], [-9, -8], [9, -8]
-        ];
-        for (const [sx, sy] of stubbleOffsets) {
-          ctx.beginPath();
-          ctx.arc(sx, headY + sy, 0.8, 0, Math.PI * 2);
-          ctx.fill();
-        }
-
-        // Subtle specular highlight on stubble dome
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
-        ctx.beginPath();
-        ctx.ellipse(-2, headY - 7.5, 4.5, 1.8, -0.3, 0, Math.PI * 2);
-        ctx.fill();
-
-      } else if (hairStyle === 'comb_over') {
-        // 3. DAD COMB-OVER: Shiny bald scalp with desperate long hair strands combed across!
-        // Shiny dome highlight underneath
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-        ctx.beginPath();
-        ctx.ellipse(-1, headY - 7.5, 5, 2.2, -0.3, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Hair origin on left side
-        ctx.fillStyle = hairDark;
-        ctx.beginPath();
-        ctx.ellipse(-12, headY + 1, 2.8, 4.5, 0.1, 0, Math.PI * 2);
-        ctx.fill();
-
-        // 4 Desperate comb-over strands swooping across the shiny bald head to the right
-        ctx.strokeStyle = hairDark;
-        ctx.lineWidth = 1.4;
-        const sway = hairSway * 0.4;
-        for (let i = 0; i < 4; i++) {
-          ctx.beginPath();
-          ctx.moveTo(-11, headY - 1 + i * 2.2);
-          ctx.bezierCurveTo(
-            -4, headY - 11 - i * 0.8 + sway,
-            4, headY - 11 - i * 0.8 + sway,
-            11, headY - 2 + i * 2.4
-          );
-          ctx.stroke();
-        }
-
-      } else if (hairStyle === 'clean_shave') {
-        // 4. CLEAN SHAVE: 100% hairless, mirror-buffed chrome dome clean shave!
-        // Primary mirror specular shine
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-        ctx.beginPath();
-        ctx.ellipse(-2.5, headY - 7.8, 6, 2.6, -0.35, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Secondary rim specular shine
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-        ctx.beginPath();
-        ctx.arc(5.2, headY - 8.5, 1.8, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Double gleam star
-        ctx.fillStyle = '#ffffff';
-        Sprites.drawStar(ctx, -2, headY - 8, 3.8, 1.2, 4);
-        Sprites.drawStar(ctx, 5.5, headY - 9, 2.2, 0.8, 4);
-
-      } else {
-        // 5. SHINY BALD (default): Smooth bald dome with comic sparkle twinkle & neat side tufts
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
-        ctx.beginPath();
-        ctx.ellipse(-2, headY - 7.5, 5.5, 2.4, -0.4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(4.5, headY - 8.5, 1.4, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Comic sparkle twinkle
-        ctx.fillStyle = '#ffffff';
-        Sprites.drawStar(ctx, 3, headY - 9, 3, 1, 4);
-
-        // Neat trimmed side hair tufts around ears
-        ctx.fillStyle = hairDark;
-        ctx.beginPath();
-        ctx.ellipse(-13, headY + 1, 3.5, 5.5, 0.2, 0, Math.PI * 2);
-        ctx.ellipse(13, headY + 1, 3.5, 5.5, -0.2, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // ALWAYS FOR DADDY: Textured Dad Mustache & Warm Smile!
-      ctx.fillStyle = '#3a2b22';
-      ctx.beginPath();
-      ctx.ellipse(3, headY + 2.2, 5.2, 2.5, 0.15, 0, Math.PI * 2);
-      ctx.ellipse(8, headY + 2.2, 5.2, 2.5, -0.15, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Mustache bristle highlights
-      ctx.strokeStyle = '#5a4336';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(3, headY + 2.2);
-      ctx.lineTo(0, headY + 3.5);
-      ctx.moveTo(8, headY + 2.2);
-      ctx.lineTo(11, headY + 3.5);
-      ctx.stroke();
-
-    } else {
-      // Render Selected Hairstyle (Classic, Long Curls, Twin Braids, High Ponytail, Short Bob)
+    // =========================================================================
+    // LAYER 1: BACK HAIR (Drawn BEHIND head so face skin is ALWAYS in front)
+    // =========================================================================
+    if (!isDaddy) {
       ctx.fillStyle = hColor;
 
       if (hairStyle === 'long_curls') {
-        // Voluminous cascading spiral curls
+        // Full rounded crown volume behind head
         ctx.beginPath();
-        ctx.arc(0, headY - 2, 13.5, Math.PI * 0.75, Math.PI * 2.15);
+        ctx.ellipse(-1, headY - 1, 14, 14.5, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Cascading side ringlets with wind physics
-        const curlWave = (isRunning ? Math.sin(player.animTimer * 14) * 6 : 0) + hairSway;
+        // Cascading back spiral curls behind neck and shoulders
+        const curlWave = (isRunning ? Math.sin(player.animTimer * 14) * 5 : 0) + hairSway;
         for (let i = 0; i < 3; i++) {
           ctx.beginPath();
           ctx.ellipse(-12 - i * 1.5, headY + 5 + i * 5 + curlWave, 6.5, 9, 0.3, 0, Math.PI * 2);
-          ctx.ellipse(10 + i * 1.5, headY + 5 + i * 5 - curlWave * 0.5, 6, 8.5, -0.3, 0, Math.PI * 2);
+          ctx.ellipse(9 + i * 1.5, headY + 5 + i * 5 - curlWave * 0.5, 6, 8.5, -0.3, 0, Math.PI * 2);
           ctx.fill();
         }
 
-        // Specular hair sheen band
-        ctx.strokeStyle = 'rgba(255, 245, 190, 0.5)';
-        ctx.lineWidth = 2.2;
-        ctx.beginPath();
-        ctx.arc(0, headY - 5, 11.5, Math.PI * 0.85, Math.PI * 1.45);
-        ctx.stroke();
-
-        // Delicate star hair clip
-        ctx.fillStyle = '#ffea00';
-        Sprites.drawStar(ctx, -7, headY - 8, 3.5, 1.8, 5);
-
       } else if (hairStyle === 'braids' || (hairStyle === 'classic' && charType === 'ava')) {
-        // Twin Dutch 3-strand braids
+        // Full rounded crown volume behind head
         ctx.beginPath();
-        ctx.arc(0, headY - 3.5, 13, Math.PI * 0.85, Math.PI * 2.15);
+        ctx.ellipse(-1, headY - 1, 13.5, 14, 0, 0, Math.PI * 2);
         ctx.fill();
 
+        // Twin Dutch 3-strand braids cascading down behind shoulders
         const braidBob = (isRunning ? Math.sin(player.animTimer * 14) * 4.5 : 0) + hairSway;
         const drawBraid = (bx, flip) => {
           ctx.save();
@@ -977,8 +621,407 @@ const Sprites = {
           ctx.restore();
         };
         drawBraid(-13, -1);
-        drawBraid(13, 1);
+        drawBraid(12, 1);
 
+      } else if (hairStyle === 'ponytail' || (hairStyle === 'classic' && charType === 'mommy')) {
+        // Full rounded crown volume behind head
+        ctx.beginPath();
+        ctx.ellipse(-1, headY - 1, 13.5, 14, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Bouncing high warrior ponytail swept back behind the head
+        const ponyBob = (isRunning ? Math.sin(player.animTimer * 14) * 4.5 : 0) + hairSway;
+        ctx.beginPath();
+        ctx.ellipse(-14, headY - 1 + ponyBob, 8, 14.5, -0.38, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Metallic gold hair tie wrap
+        ctx.fillStyle = '#ffd700';
+        ctx.fillRect(-11, headY - 4 + ponyBob * 0.4, 3.5, 6);
+
+      } else if (hairStyle === 'short_bob') {
+        // Chic rounded bob volume behind head
+        ctx.beginPath();
+        ctx.ellipse(-1, headY - 1, 14, 14.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Bob side curves behind jaw (never overlaps face)
+        ctx.beginPath();
+        ctx.ellipse(-11, headY + 4, 5.5, 9, 0.22, 0, Math.PI * 2);
+        ctx.ellipse(10, headY + 4, 5, 8.5, -0.22, 0, Math.PI * 2);
+        ctx.fill();
+
+      } else {
+        // Classic style (Default for Ilianna: flowing royal waves behind head)
+        ctx.beginPath();
+        ctx.ellipse(-2, headY - 1, 14, 14.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        const wave = (isRunning ? Math.sin(player.animTimer * 14) * 6 : 0) + hairSway;
+        ctx.beginPath();
+        ctx.ellipse(-12, headY + 6 + wave, 8.5, 17, 0.28, 0, Math.PI * 2);
+        ctx.ellipse(-7, headY + 13 + wave * 0.7, 7.5, 14, 0.12, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // =========================================================================
+    // LAYER 2: HEAD & VIBRANT EXPRESSIVE FACE (Drawn on top of back hair!)
+    // =========================================================================
+
+    // Realistic skin gradient with warm subsurface illumination
+    const headGrad = ctx.createRadialGradient(2, headY - 4, 2, 0, headY, headR);
+    headGrad.addColorStop(0, '#fff5ea');
+    headGrad.addColorStop(0.35, skinColor);
+    headGrad.addColorStop(1, '#d4916a');
+    ctx.fillStyle = headGrad;
+    ctx.beginPath();
+    ctx.arc(0, headY, headR, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Soft jawline ambient occlusion shadow
+    ctx.fillStyle = 'rgba(100, 40, 15, 0.14)';
+    ctx.beginPath();
+    ctx.arc(0, headY + headR - 1, headR * 0.65, 0, Math.PI);
+    ctx.fill();
+
+    // Cute blushing cheeks with subsurface warmth
+    ctx.fillStyle = isDaddy ? 'rgba(255, 120, 100, 0.4)' : 'rgba(255, 95, 135, 0.52)';
+    ctx.beginPath();
+    ctx.arc(-5.5, headY + 3.5, isDaddy ? 3.5 : 3, 0, Math.PI * 2);
+    ctx.arc(5.5, headY + 3.5, isDaddy ? 3.5 : 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Soft nose tip highlight
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+    ctx.beginPath();
+    ctx.arc(6, headY + 1.2, 1, 0, Math.PI * 2);
+    ctx.fill();
+
+    // --- HYPER-REALISTIC VIBRANT EYES (LARGE, GLOWING JEWEL TONES THAT REALLY SHOW UP!) ---
+    if (player.blinkTimer > 0) {
+      ctx.lineWidth = 1.8;
+      ctx.strokeStyle = '#222222';
+      ctx.beginPath();
+      ctx.arc(3.0, headY - 1, 3.0, 0, Math.PI, false);
+      ctx.arc(8.2, headY - 1, 3.0, 0, Math.PI, false);
+      ctx.stroke();
+    } else {
+      let eyeTones;
+      if (isDaddy) {
+        switch (eyeType) {
+          case 'dad_blue':
+            eyeTones = { rim: '#075985', outer: '#0284c7', core: '#38bdf8', highlight: '#bae6fd' };
+            break;
+          case 'dad_hazel':
+            eyeTones = { rim: '#1a2e05', outer: '#65a30d', core: '#a3e635', highlight: '#ecfccb' };
+            break;
+          case 'dad_gray':
+            eyeTones = { rim: '#0f172a', outer: '#475569', core: '#94a3b8', highlight: '#f8fafc' };
+            break;
+          case 'dad_coffee':
+            eyeTones = { rim: '#290e02', outer: '#78350f', core: '#d97706', highlight: '#ffedd5' };
+            break;
+          case 'dad_brown':
+          default:
+            eyeTones = { rim: '#451a03', outer: '#b45309', core: '#f59e0b', highlight: '#fde68a' };
+            break;
+        }
+      } else {
+        switch (eyeType) {
+          case 'emerald':
+            eyeTones = { rim: '#022c22', outer: '#059669', core: '#10b981', highlight: '#a7f3d0' };
+            break;
+          case 'amber':
+            eyeTones = { rim: '#451a03', outer: '#d97706', core: '#f59e0b', highlight: '#fef08a' };
+            break;
+          case 'violet':
+            eyeTones = { rim: '#3b0764', outer: '#9333ea', core: '#c084fc', highlight: '#f3e8ff' };
+            break;
+          case 'sparkle':
+            eyeTones = { rim: '#082f49', outer: '#0284c7', core: '#38bdf8', highlight: '#ffffff' };
+            break;
+          case 'sapphire':
+          default:
+            eyeTones = { rim: '#03045e', outer: '#0077b6', core: '#00d4ff', highlight: '#caf0f8' };
+            break;
+        }
+      }
+
+      const drawEye = (ex, ey) => {
+        // 1. Crisp white almond sclera
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(ex, ey, 3.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 2. Bold, luminous colored iris (large and vivid so color jumps out!)
+        ctx.fillStyle = eyeTones.core;
+        ctx.beginPath();
+        ctx.arc(ex + 0.2, ey, 2.6, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Iris rich radial depth gradient
+        const irisGrad = ctx.createRadialGradient(ex + 0.2, ey, 0.4, ex + 0.2, ey, 2.6);
+        irisGrad.addColorStop(0, eyeTones.highlight);
+        irisGrad.addColorStop(0.45, eyeTones.core);
+        irisGrad.addColorStop(1, eyeTones.outer);
+        ctx.fillStyle = irisGrad;
+        ctx.beginPath();
+        ctx.arc(ex + 0.2, ey, 2.6, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Sharp dark limbal ring
+        ctx.strokeStyle = eyeTones.rim;
+        ctx.lineWidth = 0.75;
+        ctx.beginPath();
+        ctx.arc(ex + 0.2, ey, 2.6, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // 3. Crisp obsidian pupil
+        ctx.fillStyle = '#0a0a0c';
+        ctx.beginPath();
+        ctx.arc(ex + 0.25, ey, 1.0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 4. Primary specular catchlight
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(ex + 0.85, ey - 0.85, 0.9, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 5. Secondary soft bounce catchlight
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.beginPath();
+        ctx.arc(ex - 0.45, ey + 0.75, 0.45, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Starlight Diamond Sparkle in iris
+        if (!isDaddy && eyeType === 'sparkle') {
+          ctx.fillStyle = '#ffffff';
+          Sprites.drawStar(ctx, ex + 0.85, ey - 0.85, 1.5, 0.5, 4);
+        }
+      };
+
+      drawEye(3.0, headY - 1);
+      drawEye(8.2, headY - 1);
+
+      // Eyeliner & fine curved eyelashes for ladies
+      if (!isDaddy) {
+        ctx.strokeStyle = '#18181b';
+        ctx.lineWidth = 1.3;
+        ctx.beginPath();
+        ctx.arc(3.0, headY - 1.2, 3.4, 1.1 * Math.PI, 1.85 * Math.PI);
+        ctx.arc(8.2, headY - 1.2, 3.4, 1.1 * Math.PI, 1.85 * Math.PI);
+        ctx.stroke();
+
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(2.5, headY - 3.2);
+        ctx.lineTo(1.4, headY - 5.0);
+        ctx.moveTo(8.5, headY - 3.2);
+        ctx.lineTo(9.8, headY - 5.0);
+        ctx.stroke();
+      } else {
+        // Daddy eye crinkles & warm laugh lines
+        ctx.strokeStyle = 'rgba(90, 40, 15, 0.45)';
+        ctx.lineWidth = 0.9;
+        ctx.beginPath();
+        ctx.moveTo(1.2, headY - 1.2);
+        ctx.lineTo(-0.8, headY - 2.2);
+        ctx.moveTo(1.2, headY - 0.2);
+        ctx.lineTo(-0.8, headY + 0.6);
+        ctx.moveTo(10.2, headY - 1.2);
+        ctx.lineTo(12.2, headY - 2.2);
+        ctx.moveTo(10.2, headY - 0.2);
+        ctx.lineTo(12.2, headY + 0.6);
+        ctx.stroke();
+      }
+
+      // Eyebrows (positioned cleanly above eyes)
+      if (isDaddy) {
+        ctx.strokeStyle = '#2d1f18';
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.moveTo(0.8, headY - 4.5);
+        ctx.quadraticCurveTo(3.2, headY - 6.0, 5.5, headY - 4.8);
+        ctx.moveTo(6.5, headY - 4.8);
+        ctx.quadraticCurveTo(8.8, headY - 6.0, 11.2, headY - 4.5);
+        ctx.stroke();
+      } else {
+        const browColor = player.customization?.hair || (charType === 'mommy' ? '#2e1c12' : '#7f4f24');
+        ctx.strokeStyle = browColor;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(1.0, headY - 4.5);
+        ctx.quadraticCurveTo(3.0, headY - 5.8, 5.2, headY - 4.8);
+        ctx.moveTo(6.6, headY - 4.8);
+        ctx.quadraticCurveTo(8.6, headY - 5.8, 10.8, headY - 4.5);
+        ctx.stroke();
+      }
+    }
+
+    // Cheerful, expressive smile
+    ctx.strokeStyle = '#8d3e23';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(5.5, headY + 3.2, isDaddy ? 4.5 : 3.2, 0.1 * Math.PI, 0.9 * Math.PI);
+    ctx.stroke();
+
+    // ALWAYS FOR DADDY: Textured Dad Mustache
+    if (isDaddy) {
+      ctx.fillStyle = '#3a2b22';
+      ctx.beginPath();
+      ctx.ellipse(3, headY + 2.2, 5.2, 2.5, 0.15, 0, Math.PI * 2);
+      ctx.ellipse(8, headY + 2.2, 5.2, 2.5, -0.15, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Mustache bristle highlights
+      ctx.strokeStyle = '#5a4336';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(3, headY + 2.2);
+      ctx.lineTo(0, headY + 3.5);
+      ctx.moveTo(8, headY + 2.2);
+      ctx.lineTo(11, headY + 3.5);
+      ctx.stroke();
+    }
+
+    // =========================================================================
+    // LAYER 3: FOREGROUND HAIR & ACCESSORIES (Frames face, NEVER obscures it!)
+    // =========================================================================
+    if (isDaddy) {
+      // DADDY: 100% ALL-BALD BOY HAIRSTYLES!
+      if (hairStyle === 'side_tufts') {
+        // 1. SIDE TUFTS: Completely bald smooth dome on top with funny puffy side tufts flaring out above the ears!
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
+        ctx.beginPath();
+        ctx.ellipse(-1, headY - 8, 4.5, 2, -0.3, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = hairDark;
+        ctx.beginPath();
+        ctx.arc(-13, headY - 2, 4, 0, Math.PI * 2);
+        ctx.arc(-15, headY + 2, 4.5, 0, Math.PI * 2);
+        ctx.arc(-12, headY + 5, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(13, headY - 2, 4, 0, Math.PI * 2);
+        ctx.arc(15, headY + 2, 4.5, 0, Math.PI * 2);
+        ctx.arc(12, headY + 5, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+
+      } else if (hairStyle === 'stubble_dome') {
+        // 2. STUBBLE BUZZ: Shaved head with 5 o'clock shadow buzz stubble around back and sides
+        ctx.fillStyle = hairDark;
+        const stubbleOffsets = [
+          [-11, 0], [-10, 3], [-8, 6], [-12, -3], [-11, -6], [-9, -8],
+          [10, 3], [11, 0], [11, -6], [12, -3], [9, -8]
+        ];
+        for (const [sx, sy] of stubbleOffsets) {
+          ctx.beginPath();
+          ctx.arc(sx, headY + sy, 0.8, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+        ctx.beginPath();
+        ctx.ellipse(-2, headY - 7.5, 4.5, 1.8, -0.3, 0, Math.PI * 2);
+        ctx.fill();
+
+      } else if (hairStyle === 'comb_over') {
+        // 3. DAD COMB-OVER: Shiny bald scalp with desperate long strands swooping across the TOP of dome!
+        // Shiny dome highlight underneath
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.beginPath();
+        ctx.ellipse(-1, headY - 8.5, 5, 2.2, -0.3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Hair origin tuft on left side above ear
+        ctx.fillStyle = hairDark;
+        ctx.beginPath();
+        ctx.ellipse(-11.5, headY - 5, 2.2, 3.5, 0.1, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 4 Desperate comb-over strands swooping across the TOP curve of the skull (WELL ABOVE EYES!)
+        ctx.strokeStyle = hairDark;
+        ctx.lineWidth = 1.3;
+        const sway = hairSway * 0.3;
+        for (let i = 0; i < 4; i++) {
+          ctx.beginPath();
+          ctx.moveTo(-11, headY - 7 + i * 0.9);
+          ctx.bezierCurveTo(
+            -4, headY - 13 - i * 0.7 + sway,
+            4, headY - 13 - i * 0.7 + sway,
+            10, headY - 8 + i * 0.9
+          );
+          ctx.stroke();
+        }
+
+      } else if (hairStyle === 'clean_shave') {
+        // 4. CLEAN SHAVE: 100% hairless mirror-buffed chrome dome!
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+        ctx.beginPath();
+        ctx.ellipse(-2.5, headY - 7.8, 6, 2.6, -0.35, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+        ctx.beginPath();
+        ctx.arc(5.2, headY - 8.5, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        Sprites.drawStar(ctx, -2, headY - 8, 3.8, 1.2, 4);
+        Sprites.drawStar(ctx, 5.5, headY - 9, 2.2, 0.8, 4);
+
+      } else {
+        // 5. SHINY BALD (default): Smooth bald dome with comic sparkle twinkle & neat side tufts
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+        ctx.beginPath();
+        ctx.ellipse(-2, headY - 7.5, 5.5, 2.4, -0.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(4.5, headY - 8.5, 1.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        Sprites.drawStar(ctx, 3, headY - 9, 3, 1, 4);
+
+        ctx.fillStyle = hairDark;
+        ctx.beginPath();
+        ctx.ellipse(-13, headY + 1, 3.5, 5.5, 0.2, 0, Math.PI * 2);
+        ctx.ellipse(13, headY + 1, 3.5, 5.5, -0.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+    } else {
+      // LADIES FOREGROUND STYLING & ACCESSORIES
+      ctx.fillStyle = hColor;
+
+      // Forehead bangs (neatly framed on upper forehead, staying strictly above eyebrows at headY - 6.5)
+      ctx.beginPath();
+      ctx.moveTo(-9, headY - 8);
+      ctx.quadraticCurveTo(0, headY - 6.2, 8, headY - 8);
+      ctx.lineTo(8, headY - 12);
+      ctx.quadraticCurveTo(0, headY - 13.5, -9, headY - 12);
+      ctx.closePath();
+      ctx.fill();
+
+      // Hair crown sheen highlight
+      ctx.strokeStyle = 'rgba(255, 245, 190, 0.45)';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.arc(0, headY - 6, 11, Math.PI * 0.9, Math.PI * 1.45);
+      ctx.stroke();
+
+      // Style-specific accessories & clips
+      if (hairStyle === 'long_curls') {
+        // Delicate golden star hair clip
+        ctx.fillStyle = '#ffea00';
+        Sprites.drawStar(ctx, -7, headY - 8, 3.5, 1.8, 5);
+
+      } else if (hairStyle === 'braids' || (hairStyle === 'classic' && charType === 'ava')) {
         // Golden butterfly clip
         ctx.fillStyle = '#ffd700';
         ctx.beginPath();
@@ -991,30 +1034,8 @@ const Sprites = {
         ctx.fill();
 
       } else if (hairStyle === 'ponytail' || (hairStyle === 'classic' && charType === 'mommy')) {
-        // High adventurer ponytail
-        ctx.beginPath();
-        ctx.arc(0, headY - 3, 13, Math.PI * 0.75, Math.PI * 2.25);
-        ctx.fill();
-
-        // Bouncing high ponytail
-        const ponyBob = (isRunning ? Math.sin(player.animTimer * 14) * 4.5 : 0) + hairSway;
-        ctx.beginPath();
-        ctx.ellipse(-14, headY - 1 + ponyBob, 7.5, 14, -0.38, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Metallic gold hair tie wrap
-        ctx.fillStyle = '#ffd700';
-        ctx.fillRect(-11, headY - 4 + ponyBob * 0.4, 3.5, 6);
-
-        // Sheen highlight
-        ctx.strokeStyle = 'rgba(255, 245, 190, 0.5)';
-        ctx.lineWidth = 1.6;
-        ctx.beginPath();
-        ctx.arc(0, headY - 5, 11, Math.PI * 0.9, Math.PI * 1.5);
-        ctx.stroke();
-
         if (charType === 'mommy') {
-          // Tortoiseshell sunglasses & earrings for Mommy
+          // Tortoiseshell sunglasses resting on forehead & crystal drop earrings
           ctx.fillStyle = '#e65100';
           ctx.beginPath();
           ctx.roundRect(-8, headY - 13, 7, 5, 2);
@@ -1051,53 +1072,18 @@ const Sprites = {
         }
 
       } else if (hairStyle === 'short_bob') {
-        // Chic layered textured bob
+        // Delicate side wisps framing ears (away from face)
+        ctx.strokeStyle = hColor;
+        ctx.lineWidth = 1.6;
         ctx.beginPath();
-        ctx.arc(0, headY - 2, 13.5, Math.PI * 0.7, Math.PI * 2.2);
-        ctx.fill();
-
-        // Cheek-framing bob sides
-        ctx.beginPath();
-        ctx.ellipse(-11, headY + 4, 5.5, 10, 0.25, 0, Math.PI * 2);
-        ctx.ellipse(11, headY + 4, 5.5, 10, -0.25, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Feathered bangs
-        ctx.beginPath();
-        ctx.moveTo(-10, headY - 5);
-        ctx.quadraticCurveTo(0, headY - 1, 8, headY - 5);
-        ctx.lineTo(8, headY - 8);
-        ctx.lineTo(-10, headY - 8);
-        ctx.closePath();
-        ctx.fill();
-
-        // Gloss highlights
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(0, headY - 5, 11, Math.PI * 0.85, Math.PI * 1.35);
+        ctx.moveTo(-8, headY - 6);
+        ctx.lineTo(-10, headY - 1);
+        ctx.moveTo(8, headY - 6);
+        ctx.lineTo(10, headY - 1);
         ctx.stroke();
 
       } else {
-        // Classic style (Default for Ilianna: flowing waves & golden tiara)
-        ctx.beginPath();
-        ctx.arc(-1, headY - 2, 13.5, Math.PI * 0.7, Math.PI * 1.85);
-        ctx.fill();
-
-        const wave = (isRunning ? Math.sin(player.animTimer * 14) * 6 : 0) + hairSway;
-        ctx.beginPath();
-        ctx.ellipse(-12, headY + 6 + wave, 8.5, 17, 0.28, 0, Math.PI * 2);
-        ctx.ellipse(-7, headY + 13 + wave * 0.7, 7.5, 14, 0.12, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Hair shine streak
-        ctx.strokeStyle = 'rgba(255, 245, 180, 0.45)';
-        ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.arc(-2, headY - 5, 11, Math.PI * 0.9, Math.PI * 1.5);
-        ctx.stroke();
-
-        // 3D Beveled Golden Tiara
+        // Classic style (Princess Golden Tiara with Ruby Gem)
         ctx.fillStyle = '#ffd700';
         ctx.beginPath();
         ctx.moveTo(-7, headY - 9);
@@ -1123,23 +1109,6 @@ const Sprites = {
         ctx.arc(-5, headY - 12, 1.3, 0, Math.PI * 2);
         ctx.arc(9, headY - 12, 1.3, 0, Math.PI * 2);
         ctx.fill();
-      }
-
-      // If Daddy had a custom hairstyle chosen, keep his signature mustache!
-      if (isDaddy) {
-        ctx.fillStyle = '#3a2b22';
-        ctx.beginPath();
-        ctx.ellipse(3, headY + 2.2, 5, 2.4, 0.15, 0, Math.PI * 2);
-        ctx.ellipse(8, headY + 2.2, 5, 2.4, -0.15, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#5a4336';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(3, headY + 2.2);
-        ctx.lineTo(0, headY + 3.5);
-        ctx.moveTo(8, headY + 2.2);
-        ctx.lineTo(11, headY + 3.5);
-        ctx.stroke();
       }
     }
 
