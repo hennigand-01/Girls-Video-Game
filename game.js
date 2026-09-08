@@ -45,7 +45,7 @@ class Game {
     this.highScore = parseInt(localStorage.getItem('girlsGame_highScore') || '0', 10);
     this.lives = 3;
     this.level = 1;
-    this.maxLevels = 3;
+    this.maxLevels = 5;
 
     // Game Entities
     this.player = null;
@@ -68,6 +68,10 @@ class Game {
       this.bgImages[2].src = 'assets/bg_level2.jpg';
       this.bgImages[3] = new Image();
       this.bgImages[3].src = 'assets/bg_level3.jpg';
+      this.bgImages[4] = new Image();
+      this.bgImages[4].src = 'assets/bg_level4.jpg';
+      this.bgImages[5] = new Image();
+      this.bgImages[5].src = 'assets/bg_level5.jpg';
     }
 
     // Ambient floating fireflies / magical glowing spores
@@ -259,23 +263,32 @@ class Game {
     // Boss at top-left
     this.boss = {
       x: 120,
-      y: 110,
+      y: 105,
       isThrowing: false,
       throwTimer: 0
     };
 
     // Goal at top-right
+    const petMap = {
+      1: 'puppy',
+      2: 'kitten',
+      3: 'bunny',
+      4: 'fawn',
+      5: 'royal_pup'
+    };
     this.goal = {
-      x: 670,
+      x: 660,
       y: 105,
-      petType: lvl === 2 ? 'kitten' : 'puppy'
+      petType: petMap[lvl] || 'puppy'
     };
 
     // Regional floating announcement banner
     const levelBannerNames = {
       1: '🌲 OREGON OLD GROWTH 🦌',
       2: '🌊 CASCADE RIVER RIDGE 🌲',
-      3: '🏔️ HIGH CASCADE MOUNTAIN PASS 🏔️'
+      3: '🏔️ HIGH CASCADE MOUNTAIN PASS 🏔️',
+      4: '🌿 OREGON FERN CANYON 🦌',
+      5: '🌋 MOUNT HOOD ALPINE SUMMIT 👑'
     };
     this.particles.push({
       x: 400,
@@ -290,56 +303,57 @@ class Game {
       color: '#ffffff'
     });
 
-    // Level Platform layouts (zig-zag Donkey Kong style slopes)
+    // Level Platform layouts: True overlapping Donkey Kong zig-zag slopes with 50px catch margins!
     if (lvl === 1) {
-      // LEVEL 1: Dark Old-Growth Oregon Woods (Deer in the Woods & Ancient Cedar Nurse Logs)
+      // LEVEL 1: Dark Old-Growth Oregon Woods (Ancient Cedar Nurse Logs & Puppy Rescue)
       this.barrelSpawnInterval = 3.2;
 
-      // Tier 1: Bottom Ground (extends off-screen to left so rolling barrels exit smoothly)
-      this.platforms.push({ x1: -60, y1: 612, x2: 780, y2: 600, colorTheme: 'oregon_log' });
-
-      // Tier 2: Slopes Down from Left to Right
-      this.platforms.push({ x1: 30, y1: 480, x2: 740, y2: 505, colorTheme: 'oregon_log' });
-
-      // Tier 3: Slopes Down from Right to Left
-      this.platforms.push({ x1: 60, y1: 390, x2: 770, y2: 360, colorTheme: 'oregon_log' });
-
-      // Tier 4: Slopes Down from Left to Right
-      this.platforms.push({ x1: 30, y1: 235, x2: 740, y2: 265, colorTheme: 'oregon_log' });
-
-      // Tier 5: Top Flat Peak (Boss & Pet)
-      this.platforms.push({ x1: 60, y1: 135, x2: 740, y2: 135, colorTheme: 'oregon_log' });
+      // Tier 1: Ground (exits smoothly offscreen to the left)
+      this.platforms.push({ x1: -60, y1: 612, x2: 780, y2: 590, colorTheme: 'oregon_log' });
+      // Tier 2: Slopes Down to Right
+      this.platforms.push({ x1: 35, y1: 472, x2: 720, y2: 512, colorTheme: 'oregon_log' });
+      // Tier 3: Slopes Down to Left (catches Tier 4 drop at 710!)
+      this.platforms.push({ x1: 80, y1: 395, x2: 765, y2: 355, colorTheme: 'oregon_log' });
+      // Tier 4: Slopes Down to Right
+      this.platforms.push({ x1: 35, y1: 232, x2: 710, y2: 268, colorTheme: 'oregon_log' });
+      // Top Boss Ledge (rolls off right onto Tier 4)
+      this.platforms.push({ x1: 40, y1: 135, x2: 230, y2: 140, colorTheme: 'oregon_log' });
+      // Top Goal Ledge (safe perch for Pet!)
+      this.platforms.push({ x1: 500, y1: 135, x2: 740, y2: 135, colorTheme: 'oregon_log' });
 
       // Ladders connecting the tiers
-      this.ladders.push({ x: 680, y: 502, width: 34, height: 102 }); // Bottom to Tier 2
-      this.ladders.push({ x: 120, y: 388, width: 34, height: 96 });  // Tier 2 to Tier 3
-      this.ladders.push({ x: 670, y: 262, width: 34, height: 102 }); // Tier 3 to Tier 4
-      this.ladders.push({ x: 190, y: 135, width: 34, height: 105 }); // Tier 4 to Peak
-      this.ladders.push({ x: 520, y: 135, width: 34, height: 115 }); // Extra ladder to Peak
+      this.ladders.push({ x: 660, y: 506, width: 34, height: 90 }); // Ground to Tier 2
+      this.ladders.push({ x: 130, y: 390, width: 34, height: 92 });  // Tier 2 to Tier 3
+      this.ladders.push({ x: 420, y: 375, width: 34, height: 120 }); // Mid ladder
+      this.ladders.push({ x: 650, y: 263, width: 34, height: 98 });  // Tier 3 to Tier 4
+      this.ladders.push({ x: 570, y: 135, width: 34, height: 128 }); // Tier 4 to Goal Perch
+      this.ladders.push({ x: 700, y: 135, width: 34, height: 130 }); // Extra ladder to Goal
 
       // Gems, Hammer & Items
       this.items.push({ x: 420, y: 470, type: 'gem', value: 100 });
       this.items.push({ x: 260, y: 360, type: 'hammer' }); // HAMMER on Tier 3!
       this.items.push({ x: 480, y: 225, type: 'wand' }); // Bubble shield
       this.items.push({ x: 710, y: 335, type: 'gem', value: 100 });
+      this.items.push({ x: 650, y: 565, type: 'boots' }); // Spring boots near bottom
 
     } else if (lvl === 2) {
-      // LEVEL 2: Misty Cascade River Ridge (Weathered Riverbank Timber & Driftwood Logs)
-      this.barrelSpawnInterval = 2.6;
+      // LEVEL 2: Misty Cascade River Ridge (Weathered River Driftwood Logs & Kitten Rescue)
+      this.barrelSpawnInterval = 2.7;
 
-      // 5 Tiers with steeper slopes
-      this.platforms.push({ x1: -60, y1: 612, x2: 780, y2: 595, colorTheme: 'river_trail' });
-      this.platforms.push({ x1: 40, y1: 475, x2: 750, y2: 510, colorTheme: 'river_trail' });
-      this.platforms.push({ x1: 50, y1: 400, x2: 760, y2: 360, colorTheme: 'river_trail' });
-      this.platforms.push({ x1: 40, y1: 230, x2: 750, y2: 270, colorTheme: 'river_trail' });
-      this.platforms.push({ x1: 70, y1: 135, x2: 730, y2: 135, colorTheme: 'river_trail' });
+      this.platforms.push({ x1: -60, y1: 612, x2: 780, y2: 588, colorTheme: 'river_trail' });
+      this.platforms.push({ x1: 35, y1: 470, x2: 720, y2: 512, colorTheme: 'river_trail' });
+      this.platforms.push({ x1: 80, y1: 400, x2: 765, y2: 355, colorTheme: 'river_trail' });
+      this.platforms.push({ x1: 35, y1: 228, x2: 710, y2: 270, colorTheme: 'river_trail' });
+      this.platforms.push({ x1: 40, y1: 135, x2: 230, y2: 140, colorTheme: 'river_trail' });
+      this.platforms.push({ x1: 500, y1: 135, x2: 740, y2: 135, colorTheme: 'river_trail' });
 
-      this.ladders.push({ x: 690, y: 507, width: 34, height: 94 });
-      this.ladders.push({ x: 260, y: 490, width: 34, height: 115 });
-      this.ladders.push({ x: 100, y: 395, width: 34, height: 85 });
-      this.ladders.push({ x: 680, y: 266, width: 34, height: 98 });
-      this.ladders.push({ x: 320, y: 135, width: 34, height: 115 });
-      this.ladders.push({ x: 600, y: 135, width: 34, height: 125 });
+      this.ladders.push({ x: 670, y: 506, width: 34, height: 88 });
+      this.ladders.push({ x: 280, y: 490, width: 34, height: 110 });
+      this.ladders.push({ x: 120, y: 395, width: 34, height: 85 });
+      this.ladders.push({ x: 430, y: 375, width: 34, height: 120 });
+      this.ladders.push({ x: 660, y: 265, width: 34, height: 96 });
+      this.ladders.push({ x: 570, y: 135, width: 34, height: 128 });
+      this.ladders.push({ x: 690, y: 135, width: 34, height: 130 });
 
       this.items.push({ x: 200, y: 580, type: 'gem', value: 150 });
       this.items.push({ x: 500, y: 470, type: 'boots' }); // Spring boots
@@ -348,31 +362,85 @@ class Game {
       this.items.push({ x: 550, y: 235, type: 'wand' });
       this.items.push({ x: 710, y: 565, type: 'heart' });
 
-    } else {
-      // LEVEL 3: High Cascade Mountain Pass (Carved Rock-Shelf Mountain Trail Switchbacks!)
-      this.barrelSpawnInterval = 2.1;
+    } else if (lvl === 3) {
+      // LEVEL 3: High Cascade Mountain Pass (Carved Rock Cliff Trail & Snow Bunny Rescue)
+      this.barrelSpawnInterval = 2.3;
 
-      this.platforms.push({ x1: -60, y1: 612, x2: 780, y2: 600, colorTheme: 'mountain_path' });
-      this.platforms.push({ x1: 30, y1: 475, x2: 750, y2: 515, colorTheme: 'mountain_path' });
-      this.platforms.push({ x1: 50, y1: 405, x2: 770, y2: 360, colorTheme: 'mountain_path' });
-      this.platforms.push({ x1: 30, y1: 225, x2: 750, y2: 275, colorTheme: 'mountain_path' });
-      this.platforms.push({ x1: 60, y1: 135, x2: 740, y2: 135, colorTheme: 'mountain_path' });
+      this.platforms.push({ x1: -60, y1: 612, x2: 780, y2: 588, colorTheme: 'mountain_path' });
+      this.platforms.push({ x1: 35, y1: 470, x2: 720, y2: 515, colorTheme: 'mountain_path' });
+      this.platforms.push({ x1: 80, y1: 405, x2: 765, y2: 355, colorTheme: 'mountain_path' });
+      this.platforms.push({ x1: 35, y1: 225, x2: 710, y2: 275, colorTheme: 'mountain_path' });
+      this.platforms.push({ x1: 40, y1: 135, x2: 230, y2: 140, colorTheme: 'mountain_path' });
+      this.platforms.push({ x1: 500, y1: 135, x2: 740, y2: 135, colorTheme: 'mountain_path' });
 
-      this.ladders.push({ x: 690, y: 512, width: 34, height: 92 });
-      this.ladders.push({ x: 380, y: 500, width: 34, height: 105 });
-      this.ladders.push({ x: 100, y: 400, width: 34, height: 80 });
-      this.ladders.push({ x: 490, y: 375, width: 34, height: 98 });
-      this.ladders.push({ x: 680, y: 270, width: 34, height: 95 });
-      this.ladders.push({ x: 220, y: 135, width: 34, height: 105 });
-      this.ladders.push({ x: 560, y: 135, width: 34, height: 125 });
+      this.ladders.push({ x: 680, y: 510, width: 34, height: 86 });
+      this.ladders.push({ x: 380, y: 495, width: 34, height: 105 });
+      this.ladders.push({ x: 110, y: 400, width: 34, height: 80 });
+      this.ladders.push({ x: 480, y: 375, width: 34, height: 98 });
+      this.ladders.push({ x: 670, y: 270, width: 34, height: 95 });
+      this.ladders.push({ x: 570, y: 135, width: 34, height: 128 });
+      this.ladders.push({ x: 700, y: 135, width: 34, height: 130 });
 
       this.items.push({ x: 160, y: 460, type: 'boots' });
       this.items.push({ x: 310, y: 480, type: 'hammer' }); // HAMMER!
       this.items.push({ x: 340, y: 370, type: 'wand' });
       this.items.push({ x: 520, y: 235, type: 'hammer' }); // Extra HAMMER!
-      this.items.push({ x: 580, y: 230, type: 'gem', value: 250 });
+      this.items.push({ x: 580, y: 230, type: 'gem', value: 200 });
       this.items.push({ x: 440, y: 120, type: 'gem', value: 250 });
       this.items.push({ x: 720, y: 230, type: 'heart' });
+
+    } else if (lvl === 4) {
+      // LEVEL 4: Oregon Fern Canyon & Coastal Redwoods (Lush Redwood Nurse Logs & Baby Fawn Rescue)
+      this.barrelSpawnInterval = 2.0;
+
+      this.platforms.push({ x1: -60, y1: 612, x2: 780, y2: 588, colorTheme: 'fern_log' });
+      this.platforms.push({ x1: 35, y1: 470, x2: 720, y2: 512, colorTheme: 'fern_log' });
+      this.platforms.push({ x1: 80, y1: 400, x2: 765, y2: 355, colorTheme: 'fern_log' });
+      this.platforms.push({ x1: 35, y1: 228, x2: 710, y2: 270, colorTheme: 'fern_log' });
+      this.platforms.push({ x1: 40, y1: 135, x2: 230, y2: 140, colorTheme: 'fern_log' });
+      this.platforms.push({ x1: 500, y1: 135, x2: 740, y2: 135, colorTheme: 'fern_log' });
+
+      this.ladders.push({ x: 670, y: 506, width: 34, height: 88 });
+      this.ladders.push({ x: 300, y: 490, width: 34, height: 110 });
+      this.ladders.push({ x: 120, y: 395, width: 34, height: 85 });
+      this.ladders.push({ x: 450, y: 375, width: 34, height: 95 });
+      this.ladders.push({ x: 660, y: 265, width: 34, height: 96 });
+      this.ladders.push({ x: 570, y: 135, width: 34, height: 128 });
+      this.ladders.push({ x: 690, y: 135, width: 34, height: 130 });
+
+      this.items.push({ x: 280, y: 480, type: 'hammer' });
+      this.items.push({ x: 500, y: 350, type: 'wand' });
+      this.items.push({ x: 220, y: 360, type: 'boots' });
+      this.items.push({ x: 670, y: 565, type: 'heart' });
+      this.items.push({ x: 420, y: 230, type: 'gem', value: 250 });
+      this.items.push({ x: 640, y: 230, type: 'gem', value: 250 });
+
+    } else {
+      // LEVEL 5: Mount Hood Alpine Summit (Volcanic Basalt Switchbacks & Grand Royal Pup Rescue!)
+      this.barrelSpawnInterval = 1.7;
+
+      this.platforms.push({ x1: -60, y1: 612, x2: 780, y2: 585, colorTheme: 'alpine_rock' });
+      this.platforms.push({ x1: 35, y1: 468, x2: 720, y2: 515, colorTheme: 'alpine_rock' });
+      this.platforms.push({ x1: 80, y1: 405, x2: 765, y2: 352, colorTheme: 'alpine_rock' });
+      this.platforms.push({ x1: 35, y1: 222, x2: 710, y2: 275, colorTheme: 'alpine_rock' });
+      this.platforms.push({ x1: 40, y1: 135, x2: 230, y2: 140, colorTheme: 'alpine_rock' });
+      this.platforms.push({ x1: 500, y1: 135, x2: 740, y2: 135, colorTheme: 'alpine_rock' });
+
+      this.ladders.push({ x: 680, y: 508, width: 34, height: 86 });
+      this.ladders.push({ x: 350, y: 495, width: 34, height: 105 });
+      this.ladders.push({ x: 110, y: 400, width: 34, height: 80 });
+      this.ladders.push({ x: 490, y: 375, width: 34, height: 98 });
+      this.ladders.push({ x: 670, y: 270, width: 34, height: 95 });
+      this.ladders.push({ x: 570, y: 135, width: 34, height: 128 });
+      this.ladders.push({ x: 700, y: 135, width: 34, height: 130 });
+
+      this.items.push({ x: 480, y: 580, type: 'hammer' }); // HAMMER on ground!
+      this.items.push({ x: 450, y: 350, type: 'hammer' }); // Super Hammer on Tier 3!
+      this.items.push({ x: 620, y: 480, type: 'boots' });
+      this.items.push({ x: 200, y: 225, type: 'wand' });
+      this.items.push({ x: 120, y: 470, type: 'heart' });
+      this.items.push({ x: 380, y: 230, type: 'gem', value: 350 });
+      this.items.push({ x: 630, y: 120, type: 'gem', value: 500 });
     }
 
     // Spawn Player at bottom left (miniature diorama scale like Unravel's Yarny!)
@@ -419,11 +487,13 @@ class Game {
       let bType = 'wood';
       if (this.level === 2) bType = Math.random() > 0.4 ? 'watermelon' : 'wood';
       if (this.level === 3) bType = Math.random() > 0.4 ? 'candy' : (Math.random() > 0.5 ? 'watermelon' : 'wood');
+      if (this.level === 4) bType = Math.random() > 0.35 ? 'wood' : (Math.random() > 0.5 ? 'watermelon' : 'candy');
+      if (this.level === 5) bType = Math.random() > 0.3 ? 'candy' : (Math.random() > 0.5 ? 'wood' : 'watermelon');
 
       const barrel = {
-        x: this.boss.x + 30,
-        y: this.boss.y + 10,
-        vx: 2.2 + (this.level - 1) * 0.4,
+        x: this.boss.x + 35,
+        y: this.boss.y + 15,
+        vx: 2.2 + (this.level - 1) * 0.35,
         vy: 0,
         radius: 9.5,
         rotation: 0,
@@ -716,8 +786,22 @@ class Game {
       b.vy += gravity;
       if (b.vy > 9) b.vy = 9;
 
+      // Freefall horizontal air damping: when dropping off a ledge, don't let it catapult sideways off screen!
+      if (!b.isGrounded) {
+        b.vx *= 0.88;
+      }
+
       b.x += b.vx;
       b.y += b.vy;
+
+      // Screen boundary bumper containment: keep barrels gracefully on the platforms!
+      if (b.x > this.width - 42) {
+        b.x = this.width - 42;
+        if (b.vx > 0) b.vx = -1.2;
+      } else if (b.x < 42 && b.y < 575) {
+        b.x = 42;
+        if (b.vx < 0) b.vx = 1.2;
+      }
 
       // Barrel rotation matches its rolling velocity
       b.rotation += (b.vx / b.radius) * 1.3;
@@ -728,11 +812,11 @@ class Game {
         const minX = Math.min(plat.x1, plat.x2);
         const maxX = Math.max(plat.x1, plat.x2);
 
-        if (b.x >= minX - 5 && b.x <= maxX + 5) {
+        if (b.x >= minX - 8 && b.x <= maxX + 8) {
           const t = (b.x - plat.x1) / (plat.x2 - plat.x1);
           const slopeY = plat.y1 + t * (plat.y2 - plat.y1);
 
-          if (b.vy >= 0 && b.y + b.radius >= slopeY - 4 && b.y + b.radius <= slopeY + 14) {
+          if (b.vy >= 0 && b.y + b.radius >= slopeY - 4 && b.y + b.radius <= slopeY + 16) {
             // Soft landing thump if dropping from upper ledge or ladder
             if (!b.isGrounded && b.vy > 3.2) {
               window.soundEngine.playBarrelBounce();
@@ -742,8 +826,8 @@ class Game {
             b.isGrounded = true;
 
             // Rolling direction matches slope gradient
-            const slopeDir = plat.y2 > plat.y1 ? 1 : -1;
-            const rollSpeed = 2.4 + (this.level - 1) * 0.4;
+            const slopeDir = plat.y2 > plat.y1 ? 1 : (plat.y2 < plat.y1 ? -1 : (b.vx >= 0 ? 1 : -1));
+            const rollSpeed = 2.4 + (this.level - 1) * 0.35;
             b.vx = slopeDir * rollSpeed;
             break;
           }
@@ -836,7 +920,7 @@ class Game {
       }
 
       // Remove barrels that rolled or fell off the screen
-      if (b.y > this.height + 40 || b.x < -35 || b.x > this.width + 35) {
+      if (b.y > this.height + 40 || b.x < -45 || b.x > this.width + 45) {
         this.barrels.splice(i, 1);
       }
     }
@@ -943,13 +1027,26 @@ class Game {
 
     if (this.level < this.maxLevels) {
       winTitle.innerText = `🎉 LEVEL ${this.level} COMPLETE! 🎉`;
-      const nextArea = this.level === 1 ? 'Misty Cascade River Ridge' : 'High Cascade Mountain Pass';
-      winMsg.innerText = `You rescued the ${this.goal.petType}! Ready to hike into the ${nextArea}?`;
+      const nextAreas = {
+        1: 'Misty Cascade River Ridge',
+        2: 'High Cascade Mountain Pass',
+        3: 'Oregon Fern Canyon & Redwoods',
+        4: 'Mount Hood Alpine Summit'
+      };
+      const petNames = {
+        puppy: 'Golden Puppy',
+        kitten: 'Fluffy Kitten',
+        bunny: 'Snowshoe Bunny',
+        fawn: 'Baby Fawn',
+        royal_pup: 'Royal Crown Pup'
+      };
+      const petName = petNames[this.goal.petType] || this.goal.petType;
+      winMsg.innerText = `You rescued the ${petName}! Ready to hike into ${nextAreas[this.level]}?`;
       nextBtn.innerText = 'NEXT LEVEL ❯';
       nextBtn.onclick = () => this.startGame(this.level + 1, { resume: true });
     } else {
-      winTitle.innerText = '🎉 YOU BEAT THE GAME! 🎉';
-      winMsg.innerText = `Congratulations! You conquered the High Cascade Mountain Pass and rescued everyone! You are the Oregon Mountain Hero!`;
+      winTitle.innerText = '🏆 YOU CONQUERED MOUNT HOOD! 👑';
+      winMsg.innerText = `Congratulations! You climbed all 5 Oregon levels and rescued all the cute forest pets! You are the Ultimate Oregon Mountain Hero!`;
       nextBtn.innerText = 'PLAY AGAIN ↺';
       nextBtn.onclick = () => this.startGame(1, { resume: true });
     }
@@ -1173,7 +1270,9 @@ class Game {
       const levelNames = {
         1: '1: Oregon Woods 🌲',
         2: '2: Cascade River 🌊',
-        3: '3: Mountain Pass 🏔️'
+        3: '3: Mountain Pass 🏔️',
+        4: '4: Fern Canyon 🌿',
+        5: '5: Mount Hood 👑'
       };
       levelEl.innerText = `LEVEL ${levelNames[this.level] || this.level}`;
     }

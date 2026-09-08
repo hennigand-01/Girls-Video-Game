@@ -1471,9 +1471,11 @@ const Sprites = {
     ctx.rotate(angle);
 
     // =========================================================================
-    // STYLE 1: CARVED OREGON MOUNTAIN PASS TRAIL PATH (Rocky Cliff Switchback)
+    // STYLE 1: CARVED OREGON MOUNTAIN PASS TRAIL PATH & ALPINE SUMMIT ROCK
     // =========================================================================
-    if (colorTheme === 'mountain_path') {
+    if (colorTheme === 'mountain_path' || colorTheme === 'alpine_rock') {
+      const isAlpine = (colorTheme === 'alpine_rock');
+
       // 1. Deep Contact Shadow cast by the rock ledge onto the mountain cliff below
       ctx.save();
       ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
@@ -1491,10 +1493,18 @@ const Sprites = {
 
       // 2. Rugged Mountain Cliff Rock Underside (Basalt & Granite Strata)
       const rockGrad = ctx.createLinearGradient(0, 0, 0, thickness + 6);
-      rockGrad.addColorStop(0, '#5a5147');    // Lighter stone rim
-      rockGrad.addColorStop(0.3, '#3d362f');  // Chiseled basalt body
-      rockGrad.addColorStop(0.7, '#26211c');  // Shadowed rock face
-      rockGrad.addColorStop(1, '#151210');    // Deep cliff shadow
+      if (isAlpine) {
+        // Mount Hood volcanic basalt with sunset alpenglow warmth
+        rockGrad.addColorStop(0, '#755850');
+        rockGrad.addColorStop(0.3, '#4a3832');
+        rockGrad.addColorStop(0.7, '#2a1f1b');
+        rockGrad.addColorStop(1, '#150f0d');
+      } else {
+        rockGrad.addColorStop(0, '#5a5147');    // Lighter stone rim
+        rockGrad.addColorStop(0.3, '#3d362f');  // Chiseled basalt body
+        rockGrad.addColorStop(0.7, '#26211c');  // Shadowed rock face
+        rockGrad.addColorStop(1, '#151210');    // Deep cliff shadow
+      }
 
       ctx.fillStyle = rockGrad;
       ctx.beginPath();
@@ -1610,7 +1620,7 @@ const Sprites = {
         prevPostX = px;
       }
 
-      // 7. Small Alpine Mountain Flora (Hardy wild grass tufts & violet alpine lupines)
+      // 7. Small Alpine Mountain Flora (Hardy wild grass tufts, scarlet paintbrush & violet lupines)
       for (let gx = 55; gx < length - 35; gx += 75) {
         // Alpine grass blades
         ctx.strokeStyle = '#85a842';
@@ -1624,16 +1634,27 @@ const Sprites = {
         ctx.quadraticCurveTo(gx + 5, -5, gx + 7, -6);
         ctx.stroke();
 
-        // Violet mountain lupine flower dots
-        ctx.fillStyle = '#a66fe6';
+        // Violet mountain lupine flower dots or bright red Oregon Indian paintbrush!
+        ctx.fillStyle = isAlpine ? '#ff3b5c' : '#a66fe6';
         ctx.beginPath();
         ctx.arc(gx - 5, -9, 1.8, 0, Math.PI * 2);
         ctx.arc(gx + 4, -10, 1.8, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = '#e8d4ff';
+        ctx.fillStyle = isAlpine ? '#ff8533' : '#e8d4ff';
         ctx.beginPath();
         ctx.arc(gx - 5, -9, 0.8, 0, Math.PI * 2);
+        ctx.arc(gx + 4, -10, 0.8, 0, Math.PI * 2);
         ctx.fill();
+      }
+
+      // Alpine Summit snow dusting patches
+      if (isAlpine) {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+        for (let sx = 20; sx < length - 30; sx += 60) {
+          ctx.beginPath();
+          ctx.ellipse(sx, -0.5, 9, 1.5, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
 
       // 8. Trail Cairn (3 balanced hiker marker stones at trail edge)
@@ -1681,6 +1702,12 @@ const Sprites = {
       barkGrad.addColorStop(0.3, '#433930');
       barkGrad.addColorStop(0.7, '#2b231c');
       barkGrad.addColorStop(1, '#19130e');
+    } else if (colorTheme === 'fern_log') {
+      // Oregon Fern Canyon: rich reddish-brown coastal redwood bark
+      barkGrad.addColorStop(0, '#6e3c23');
+      barkGrad.addColorStop(0.25, '#522b17');
+      barkGrad.addColorStop(0.65, '#35190c');
+      barkGrad.addColorStop(1, '#1a0a04');
     } else {
       // Dark Oregon old-growth fir/hemlock twig: deep earthy umber & mossy undertones
       barkGrad.addColorStop(0, '#4e3a2b');
@@ -1767,6 +1794,27 @@ const Sprites = {
       ctx.beginPath();
       ctx.ellipse(mx + 8, 1, 9, 2.2, 0, 0, Math.PI * 2);
       ctx.fill();
+    }
+
+    // 7. Maidenhair Fern Fronds for Fern Canyon (Level 4)
+    if (colorTheme === 'fern_log') {
+      ctx.strokeStyle = '#2d6a4f';
+      ctx.lineWidth = 1.2;
+      for (let fx = 25; fx < length - 25; fx += 55) {
+        // Delicate arching fern stem
+        ctx.beginPath();
+        ctx.moveTo(fx, twigThick);
+        ctx.quadraticCurveTo(fx + 6, twigThick + 8, fx + 12, twigThick + 12);
+        ctx.stroke();
+
+        // Tiny scalloped leaflets along stem
+        ctx.fillStyle = '#52b788';
+        for (let fi = 3; fi <= 10; fi += 3) {
+          ctx.beginPath();
+          ctx.arc(fx + fi, twigThick + fi * 0.9, 1.8, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
     }
 
     ctx.restore();
@@ -1900,17 +1948,33 @@ const Sprites = {
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Pet Type: Cute Golden Puppy or Kitten
-    const isKitty = goal.petType === 'kitten';
-    const petColor = isKitty ? '#ffffff' : '#f5b041';
+    // Pet Types: puppy, kitten, bunny, fawn, royal_pup
+    const type = goal.petType || 'puppy';
+    const isKitty = type === 'kitten';
+    const isBunny = type === 'bunny';
+    const isFawn = type === 'fawn';
+    const isRoyalPup = type === 'royal_pup';
 
-    // Tail wagging happily
-    ctx.fillStyle = petColor;
-    ctx.save();
-    ctx.translate(-10, 2 + bob);
-    ctx.rotate(tailWag - 0.5);
-    ctx.fillRect(-3, -10, 4, 10);
-    ctx.restore();
+    let petColor = '#f5b041'; // default golden
+    if (isKitty || isBunny) petColor = '#ffffff';
+    else if (isFawn) petColor = '#c67d43'; // warm fawn chestnut
+
+    // Tail / Cottontail
+    if (isBunny) {
+      // Fluffy cotton ball tail
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(-11, 4 + bob, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      // Wagging tail
+      ctx.fillStyle = petColor;
+      ctx.save();
+      ctx.translate(-10, 2 + bob);
+      ctx.rotate(tailWag - 0.5);
+      ctx.fillRect(-3, -10, 4, 10);
+      ctx.restore();
+    }
 
     // Body
     ctx.fillStyle = petColor;
@@ -1918,7 +1982,19 @@ const Sprites = {
     ctx.ellipse(0, 2 + bob, 11, 9, 0, 0, Math.PI * 2);
     ctx.fill();
 
+    // Fawn white spots on back!
+    if (isFawn) {
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(-4, 0 + bob, 1.2, 0, Math.PI * 2);
+      ctx.arc(0, -1 + bob, 1.2, 0, Math.PI * 2);
+      ctx.arc(-2, 3 + bob, 1.2, 0, Math.PI * 2);
+      ctx.arc(-6, 2 + bob, 1.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
     // Head
+    ctx.fillStyle = petColor;
     ctx.beginPath();
     ctx.arc(6, -6 + bob, 8.5, 0, Math.PI * 2);
     ctx.fill();
@@ -1943,8 +2019,33 @@ const Sprites = {
       ctx.lineTo(4, -16 + bob);
       ctx.lineTo(6, -13 + bob);
       ctx.fill();
+    } else if (isBunny) {
+      // Tall upright snow bunny ears
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.ellipse(3, -17 + bob, 3, 9, -0.15, 0, Math.PI * 2);
+      ctx.ellipse(9, -17 + bob, 3, 9, 0.15, 0, Math.PI * 2);
+      ctx.fill();
+      // Pink inside ears
+      ctx.fillStyle = '#ffb3d9';
+      ctx.beginPath();
+      ctx.ellipse(3, -17 + bob, 1.6, 6.5, -0.15, 0, Math.PI * 2);
+      ctx.ellipse(9, -17 + bob, 1.6, 6.5, 0.15, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (isFawn) {
+      // Gentle deer ears
+      ctx.fillStyle = '#a65d28';
+      ctx.beginPath();
+      ctx.ellipse(2, -12 + bob, 3.5, 7, -0.5, 0, Math.PI * 2);
+      ctx.ellipse(10, -12 + bob, 3.5, 7, 0.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#ffd1b3';
+      ctx.beginPath();
+      ctx.ellipse(2, -12 + bob, 2, 4.5, -0.5, 0, Math.PI * 2);
+      ctx.ellipse(10, -12 + bob, 2, 4.5, 0.5, 0, Math.PI * 2);
+      ctx.fill();
     } else {
-      // Floppy dog ears
+      // Floppy puppy ears
       ctx.fillStyle = '#cf7d15';
       ctx.beginPath();
       ctx.ellipse(2, -5 + bob, 4, 7, 0.4, 0, Math.PI * 2);
@@ -1952,7 +2053,7 @@ const Sprites = {
       ctx.fill();
     }
 
-    // Eyes
+    // Eyes: Gentle anime gleam
     ctx.fillStyle = '#222222';
     ctx.beginPath();
     ctx.arc(5, -6 + bob, 1.8, 0, Math.PI * 2);
@@ -1964,21 +2065,43 @@ const Sprites = {
     ctx.arc(9.5, -6.6 + bob, 0.8, 0, Math.PI * 2);
     ctx.fill();
 
-    // Cute pink nose
-    ctx.fillStyle = '#ff4d6d';
+    // Cute pink or black nose
+    ctx.fillStyle = isFawn ? '#1a1a1a' : '#ff4d6d';
     ctx.beginPath();
     ctx.arc(7, -3 + bob, 1.3, 0, Math.PI * 2);
     ctx.fill();
 
-    // Little pink bow / ribbon
-    ctx.fillStyle = '#ff007f';
-    ctx.beginPath();
-    ctx.arc(0, -2 + bob, 3, 0, Math.PI * 2);
-    ctx.fill();
+    // Royal Crown for Level 5 Royal Pup!
+    if (isRoyalPup) {
+      ctx.fillStyle = '#ffd700';
+      ctx.beginPath();
+      ctx.moveTo(1, -14 + bob);
+      ctx.lineTo(3, -22 + bob);
+      ctx.lineTo(6, -17 + bob);
+      ctx.lineTo(9, -22 + bob);
+      ctx.lineTo(11, -14 + bob);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = '#b38f00';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Crown ruby jewel
+      ctx.fillStyle = '#ff0055';
+      ctx.beginPath();
+      ctx.arc(6, -16 + bob, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      // Little pink bow / ribbon
+      ctx.fillStyle = '#ff007f';
+      ctx.beginPath();
+      ctx.arc(0, -2 + bob, 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
     // Floating heart above pet
     const heartY = -22 + Math.sin(Date.now() * 0.007) * 4;
-    ctx.fillStyle = '#ff2b5f';
+    ctx.fillStyle = isRoyalPup ? '#ffd700' : '#ff2b5f';
     Sprites.drawHeart(ctx, 6, heartY, 6);
 
     ctx.restore();
