@@ -34,6 +34,7 @@ const Sprites = {
     if (!player) return;
 
     ctx.save();
+    try {
     ctx.translate(player.x || 0, player.y || 0);
 
     // Fluid slope lean and dynamic tilt!
@@ -1262,9 +1263,11 @@ const Sprites = {
         ctx.fill();
       }
     }
-
-    ctx.restore();
+    } finally {
+      ctx.restore();
+    }
   },
+
 
   // Helper to draw a star
   drawStar(ctx, cx, cy, outerRadius, innerRadius, points = 5) {

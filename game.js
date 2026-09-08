@@ -335,7 +335,7 @@ class Game {
       this.items.push({ x: 260, y: 360, type: 'hammer' }); // HAMMER on Tier 3!
       this.items.push({ x: 480, y: 225, type: 'wand' }); // Bubble shield
       this.items.push({ x: 710, y: 335, type: 'gem', value: 100 });
-      this.items.push({ x: 650, y: 565, type: 'boots' }); // Spring boots near bottom
+      this.items.push({ x: 390, y: 565, type: 'boots' }); // Spring boots mid-ground (away from ladder)
 
     } else if (lvl === 2) {
       // LEVEL 2: Misty Cascade River Ridge (Weathered River Driftwood Logs & Kitten Rescue)
