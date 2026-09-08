@@ -171,6 +171,10 @@ const Sprites = {
       const cLeg = Math.sin(player.animTimer * 12);
       ctx.fillRect(-legW - 3, h / 2 - 3 + (cLeg > 0 ? -4 : 2), legW + 2, 5);
       ctx.fillRect(1, h / 2 - 3 + (cLeg > 0 ? 2 : -4), legW + 2, 5);
+    } else if (isJumping) {
+      // Athletic jumping tuck: tuck feet up by 2 to 4 pixels for maximum clearance!
+      ctx.fillRect(-legW - 3, h / 2 - 5, legW + 2, 5);
+      ctx.fillRect(1, h / 2 - 7, legW + 2, 5);
     } else if (isRunning) {
       ctx.fillRect(-legW - 3 + legCycle * 5.5, h / 2 - 3 - yBob, legW + 3, 5);
       ctx.fillRect(0 - legCycle * 5.5, h / 2 - 3 - yBob, legW + 3, 5);
@@ -181,15 +185,16 @@ const Sprites = {
 
     // Shoe laces / runner stripes
     ctx.fillStyle = isDaddy ? '#1d4ed8' : (charType === 'ilianna' ? '#ffd700' : '#ff2a6d');
-    ctx.fillRect(-legW - 1, h / 2 - 4 - yBob, 2, 2);
-    ctx.fillRect(3, h / 2 - 4 - yBob, 2, 2);
+    const laceY = isJumping ? h / 2 - 6 : (h / 2 - 4 - yBob);
+    ctx.fillRect(-legW - 1, laceY, 2, 2);
+    ctx.fillRect(3, isJumping ? laceY - 2 : laceY, 2, 2);
 
     // Spring boots wings
     if (player.springTimer > 0) {
       ctx.fillStyle = '#fffbe6';
       ctx.beginPath();
-      ctx.ellipse(-legW - 5, h / 2 - 4, 5, 2.5, -0.3, 0, Math.PI * 2);
-      ctx.ellipse(legW + 5, h / 2 - 4, 5, 2.5, 0.3, 0, Math.PI * 2);
+      ctx.ellipse(-legW - 5, isJumping ? h / 2 - 6 : h / 2 - 4, 5, 2.5, -0.3, 0, Math.PI * 2);
+      ctx.ellipse(legW + 5, isJumping ? h / 2 - 8 : h / 2 - 4, 5, 2.5, 0.3, 0, Math.PI * 2);
       ctx.fill();
     }
 
@@ -198,7 +203,7 @@ const Sprites = {
 
     if (isDaddy) {
       // DADDY: Round, jiggly dad belly with spring inertia!
-      const bellySpring = player.bellyOffset || 0;
+      const bellySpring = Math.max(-2.5, Math.min(2.5, player.bellyOffset || 0));
 
       // Dad body base with realistic fabric gradient
       const torsoGrad = ctx.createLinearGradient(-w * 0.45, bodyY, w * 0.45, bodyY + h * 0.45);
@@ -1338,7 +1343,7 @@ const Sprites = {
   // Draw Handcrafted Platforms: Oregon Mountain Pass Trail Paths, Cedar Nurse Logs & River Trail Ledges
   drawPlatform(ctx, plat) {
     ctx.save();
-    const { x1, y1, x2, y2, thickness = 22, colorTheme = 'oregon_log' } = plat;
+    const { x1, y1, x2, y2, thickness = 14, colorTheme = 'oregon_log' } = plat;
 
     const angle = Math.atan2(y2 - y1, x2 - x1);
     const length = Math.hypot(x2 - x1, y2 - y1);
@@ -1535,7 +1540,8 @@ const Sprites = {
     // STYLE 2: UNRAVEL-STYLE NATURAL FOREST TWIGS & BRANCHES (Levels 1 & 2)
     // Real-looking slender twigs with organic bark, lichen, moss, and natural node forks
     // =========================================================================
-    const twigThick = Math.min(thickness, 11); // Slender, realistic twig thickness
+    // Slender, realistic twig thickness (thinner profile for obvious jump gap)
+    const twigThick = Math.min(thickness, 7.5);
 
     // 1. Soft subtle contact shadow cast by the twig onto the forest background
     ctx.save();

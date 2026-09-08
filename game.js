@@ -401,7 +401,7 @@ class Game {
         y: this.boss.y + 10,
         vx: 2.2 + (this.level - 1) * 0.4,
         vy: 0,
-        radius: 11,
+        radius: 9.5,
         rotation: 0,
         type: bType,
         isGrounded: false,
@@ -520,7 +520,7 @@ class Game {
       // Jump off ladder
       if (wantJump) {
         p.isClimbing = false;
-        p.vy = -7.6;
+        p.vy = -8.2;
         this.jumpBufferCounter = 0;
         window.soundEngine.playJump();
       }
@@ -576,7 +576,7 @@ class Game {
     // --- JUMPING WITH VARIABLE HEIGHT & SQUASH/STRETCH ---
     if (wantJump && (p.isGrounded || this.coyoteCounter > 0)) {
       // Powerful clean jump that comfortably clears barrels and logs!
-      const jumpPower = p.springTimer > 0 ? -12.4 : -9.8;
+      const jumpPower = p.springTimer > 0 ? -12.8 : -10.6;
       p.vy = jumpPower;
       p.isGrounded = false;
       this.coyoteCounter = 0;
@@ -596,8 +596,8 @@ class Game {
     }
 
     // Variable jump: smooth gentle cutoff on early release for short hops!
-    if (!wantJump && p.vy < -2.8) {
-      p.vy *= 0.82;
+    if (!wantJump && p.vy < -3.2) {
+      p.vy *= 0.85;
     }
 
     // --- GRAVITY & VERTICAL MOVEMENT ---
@@ -654,8 +654,8 @@ class Game {
     p.hairSway += (-p.hairSway * 0.22 - p.vx * 0.08 - p.vy * 0.04);
     p.hairSway *= 0.86;
 
-    // Daddy belly bounce inertia spring
-    p.bellyVel += (-p.bellyOffset * 0.38 - p.vy * 0.14 + Math.abs(p.vx) * 0.06);
+    // Daddy belly bounce inertia spring (pulls up naturally with jump momentum)
+    p.bellyVel += (-p.bellyOffset * 0.38 + p.vy * 0.12 + Math.abs(p.vx) * 0.06);
     p.bellyOffset += p.bellyVel;
     p.bellyVel *= 0.8;
 
@@ -742,10 +742,10 @@ class Game {
 
       // Check jumping over barrel for combo points!
       const p = this.player;
-      if (!b.hasAwardedPoints && !p.isGrounded && p.vy > -4) {
+      if (!b.hasAwardedPoints && !p.isGrounded && p.vy > -5) {
         const dx = Math.abs(p.x - b.x);
         const dy = b.y - p.y;
-        if (dx < 32 && dy > 4 && dy < 75) {
+        if (dx < 32 && dy > 2 && dy < 85) {
           b.hasAwardedPoints = true;
 
           if (this.selectedChar === 'daddy') {
@@ -766,7 +766,7 @@ class Game {
       }
 
       // Check collision with player or Hammer Smash!
-      const dist = Math.hypot(p.x - b.x, (p.y + 2) - b.y);
+      const dist = Math.hypot(p.x - b.x, (p.y + 1) - b.y);
 
       // HAMMER SMASH: If player has active Hammer, SMASH the barrel to bits!
       if (p.hammerTimer > 0 && dist < b.radius + p.width * 0.7 + 22) {
@@ -788,8 +788,8 @@ class Game {
         continue;
       }
 
-      // Player collision: tighter hitbox (b.radius * 0.65 + p.width * 0.35) makes it easy to jump cleanly over!
-      if (dist < b.radius * 0.65 + p.width * 0.35) {
+      // Player collision: tighter hitbox (b.radius * 0.62 + p.width * 0.32) makes it easy to jump cleanly over!
+      if (dist < b.radius * 0.62 + p.width * 0.32) {
         // Player has Bubble Shield active: pop the barrel!
         if (p.shieldTimer > 0) {
           window.soundEngine.playBubblePop();
