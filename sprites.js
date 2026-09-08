@@ -743,11 +743,11 @@ const Sprites = {
       ctx.roundRect(-2.0, headY + 6.8, 4.0, 6.2, 1.8);
       ctx.fill();
 
-      // Soft round/heart-shaped Princess anime face (delicate, youthful, no harsh jawline)
+      // Clean, porcelain Princess anime face (delicate, youthful, pure Nintendo look - NO MAKEUP!)
       const faceGrad = ctx.createRadialGradient(0.5, headY - 2.5, 2, 0.5, headY, 11);
-      faceGrad.addColorStop(0, '#fffbf5');
-      faceGrad.addColorStop(0.45, skinColor);
-      faceGrad.addColorStop(1, '#ffdfd2');
+      faceGrad.addColorStop(0, '#fffdfa');
+      faceGrad.addColorStop(0.5, skinColor);
+      faceGrad.addColorStop(1, '#feddd2');
       ctx.fillStyle = faceGrad;
       ctx.beginPath();
       ctx.moveTo(-8.6, headY - 4);
@@ -757,23 +757,10 @@ const Sprites = {
       ctx.closePath();
       ctx.fill();
 
-      // Soft ambient jawline shadow
-      ctx.fillStyle = 'rgba(180, 70, 70, 0.10)';
+      // Dainty subtle button nose dot
+      ctx.fillStyle = 'rgba(230, 130, 140, 0.45)';
       ctx.beginPath();
-      ctx.arc(0.5, headY + 8.0, 4.8, 0, Math.PI);
-      ctx.fill();
-
-      // Glowing peach-pink blushed cheeks (Peach's signature rosy cheeks right under eyes)
-      ctx.fillStyle = 'rgba(255, 105, 145, 0.45)';
-      ctx.beginPath();
-      ctx.ellipse(-3.8, headY + 3.4, 2.8, 1.6, -0.08, 0, Math.PI * 2);
-      ctx.ellipse(4.6, headY + 3.4, 2.8, 1.6, 0.08, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Dainty Princess button nose dot
-      ctx.fillStyle = 'rgba(255, 120, 140, 0.6)';
-      ctx.beginPath();
-      ctx.arc(0.5, headY + 1.2, 0.65, 0, Math.PI * 2);
+      ctx.arc(0.5, headY + 1.2, 0.55, 0, Math.PI * 2);
       ctx.fill();
 
     } else {
@@ -937,91 +924,90 @@ const Sprites = {
         ctx.stroke();
 
       } else {
-        // PRINCESS PEACH ANIME EYES: Tall, luminous jewel irises with double specular shine & fluttery winged lashes
+        // PRINCESS PEACH ANIME EYES: Clean, large, luminous jewel irises (NO HEAVY MAKEUP)
         const drawPeachEye = (ex, ey, flip = 1) => {
           // 1. Tall Crisp White Anime Sclera
           ctx.fillStyle = '#ffffff';
           ctx.beginPath();
-          ctx.ellipse(ex, ey, 2.9, 3.8, 0, 0, Math.PI * 2);
+          ctx.ellipse(ex, ey, 2.8, 3.6, 0, 0, Math.PI * 2);
           ctx.fill();
 
-          // 2. Large Jewel Iris (multi-shade gradient)
-          const irisGrad = ctx.createLinearGradient(ex, ey - 3.2, ex, ey + 3.2);
+          // 2. Large Jewel Iris (bright & glowing)
+          const irisGrad = ctx.createLinearGradient(ex, ey - 3.0, ex, ey + 3.0);
           irisGrad.addColorStop(0, eyeTones.highlight);
           irisGrad.addColorStop(0.35, eyeTones.core);
           irisGrad.addColorStop(1, eyeTones.outer);
           ctx.fillStyle = irisGrad;
           ctx.beginPath();
-          ctx.ellipse(ex + 0.1, ey + 0.3, 2.3, 3.2, 0, 0, Math.PI * 2);
+          ctx.ellipse(ex + 0.1, ey + 0.2, 2.2, 3.0, 0, 0, Math.PI * 2);
           ctx.fill();
 
-          // Dark limbal ring
+          // Subtle limbal ring
           ctx.strokeStyle = eyeTones.rim;
-          ctx.lineWidth = 0.7;
+          ctx.lineWidth = 0.55;
           ctx.beginPath();
-          ctx.ellipse(ex + 0.1, ey + 0.3, 2.3, 3.2, 0, 0, Math.PI * 2);
+          ctx.ellipse(ex + 0.1, ey + 0.2, 2.2, 3.0, 0, 0, Math.PI * 2);
           ctx.stroke();
 
-          // 3. Compact Obsidian Pupil
+          // 3. Crisp Obsidian Pupil
           ctx.fillStyle = '#08080c';
           ctx.beginPath();
-          ctx.ellipse(ex + 0.1, ey + 0.5, 1.0, 1.5, 0, 0, Math.PI * 2);
+          ctx.ellipse(ex + 0.1, ey + 0.4, 0.95, 1.4, 0, 0, Math.PI * 2);
           ctx.fill();
 
           // 4. Double Specular Anime Reflections
           ctx.fillStyle = '#ffffff';
           ctx.beginPath();
-          ctx.ellipse(ex + 0.7, ey - 1.2, 0.9, 1.3, -0.2, 0, Math.PI * 2);
+          ctx.ellipse(ex + 0.7, ey - 1.1, 0.85, 1.2, -0.2, 0, Math.PI * 2);
           ctx.fill();
 
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
           ctx.beginPath();
-          ctx.arc(ex - 0.5, ey + 1.2, 0.45, 0, Math.PI * 2);
+          ctx.arc(ex - 0.45, ey + 1.1, 0.4, 0, Math.PI * 2);
           ctx.fill();
 
-          // Diamond sparkle for sparkle eye type
           if (eyeType === 'sparkle') {
             ctx.fillStyle = '#ffffff';
-            Sprites.drawStar(ctx, ex + 0.7, ey - 1.2, 1.5, 0.5, 4);
+            Sprites.drawStar(ctx, ex + 0.7, ey - 1.1, 1.4, 0.45, 4);
           }
 
-          // 5. Bold curved upper anime eyeliner
-          ctx.strokeStyle = '#111827';
-          ctx.lineWidth = 1.35;
-          ctx.beginPath();
-          ctx.arc(ex, ey - 0.8, 3.1, 1.05 * Math.PI, 1.95 * Math.PI);
-          ctx.stroke();
-
-          // 6. Two distinct fluttery upward winged lashes (Peach's iconic look!)
-          const outerX = ex + flip * 2.7;
-          const outerY = ey - 0.9;
-          // Primary outer wing lash
-          ctx.lineWidth = 1.25;
-          ctx.beginPath();
-          ctx.moveTo(outerX, outerY);
-          ctx.quadraticCurveTo(outerX + flip * 1.4, outerY - 1.6, outerX + flip * 2.2, outerY - 2.6);
-          ctx.stroke();
-
-          // Secondary upward lash
+          // 5. Clean upper eyeliner (crisp, delicate line - NOT heavy frames)
+          ctx.strokeStyle = '#18181b';
           ctx.lineWidth = 1.05;
           ctx.beginPath();
-          ctx.moveTo(outerX - flip * 0.8, outerY - 1.7);
-          ctx.quadraticCurveTo(outerX - flip * 0.4, outerY - 3.0, outerX + flip * 0.5, outerY - 3.8);
+          ctx.arc(ex, ey - 0.5, 2.9, 1.12 * Math.PI, 1.88 * Math.PI);
+          ctx.stroke();
+
+          // 6. Dainty outer flick lashes (tiny, pointing OUTWARD away from eyes - never upward toward brows)
+          const outerX = ex + flip * 2.5;
+          const outerY = ey - 0.8;
+          ctx.lineWidth = 0.95;
+          ctx.beginPath();
+          ctx.moveTo(outerX, outerY);
+          ctx.lineTo(outerX + flip * 1.5, outerY - 0.7);
+          ctx.moveTo(outerX - flip * 0.3, outerY - 0.5);
+          ctx.lineTo(outerX + flip * 1.1, outerY - 1.5);
           ctx.stroke();
         };
 
         drawPeachEye(-2.7, headY - 0.8, -1);
         drawPeachEye(3.7, headY - 0.8, 1);
 
-        // Eyebrows for ladies (sweet, gentle arch in hair color)
-        const browColor = player.customization?.hair || (charType === 'mommy' ? '#2e1c12' : '#7f4f24');
+        // THIN, CUTE, GENTLE PRINCESS PEACH EYEBROWS (Delicate single hairline arch, well above eyes, NO GLASSES LOOK!)
+        const browColor = charType === 'ilianna' ? '#c4933f' : (charType === 'ava' ? '#8a5a3c' : '#6b4423');
         ctx.strokeStyle = browColor;
-        ctx.lineWidth = 1.15;
+        ctx.lineWidth = 0.75;
+
+        // Left eyebrow (sitting delicately high on forehead, leaving clear gap above eye)
         ctx.beginPath();
-        ctx.moveTo(-5.2, headY - 4.6);
-        ctx.quadraticCurveTo(-3.0, headY - 5.8, -0.8, headY - 4.7);
-        ctx.moveTo(1.6, headY - 4.7);
-        ctx.quadraticCurveTo(3.8, headY - 5.8, 6.0, headY - 4.6);
+        ctx.moveTo(-4.6, headY - 5.8);
+        ctx.quadraticCurveTo(-2.8, headY - 6.7, -1.0, headY - 5.9);
+        ctx.stroke();
+
+        // Right eyebrow
+        ctx.beginPath();
+        ctx.moveTo(1.0, headY - 5.9);
+        ctx.quadraticCurveTo(2.8, headY - 6.7, 4.6, headY - 5.8);
         ctx.stroke();
       }
     }
@@ -1052,18 +1038,12 @@ const Sprites = {
       ctx.lineTo(10.5, headY + 3.5);
       ctx.stroke();
     } else {
-      // Sweet feminine anime smile with soft pink/coral lip tint
-      ctx.fillStyle = 'rgba(255, 64, 129, 0.45)';
+      // Clean, natural Princess Peach smile (cute delicate curve, no heavy makeup)
+      ctx.strokeStyle = '#9c3848';
+      ctx.lineWidth = 0.95;
       ctx.beginPath();
-      ctx.ellipse(0.5, headY + 5.0, 2.0, 1.0, 0, 0, Math.PI);
-      ctx.fill();
-
-      // Delicate smile line with upturned corners
-      ctx.strokeStyle = '#c2185b';
-      ctx.lineWidth = 1.15;
-      ctx.beginPath();
-      ctx.moveTo(-1.9, headY + 3.8);
-      ctx.quadraticCurveTo(0.5, headY + 5.2, 2.9, headY + 3.8);
+      ctx.moveTo(-1.8, headY + 4.2);
+      ctx.quadraticCurveTo(0.5, headY + 5.3, 2.8, headY + 4.2);
       ctx.stroke();
     }
 
@@ -1213,14 +1193,7 @@ const Sprites = {
       drawPrincessEarring(-10.2, headY + 3.8);
       drawPrincessEarring(10.2, headY + 3.8);
 
-      // Hair crown sheen highlight
-      ctx.strokeStyle = 'rgba(255, 245, 190, 0.45)';
-      ctx.lineWidth = 1.8;
-      ctx.beginPath();
-      ctx.arc(0, headY - 6, 11, Math.PI * 0.9, Math.PI * 1.45);
-      ctx.stroke();
-
-      // Style-specific accessories & Golden Tiara/Crown
+      // Style-specific royal accessories & Golden Tiara/Crown
       if (hairStyle === 'long_curls') {
         // Golden star hair clip
         ctx.fillStyle = '#ffea00';
@@ -1239,25 +1212,11 @@ const Sprites = {
         ctx.fill();
 
       } else if (hairStyle === 'ponytail' || (hairStyle === 'classic' && charType === 'mommy')) {
-        if (charType === 'mommy') {
-          // Chic tortoiseshell sunglasses on forehead
-          ctx.fillStyle = '#e65100';
-          ctx.beginPath();
-          ctx.roundRect(-8, headY - 13, 7, 5, 2);
-          ctx.roundRect(1, headY - 13, 7, 5, 2);
-          ctx.fill();
-          ctx.fillStyle = 'rgba(20, 20, 20, 0.85)';
-          ctx.beginPath();
-          ctx.roundRect(-7, headY - 12, 5, 3.5, 1.5);
-          ctx.roundRect(2, headY - 12, 5, 3.5, 1.5);
-          ctx.fill();
-          ctx.strokeStyle = '#ffd700';
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(-1, headY - 11);
-          ctx.lineTo(1, headY - 11);
-          ctx.stroke();
-        }
+        // Elegant golden hair pin for high ponytail
+        ctx.fillStyle = '#ffd700';
+        ctx.beginPath();
+        ctx.ellipse(-6, headY - 9, 3.0, 1.8, 0.3, 0, Math.PI * 2);
+        ctx.fill();
 
       } else if (hairStyle === 'short_bob') {
         // Chic hair clip
