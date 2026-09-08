@@ -471,13 +471,31 @@
           const hairSway = Math.sin(t * 2.2) * 0.15;
           const bellySpring = this.char === 'daddy' ? Math.sin(t * 3.5) * 1.2 : 0;
 
-          // 4. Draw Hero at 2.25x scale
+          // 4. Draw Hero standing centered on the Oregon cedar pedestal
+          const isDaddy = this.char === 'daddy';
+          const heroW = isDaddy ? 24 : 20;
+          const heroH = isDaddy ? 34 : 30;
+
+          // Scale chosen so hero fits with balanced margin inside circular frame
+          const heroScale = 1.35;
+          // Contact plane where shoes meet the pedestal top disc (cy + 32 * dpr)
+          const feetOffset = isDaddy ? 20 : 17;
+          const pedestalSurfaceY = cy + 32 * dpr;
+          const heroDrawY = pedestalSurfaceY - (feetOffset * heroScale * dpr) + this.jumpY * dpr + breath;
+
           ctx.save();
-          ctx.translate(cx, cy + this.jumpY * dpr + breath);
-          ctx.scale(dpr * 2.25, dpr * 2.25);
+          ctx.translate(cx, heroDrawY);
+          ctx.scale(dpr * heroScale, dpr * heroScale);
 
           if (typeof Sprites !== 'undefined' && Sprites.drawPlayer) {
-            Sprites.drawPlayer(ctx, 0, 0, 20, 30, {
+            const previewPlayer = {
+              x: 0,
+              y: 0,
+              width: heroW,
+              height: heroH,
+              isGrounded: this.jumpTimer <= 0,
+              isClimbing: false,
+              vx: 0,
               animTimer: t,
               facing: 1,
               blinkTimer: isBlinking ? 0.2 : 0,
@@ -494,7 +512,8 @@
                 hair: this.char === 'ilianna' ? '#e6a147' : (this.char === 'ava' ? '#5c3826' : (this.char === 'mommy' ? '#3a2312' : '#4a3b32')),
                 skin: '#ffdfbf'
               }
-            });
+            };
+            Sprites.drawPlayer(ctx, previewPlayer);
           }
           ctx.restore();
 

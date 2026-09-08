@@ -20,9 +20,21 @@ if (typeof CanvasRenderingContext2D !== 'undefined' && !CanvasRenderingContext2D
 
 const Sprites = {
   // Draw the player character with fluid animations and rich handcrafted details
-  drawPlayer(ctx, player) {
+  // Supports both drawPlayer(ctx, player) and drawPlayer(ctx, x, y, w, h, player)
+  drawPlayer(ctx, player, argY, argW, argH, extra) {
+    if (typeof player === 'number') {
+      const x = player;
+      player = Object.assign({}, extra || {}, {
+        x: x,
+        y: typeof argY === 'number' ? argY : 0,
+        width: typeof argW === 'number' ? argW : (extra?.width || 20),
+        height: typeof argH === 'number' ? argH : (extra?.height || 30)
+      });
+    }
+    if (!player) return;
+
     ctx.save();
-    ctx.translate(player.x, player.y);
+    ctx.translate(player.x || 0, player.y || 0);
 
     // Fluid slope lean and dynamic tilt!
     if (player.tiltAngle) {
@@ -39,8 +51,8 @@ const Sprites = {
       ctx.globalAlpha = 0.45;
     }
 
-    const w = player.width;
-    const h = player.height;
+    const w = player.width || (player.customization?.type === 'daddy' ? 24 : 20);
+    const h = player.height || (player.customization?.type === 'daddy' ? 34 : 30);
     const skinColor = player.customization?.skin || '#ffdfbf';
     const outfitColor = player.customization?.outfit || '#ff4f84';
     const pantsColor = player.customization?.pants || '#3a7bd5';
